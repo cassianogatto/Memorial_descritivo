@@ -11,17 +11,19 @@ tab <- read.csv('TAB_Kokama_lotes.csv', header = T) %>% as_tibble()
 
 lista_de_id <- c(1:9, 15:21, 51:58) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
 
-lista_de_id = 2
+# lista_de_id = 2
 
-for (i in lista_de_id ){
+for (i in lista_de_id [1:3]){
   
     row_id = which(tab$id == i)
     
     V <- tab %>% slice(row_id) %>% as.list()
-  
-    output_file <- paste0("outputs/Memorial_casa_", i, ".html")
     
-    output_file2 <- paste0("outputs/topografico_casa_", i, ".html")
+    where_to_put <- "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"
+  
+    output_file <- paste0(where_to_put,"/Memorial_casa_", i, ".html")
+    
+    output_file2 <- paste0(where_to_put,"/topografico_casa_", i, ".html")
     
     render("memorial_template3.Rmd", output_file = output_file, params = c(V, tab, row_id)) # 'params' passes the objects to the .Rmd
     
@@ -35,9 +37,6 @@ for (i in lista_de_id ){
 #
 #
 #
-#
-
-
 
 #### TABLE MAKE-UP ----
 
@@ -202,6 +201,7 @@ for (i in lista_de_id ){
     try( table <- fobs(table), silent = TRUE)
   }
   
+# tab <- tab %>% select(-c(1,2,3))  
   # Save the queen tab
   write.csv(tab,'TAB_Kokama_lotes.csv')
   # tab %>%  write.table('clipboard')
