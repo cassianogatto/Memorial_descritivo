@@ -9,11 +9,9 @@ tab <- read.csv('TAB_Kokama_lotes.csv', header = T) %>% as_tibble()
 
 #### RENDER MARKDOWN!!! ----
 
-lista_de_id <- c(1:9, 15:21, 51:58) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
+lista_de_id <- c(2:9, 15:21, 51:58) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
 
-# lista_de_id = 2
-
-for (i in lista_de_id [1:3]){
+for (i in lista_de_id ){
   
     row_id = which(tab$id == i)
     
@@ -76,13 +74,13 @@ for (i in lista_de_id [1:3]){
       id == 15 ~ 'oeste',
       TRUE ~ NA_character_  )) %>% 
     mutate(vizinho_dir = case_when(
-      id %in% c(2:5,9, 52:54) ~ 'tab[i-1,"casa"]',
-      id %in% c(16:19, 55:57) ~ 'tab[i+1, "casa"]',
+      id %in% c(2:5,9, 52:54) ~ 'tab[i-1,"id"]',
+      id %in% c(16:19, 55:57) ~ 'tab[i+1, "id"]',
       id == 15 ~ '55,56,57',
       TRUE ~ NA_character_  )) %>% 
     mutate(vizinho_esqr = case_when(
-      casa %in% c(1:4, 8) ~  'tab[i+1,"casa"]',
-      casa %in% c(17:20, 51:53, 56:58) ~ 'tab[i-1, "casa"]',
+      id %in% c(1:4, 8) ~  'tab[i+1,"id"]',
+      id %in% c(17:20, 51:53, 56:58) ~ 'tab[i-1, "id"]',
       TRUE ~ NA_character_  ))
   
   # orientação das laterais conforme orientação principal do terreno

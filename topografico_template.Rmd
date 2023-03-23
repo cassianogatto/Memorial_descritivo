@@ -9,6 +9,41 @@ output:
     
 ---
 
+<style>
+body{
+  text-size:14px;
+  size: A4 landscape;
+  margin: 0;
+  width: 297mm; 
+  height: 209mm;
+  border: 0.2px solid black;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+  }
+}
+
+.sheet {
+  width: 297mm; 
+  height: 209mm
+  margin: 0px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+}
+.container {
+  align-items: center;
+  justify-content: center 
+  display: grid;<!--  flex; -->
+  grid-template-columns: 600px auto ;
+  column-gap: 5px;
+}
+</style>
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
@@ -29,18 +64,7 @@ if (i > 22){vante1 <- 6} else{ if(i == 21){vante1 <- 15} else{vante1 <- 8}}
 if (i > 22){vante2 <- 7} else{ if(i == 21){vante21 <- 30} else{vante2 <- 16}}
 ```
 
-<style>
-body{
-  margin:0px
-}
-.container {
-  align-items: center;
-  justify-content: center 
-  display: grid;<!--  flex; -->
-  grid-template-columns: 600px auto ;
-  column-gap: 5px;
-}
-</style>
+
 <!-- HEAD 
 <div class = "container" style = "display:flex" >
 <tr>
