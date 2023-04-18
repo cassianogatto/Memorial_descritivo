@@ -3,14 +3,23 @@ library(htmltools)
 library(tidyverse)
 
 
-#### LOAD TABLE ----
+#### LOAD TABLE KOKAMA ----
+'> getwd()
+[1] "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/Memorial_descritivo"'
 
-tab <- read.csv('TAB_Kokama_lotes.csv', header = T) %>% as_tibble()
+# After so many changes to the table... last version is TAB_Kokama_lotes_3.csv
 
+tab <- read.csv("TAB_Kokama_lotes_3.csv", header = T) %>% as_tibble()
+
+tab <-
+  tab %>% select(id, nome, cpf, rua, casa, contains("dec_x_"), contains("dec_y_"), contains("orient"),
+                 contains("vizinho"), contains("x_"), contains("y_"), contains("obs"), area, perim, uso, contains("dist"), escala)
+  
 #### RENDER MARKDOWN!!! ----
 
-lista_de_id <- c(2:9, 15:21, 51:58) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
+lista_de_id <- c(2:9, 15:21, 51:58, 101:103) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
 
+# loop to print Memorial and Topographic
 for (i in lista_de_id ){
   
     row_id = which(tab$id == i)
@@ -31,14 +40,48 @@ for (i in lista_de_id ){
     
     cat(paste("Rendered", output_file2, "\n"))
 }
-#
-#
-#
+
+
+
+
+#### LOAD TABLE IPIXUNA ----
+
+tab_ipi <- read.csv('TAB_Ipixuna_lotes.csv', header = T) %>% as_tibble()
+
+#### RENDER MARKDOWN!!! ----
+
+lista_de_id <- c(1:nrow(tab_ipi)) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
+
+for (i in lista_de_id ){
+  
+  row_id = which(tab$id == i)
+  
+  V <- tab %>% slice(row_id) %>% as.list()
+  
+  where_to_put <- "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"
+  
+  output_file <- paste0(where_to_put,"/Memorial_casa_", i, ".html")
+  
+  output_file2 <- paste0(where_to_put,"/topografico_casa_", i, ".html")
+  
+  render("memorial_template3.Rmd", output_file = output_file, params = c(V, tab, row_id)) # 'params' passes the objects to the .Rmd
+  
+  render("topografico_template.Rmd" , output_file = output_file2, params = c(V, tab, row_id))
+  
+  cat(paste("Rendered", output_file, "\n"))
+  
+  cat(paste("Rendered", output_file2, "\n"))
+}
+
+
 #
 
-#### TABLE MAKE-UP ----
+#
 
-{
+#### TABLE MAKE-UP KOKAMA ----
+
+{ # KOKAMA tab
+  
   # load table and variables
   table <- read.csv("kokama_data/vertices_Novo_lotes.csv", header = T) %>% as_tibble()
   
@@ -203,6 +246,63 @@ for (i in lista_de_id ){
   # Save the queen tab
   write.csv(tab,'TAB_Kokama_lotes.csv')
   # tab %>%  write.table('clipboard')
+  
+  '  Jucirneide de Sena Batista
+  CPF: 572.590.972-72, esse parente vai ficar com a parte onde está com as linhas vermelhas no Mapa.
+  Meirejane de Sena Batista
+  CPF 003.417.522-90, essa parente ficará com a parte Azul do mapa.
+  Jeonid de Sena Batista 
+  CPF 646.270.802-63, esse parente ficará com a parte verde do Mapa.'
+  
+  julio_vertices <- read.csv('vertices_Novo_lotes.csv', header = T) %>% as_tibble() %>% select(id, rua, casa, nome, cpf, ponto = vertex_ind, everything())
+  
+  julio <- julio_vertices %>% pivot_wider(id_cols =  c(id, nome, cpf, rua, casa ), names_from = ponto, values_from = c(dec_x, dec_y, x,y) )
+  
+  
+  
+  # casa 22 (copy from dbftable) to tab
+  t <- read.table("clipboard")
+  t = t %>% mutate(nome = paste(V2,V3,V4), rua = paste(V5, V6), cpf = "032.566.862-06") %>% 
+            select(id = V1, nome, cpf, rua, casa = V7, vertex_ind = V8, ponto = V9, y = V10, x = V11, dec_x = V12, dec_y = V13)
+  
+  t$ponto = c("M01", "M02", "M03", "M04")
+  
+  t <- t %>% pivot_wider(id_cols = c(id, nome, cpf, rua, casa), names_from = ponto, values_from = c(dec_x, dec_y, x, y))
+  
+  ncol(tab); ncol(t)
+  
+  Ntab <- full_join(tab, t)
+  
+  Ntab[which(Ntab$id == 22),]
+  
+  write.csv(Ntab, 'clipboard')
+  
+  
+  ## tab <- read.csv('TAB_Kokama_lotes.csv', header = T) %>% as_tibble()
+  tab<- read.csv('TAB_Kokama_lotes_2.csv', header = T) %>% as_tibble()
+  
+  tab$escala <- rep("1/200", nrow(tab))
+  
+  'escala terrenos filhos do seu Júlio = 1/1000'
+  
+  test <- full_join(tab,julio)
+  test[26:29, 24:35] <- test[26:29, 24:35] /1000
+  
+  #SAVE
+  tab <- test
+  
+  # Julio filhos
+  tab = tab %>% edit()
+  
+  
+
+  
+  tab[tab$id==101,]
+  
+  
+  tab %>% write.csv(.,"TAB_Kokama_lotes_3.csv")
+  
+  
 }
 
 

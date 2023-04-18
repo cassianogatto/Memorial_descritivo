@@ -50,8 +50,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 library(rmarkdown)
 library(dplyr)
 library(stringr)
-i=2
-tab <- read.csv('TAB_Kokama_lotes.csv', header = T) %>% as_tibble()
+
 
 # slice tab
 row_id <- which(tab$id == i)
@@ -172,7 +171,7 @@ knitr::include_graphics(figure_path)
 </tr>
 
 <tr height = 30px>
-<td width = 20% > Escala: 1/200 </td>
+<td width = 20% > Escala: `V$escala` </td>
 <td width = 40%> Município: Manaus AM </td>
 <td width = 20% style="text-align:left"> Visto: </td>
 <td width = 20%> ART: `r #V$art` </td>

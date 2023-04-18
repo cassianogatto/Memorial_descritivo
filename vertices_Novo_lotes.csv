@@ -1,0 +1,18 @@
+id,rua,casa,nome,cpf,vertex_pos,vertex_ind,x,y,dec_x,dec_y
+101,Estrada Campos Elíseos,0,Julio Kokama,,1,M01,-59873,-3017,-59°52′24.,-3°1′2.3″
+101,Estrada Campos Elíseos,0,Julio Kokama,,2,M02,-59874,-3016,-59°52′25.,-3°0′59.1″
+101,Estrada Campos Elíseos,0,Julio Kokama,,3,M03,-59871,-3015,-59°52′17.,-3°0′53.7″
+101,Estrada Campos Elíseos,0,Julio Kokama,,4,M04,-59871,-3015,-59°52′16.,-3°0′55.5″
+102,Estrada Campos Elíseos,3,Jeonid Sena Batista,646.270.802-63,1,M01,-59872,-3016,-59°52′18.,-3°0′57.2″
+102,Estrada Campos Elíseos,3,Jeonid Sena Batista,646.270.802-63,2,M02,-59872,-3015,-59°52′20.,-3°0′55.6″
+102,Estrada Campos Elíseos,3,Jeonid Sena Batista,646.270.802-63,4,M04,-59871,-3015,-59°52′16.,-3°0′55.5″
+102,Estrada Campos Elíseos,3,Jeonid Sena Batista,646.270.802-63,3,M03,-59871,-3015,-59°52′17.,-3°0′53.7″
+103,Estrada Campos Elíseos,2,filho Julio Kokama,,1,M01,-59874,-3017,-59°52′24.,-3°0′59.4″
+103,Estrada Campos Elíseos,2,filho Julio Kokama,,2,M02,-59874,-3016,-59°52′25.,-3°0′59.1″
+103,Estrada Campos Elíseos,2,filho Julio Kokama,,3,M03,-59872,-3015,-59°52′20.,-3°0′55.6″
+103,Estrada Campos Elíseos,2,filho Julio Kokama,,4,M04,-59872,-3016,-59°52′19.,-3°0′56.2″
+103,Estrada Campos Elíseos,2,filho Julio Kokama,,5,M05,-59873,-3016,-59°52′22.,-3°0′58.5″
+104,Estrada Campos Elíseos,1,filha Julio Kokama,,1,M01,-59873,-3017,-59°52′24.,-3°1′2.3″
+104,Estrada Campos Elíseos,1,filha Julio Kokama,,2,M02,-59874,-3017,-59°52′24.,-3°0′59.4″
+104,Estrada Campos Elíseos,1,filha Julio Kokama,,3,M03,-59873,-3016,-59°52′22.,-3°0′58.5″
+104,Estrada Campos Elíseos,1,filha Julio Kokama,,4,M04,-59873,-3017,-59°52′21.,-3°0′59.9″
