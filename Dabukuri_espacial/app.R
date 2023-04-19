@@ -39,6 +39,8 @@ ui <- fluidPage(
             
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = 1),
             
+            actionButton("save_memorial", "Salve Memorial", color = 'black'), 
+            
             # include text in Rmd formal
             # htmltools::includeMarkdown('www/scan_eng_text1.Rmd')
             

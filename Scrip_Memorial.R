@@ -9,12 +9,15 @@ library(tidyverse)
 
 # After so many changes to the table... last version is TAB_Kokama_lotes_3.csv
 
-tab <- read.csv("TAB_Kokama_lotes_3.csv", header = T) %>% as_tibble()
+tab <- read.csv("TAB_Kokama_lotes_4.csv", header = T) %>% as_tibble()
 
 tab <-
   tab %>% select(id, nome, cpf, rua, casa, contains("dec_x_"), contains("dec_y_"), contains("orient"),
                  contains("vizinho"), contains("x_"), contains("y_"), contains("obs"), area, perim, uso, contains("dist"), escala)
   
+
+
+'print Memorial e levantamento topográfico'
 #### RENDER MARKDOWN!!! ----
 
 lista_de_id <- c(2:9, 15:21, 51:58, 101:103) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
@@ -294,13 +297,32 @@ for (i in lista_de_id ){
   # Julio filhos
   tab = tab %>% edit()
   
-  
-
-  
   tab[tab$id==101,]
   
   
-  tab %>% write.csv(.,"TAB_Kokama_lotes_3.csv")
+  "Carlos Alberto da Costa Santos, CPF 520.202.902-00, mudou de local, ele agora é morador da rua Panara Ipé, o terreno dele é 6 de frente por 7 de comprimento.
+
+    Zenildes Marques da Costa CPF 510.948.942-49, é moradora da Rua mutsana Ipé, tamanho do terreno dela é 8 de frente por 20 de comprimento.
+    
+    CLEYDE MARIA SANTOS TEXEIRA CPF 699.030.422-72 moradora da rua Aturaxana Ipé, o tamanho do terreno dela é 5 de frete por 15 de comprimento.
+    
+    Jaqueline dos Santos Costa, CPF: 703.617.482-05, moradora da rua mutsana Ipé, o terreno dela é 7 de frete por 7 de comprimento.
+    
+    Tatiana da Silva Araújo CPF 024.812.832-95, moradora da rua Aturaxana Ipé, o terreno dela mede 5 de frente por 15 de comprimento.
+    
+    Cleinando Coelho Batista CPF 704.444.722-01, morador da rua Aturaxana Ipé, o terreno mede 6 de frente por 15 de comprimento."
+  
+  tab[30:35, "nome"] <- c("Carlos Alberto da Costa Santos", "Zenildes Marques da Costa", "Cleyde Maria dos Santos Teixeira", "Jaqueline dos Santos Costa",
+    "Tatiana da Silva Araújo", "Cleinando Coelho Batista")
+  tab[30:35, "cpf"] <- c("520.202.902-00", "510.948.942-49", "699.030.422-72", "703.617.482-05", "024.812.832-95", "704.444.722-01")
+  tab[30:35, "rua"] <- c("Panara ipe", "Mutsana ipe", "Aturaxana ipe", "Mutsana ipe", "Aturaxana ipe", "Aturaxana ipe")
+  tab[30:35, "dist_frente"] <- c(6,8, 5, 7, 5, 6)
+  tab[30:35, "dist_lateral"] <- c(7, 20, 15, 7, 15, 15 )
+  
+  
+  
+  
+  tab %>% write.csv(.,"TAB_Kokama_lotes_4.csv")
   
   
 }
