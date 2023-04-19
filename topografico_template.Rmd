@@ -4,8 +4,8 @@ pagetitle: "levantamento topografico"
 author: '&#32;'
 date: '&#32;'
 output:
-  html_document:
-    css: A4_landscape.css
+  html_document: 
+    ss: A4_landscape.css
     
 ---
 
