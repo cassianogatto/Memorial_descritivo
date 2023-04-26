@@ -1,0 +1,21 @@
+---
+title: '&#32;'
+pagetitle: Memorial
+output: html_document params:
+stats_list: NA
+---
+## teste teste teste
+
+tabela:
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+
+
+params$stat_list
+
+```
+
+## R Markdown
+

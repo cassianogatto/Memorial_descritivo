@@ -1,12 +1,10 @@
 ---
 title: '&#32;'
 pagetitle: Memorial
-params:
-  tabela: NULL
-  V: NULL
-  list_id: MULL
 output: 
   html_document:
+    params:
+      V: NA
     theme:
       color-contrast-warnings: false
       bg: "#ffffff"
@@ -63,12 +61,10 @@ knitr::opts_chunk$set(echo = FALSE)
 # SETUP fixed variables
 resp_tecnico <- "Fulana Ciclana – Geógrafa (CREAM-AM 123456789-0)"
 tipo_de_imovel <- "Rural"
+uso <- V$uso
 comarca <- 'Tabelião Zé Carioca'
 end <- ", Estrada Campos Elíseos, Ramal Brasileirinho, km8"
 
-tab <- params$tabela
-V <- params$V
-id <- params$list_id
 
 uso <- V$uso
 

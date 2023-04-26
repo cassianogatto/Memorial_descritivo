@@ -1,0 +1,45 @@
+--- 
+title: "Summary statistics"
+output: html_document params:
+tabela: NA 
+---
+## R Markdown
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+print(paste("o conteúdo da lista params:tabela é "  ) )
+
+
+params$tabela %>% glimpse()
+
+params$V
+
+```
+
+
+
+
+
+
+```{r, echo=FALSE}
+
+# library(shiny)
+# 
+# shinyApp(
+# 
+#   ui = fluidPage(
+#     selectInput("region", "Region:",
+#                 choices = c("a", "b")),
+#     textOutput("region_out")
+#   ),
+# 
+#   server = function(input, output) {
+#     output$region_out = renderText({  (input$region)   })
+#     
+#   },
+# 
+#   options = list(height = 500)
+# )
+```
+
+
