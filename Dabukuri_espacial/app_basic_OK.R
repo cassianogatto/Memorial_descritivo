@@ -9,6 +9,7 @@ library(shiny)
 library(dplyr)
 library(rmarkdown)
 library(htmltools)
+library(knitr)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -27,22 +28,17 @@ ui <- fluidPage(
             # main table
             fileInput( inputId = "filetab",  label = "Selecione a tabela '.csv' ", accept = c(".csv"), multiple=TRUE), #width = '500px', 
                       
-            actionButton(inputId = "get_tab", label =  "Carregar tabela!",  class = "btn-warning", color = 'black'), #class = "danger"),/8520
-            
-             # accept = c(".Rmd"),  #"C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/Memorial_descritivo/Dabukuri_espacial/memorial_template3_SHINY.Rmd"#width = '500px',  multiple=TRUE
-
-            # textInput(inputId = "topographic_template",  label = "Nome do template '.Rmd' Topográfico", # accept = c(".Rmd"),
-            #           value = 'topografico_template.Rmd', #width = '500px',  multiple=TRUE
-            # ),
-
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = 1),
 
-            
-            # get output folder -> uiOutput("output_folder"), etc etc  OR
-            textInput(inputId = "output_dir", label = "Output Folder",  value = "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"),
+            # textInput(inputId = "output_dir", label = "Output Folder",  value = "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"),
 
+            
+            HTML("<br>"),
+            
+            # Action !!
             actionButton(inputId = "save_memorial", label = "Salve Memorial", class = "btn-warning", color = 'black'),
             
+            # Download!!
             downloadButton("download_html", label = "Download Memorial html"),
             
         ),
@@ -50,35 +46,25 @@ ui <- fluidPage(
         # Show a plot of the generated distribution
         mainPanel(
            
-            tags$h3("Casa Selecionada:"),
+            tags$h3("Casa Selecionada:"), tableOutput("V_tab"),
 
-            tableOutput("V_tab"),
+            tags$h3("Output folder"), textOutput("getwd"),
 
-            tags$h3("Output folder"),
-
-            textOutput("getwd"),
-
-            tags$h3("Tabela Geral"),
-
-            tableOutput("tab"),
+            tags$h3("Tabela Geral"),  tableOutput("tab"),
             
-            # tabPanel(value ='teste', title = "teste desse caralho", htmlOutput("report") ),
-
-            # tags$h4("será que imprimiu?"),
-            #
-            # textOutput("quando_imprime"),
+            uiOutput("markdown"),
             
-            # example of tabPanel 
-            # tabPanel(value ='tab3', title = "Summary Statistics", tab)            
+            htmltools::includeMarkdown("r_markdown.Rmd"), # do not render R commands...
+            
+            htmlOutput("report"),
         )
     )
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output, session) {
     
-    # output$statistics <- renderTable({ summary_statistics })
-    tab_react <- eventReactive( input$get_tab, {
+    tab_react <- reactive(  {
       
         tabdf <- input$filetab
         
@@ -104,66 +90,59 @@ server <- function(input, output) {
     
     V_react <- reactive({
         
+        req(tab_react())
+        
         V_cut <- which(tab_react()$id == input$lista_de_id)
         
         V <- tab_react() %>% slice(V_cut) #%>% as.list()
     })
     
-    output$tab <- renderTable({
-        
-        tab_react()
+    output$tab <- renderTable({  tab_react()  })
+    
+    output$V_tab <- renderTable(  V_react()   )
+    
+    output$markdown <- renderUI({
+        HTML(markdown::markdownToHTML(knit('r_markdown.Rmd', quiet = TRUE)))
     })
     
-    output$V_tab <- renderTable(  V_react()  )
-
-    output$getwd <- renderText( input$output_dir )
-
-    # render vars
-    output_file <- reactive ({   paste0(input$output_dir ,"/Memorial_casa_", input$lista_de_id , ".html")   }) #"C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"
-
+    # NOT WORKING
     output$download_html <- downloadHandler(
-        filename = output_file() , # "teste_memorial_markdown", # function() { paste0("memorial_casa", input$lista_de_id, ".html")  },
+        
+        filename = "teste_markdown_1.html",# function(){  paste0("render_memorial_Rmd_casa_", input$lista_de_id ) }, #output_file() , #  # function(Ncasa = input$lista_de_id) { paste0("memorial_casa", Ncasa, ".html")  },
+        
         content = function( file ){
-                rmarkdown::render(
-                    input = "www/memorial_template3_SHINY.Rmd",
-                    output_file = file,
-                    params = list(tabela = tab_react(), V = v_react(),  list_id = input$lista_de_id )
+            rmarkdown::render( "r_markdown.Rmd",
+                output_file = file #, 
+                # params = list( tabela = tab_react(), V = V_react(),  list_id = input$lista_de_id )
             )
         }
     )
     
-    eventReactive("save_memorial",{
-        rmarkdown::render(tempReport, output_file = "teste_markdown.html", output_format = "html_document",
+    # NOT WORKING
+    eventReactive("save_memorial", {
+        
+        rmarkdown::render("r_markdown.Rmd", output_file = "teste_markdown_2.html", output_format = "html_document",
 
-                          params =  params,
-
-                          envir = globalenv())
-
-        })
+              params =  list(tabela = tab_react(), V = V_react(),  list_id = input$lista_de_id ) #,envir = globalenv()
+        )
+    })
+    
+    output$report <- renderUI({   function(){  return( includeHTML( paste0( "teste_markdown_2.html") ) )  } })
     
 }
 
 # Run the application 
 shinyApp(ui = ui, server = server)
     
-    # https://github.com/curso-r/lives/blob/master/drafts/20210804-shiny-rmarkdown/rascunho/app.R
-    # output$gerar_relatorio <- downloadHandler(  
-            # filename = function() {  paste0("filmes_", input$pessoa, ".pdf")  },
-            #content = function(file) {    
-                # rmarkdown::render(    input = "www/template.Rmd",   output_file = file,    params = list(pessoa = input$pessoa)  )  })
     
-    
-    # output$confirmation <- renderText( quando_imprime() )
-    
-    # 
-    # getPage <- function(){
-    # 
-    #     return( includeHTML( paste0( input$output_dir ,"/Memorial_casa_", input$lista_de_id , ".html") ) )
-    # }
-    # 
-    # output$report <- renderUI({getPage()})
-    
-    
+
+
+
+
+
+
+
+
     #https://joshlongbottom.github.io/Rendering-markdown/
     # tempReport <- file.path(tempdir(), "teste.rmd")
     # 
@@ -171,21 +150,15 @@ shinyApp(ui = ui, server = server)
     # 
     # params <- list(stats_list = tab_react() )
     # 
-    # eventReactive("save_memorial",{
-    #         
-    #     rmarkdown::render(tempReport, output_file = "teste_markdown.html", output_format = "html_document", 
-    #                   
-    #                   params =  params, 
-    #                   
-    #                   envir = globalenv())
-    #     
+    # eventReactive("save_memorial", {
+    # 
+    #     rmarkdown::render(tempReport, output_file = "teste_markdown.html", output_format = "html_document",
+    # 
+    #                   params =  params ,   envir = globalenv() )
     # })
-    # 
-    # getPage <- function(){
-    #     
-    #     return(includeHTML("teste_markdown.html"))
-    # }
-    # 
+    
+    # getPage <- function(){ return(includeHTML("teste_markdown.html")) }
+    
     # output$report <- renderUI({getPage()})
     
     

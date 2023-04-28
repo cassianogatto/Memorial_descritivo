@@ -7,7 +7,7 @@ library(tidyverse)
 '> getwd()
 [1] "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/Memorial_descritivo"'
 
-# After so many changes to the table... last version is TAB_Kokama_lotes_3.csv
+# After so many changes to the table... last version is TAB_Kokama_lotes_4.csv
 
 tab <- read.csv("TAB_Kokama_lotes_4.csv", header = T) %>% as_tibble()
 
@@ -20,7 +20,8 @@ tab <-
 'print Memorial e levantamento topográfico'
 #### RENDER MARKDOWN!!! ----
 
-lista_de_id <- c(2:9, 15:21, 51:58, 101:103) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
+
+lista_de_id <-  c(2:9, 15:21, 51:58, 101:103) # c(2, 8, 17, 21, 51, 58) #c(1:6, 8, 10,11, 15:23, 51:58)             #    #seq_len(nrow(table))) {
 
 # loop to print Memorial and Topographic
 for (i in lista_de_id ){

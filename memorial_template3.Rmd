@@ -57,7 +57,7 @@ body{
 knitr::opts_chunk$set(echo = FALSE)
 
 # SETUP fixed variables
-resp_tecnico <- "Fulana Ciclana – Geógrafa (CREAM-AM 123456789-0)"
+resp_tecnico <- "Zé Oreia da Silva – Geógrafer (CREAM-AM 123456789-0)"
 tipo_de_imovel <- "Rural"
 uso <- V$uso
 comarca <- 'Tabelião Zé Carioca'

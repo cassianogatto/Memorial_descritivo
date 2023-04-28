@@ -1,21 +1,35 @@
 --- 
-title: "Summary statistics"
-output: html_document params:
-tabela: NA 
+title: "Shiny render Markdown"
+output: html_document 
+params:
+  tabela: ""
+  V: ""
+  list_id: ""
 ---
-## R Markdown
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+## Render R Markdown  from Shiny
 
-print(paste("o conteúdo da lista params:tabela é "  ) )
+```{r}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
-
-params$tabela %>% glimpse()
-
-params$V
+# params = list(tabela = data_frame(nome = c("Ari", "Barroso", "Silva"), rua("Brasil", "Brasileiro", "isonheiro")), 
+#               V = list(nome = "Rui", rua("Chapéu") ),
+#               list_id = 1)
+# 
+# print(paste("o conteúdo da lista params:tabela é "  ) )
+# 
+# params$tabela
+# 
+# paste("list_id = ", params$list_id)
 
 ```
 
+Apenas a casa selecionada
+
+```{r }
+
+print("Hello World!")
+
+```
 
 
 

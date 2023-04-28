@@ -8,8 +8,9 @@ params:
 ---
 ## Render R Markdown  from Shiny
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```r
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
 
 # params = list(tabela = data_frame(nome = c("Ari", "Barroso", "Silva"), rua("Brasil", "Brasileiro", "isonheiro")), 
 #               V = list(nome = "Rui", rua("Chapéu") ),
@@ -20,40 +21,19 @@ knitr::opts_chunk$set(echo = TRUE)
 # params$tabela
 # 
 # paste("list_id = ", params$list_id)
-
 ```
 
 Apenas a casa selecionada
 
-```{r setup, include=FALSE}
 
-print("Hello World!")
-
+```
+## [1] "Hello World!"
 ```
 
 
 
 
 
-```{r, echo=FALSE}
 
-# library(shiny)
-# 
-# shinyApp(
-# 
-#   ui = fluidPage(
-#     selectInput("region", "Region:",
-#                 choices = c("a", "b")),
-#     textOutput("region_out")
-#   ),
-# 
-#   server = function(input, output) {
-#     output$region_out = renderText({  (input$region)   })
-#     
-#   },
-# 
-#   options = list(height = 500)
-# )
-```
 
 
