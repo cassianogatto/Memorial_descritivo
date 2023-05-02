@@ -1,8 +1,9 @@
 ---
 title: '&#32;'
 pagetitle: Memorial
-output: html_document params:
-stats_list: NA
+output: html_document
+  params:
+    tab: NA
 ---
 ## teste teste teste
 
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 
-params$stat_list
+params$tab
 
 ```
 

@@ -1,39 +1,43 @@
 --- 
-title: "Shiny render Markdown"
+title: "render markdown from shiny env"
 output: html_document 
 params:
-  tabela: ""
-  V: ""
-  list_id: ""
+  tab: NULL
+  casa: NULL
 ---
 ## Render R Markdown  from Shiny
 
 
 ```r
-knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, eval = TRUE)
 
-# params = list(tabela = data_frame(nome = c("Ari", "Barroso", "Silva"), rua("Brasil", "Brasileiro", "isonheiro")), 
-#               V = list(nome = "Rui", rua("Chapéu") ),
-#               list_id = 1)
-# 
-# print(paste("o conteúdo da lista params:tabela é "  ) )
-# 
-# params$tabela
-# 
-# paste("list_id = ", params$list_id)
+library(dplyr)
+
+tab <- params$tab
 ```
 
-Apenas a casa selecionada
+```
+## Error in eval(expr, envir, enclos): object 'params' not found
+```
+
+```r
+casa <- params$casa
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'params' not found
+```
+
+Apenas a casa selecionada- - - versão pretão
 
 
 ```
 ## [1] "Hello World!"
 ```
 
-
-
-
-
+```
+## Error in UseMethod("filter"): no applicable method for 'filter' applied to an object of class "c('reactiveExpr', 'reactive', 'function')"
+```
 
 
 
