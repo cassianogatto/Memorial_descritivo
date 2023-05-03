@@ -11,6 +11,9 @@ library(rmarkdown)
 library(htmltools)
 # library(knitr)
 
+setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/")
+
+
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
@@ -20,15 +23,16 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         
-        sidebarPanel( #width = '50px',
+        sidebarPanel(
             
             # template
-            # textInput( inputId = "memorial_template", label = "Nome do template Memorial",  value = 'r_markdown.Rmd' ),
+            selectInput(inputId = "Rmarkdown_template", label = "Arquivo markdown template", 
+                        choices = dir()[dir() %>% grep(pattern = ".Rmd")],
+                        selected = "template_memorial_4_SHINY.Rmd"),
             
-            # main table
             fileInput( inputId = "filetab",  label = "Selecione a tabela '.csv' ", accept = c(".csv"), multiple=TRUE), #width = '500px', 
                       
-            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = 1),
+            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
 
             # textInput(inputId = "output_dir", label = "Output Folder",  value = "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/outputs"),
 
@@ -37,8 +41,11 @@ ui <- fluidPage(
             # Action !!
             actionButton(inputId = "save_memorial", label = "Salve Memorial", class = "btn-warning", color = 'black'),
             
-            uiOutput("markdown"),
-            
+            tags$code(
+                tags$h3("o arquivo gerado está em:"),
+                
+                uiOutput("markdown"),
+            ),
             # Download!!
             #downloadButton("download_html", label = "Download Memorial html"),
             
@@ -95,9 +102,10 @@ server <- function(input, output, session) {
     
     output$markdown <- renderUI( {
       
-      input$save_memorial
-
-      rmarkdown::render("template_memorial_4_SHINY.Rmd", output_file = paste0("memorial_casa_", input$lista_de_id), # output_dir = 'outputs',
+      rmarkdown::render(input$"Rmarkdown_template",
+                        output_format = "html_document",
+                        output_file = paste0("topografico_casa_", input$lista_de_id), 
+                        output_dir = paste0(getwd(),'/outputs'),
                         params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
     })
  

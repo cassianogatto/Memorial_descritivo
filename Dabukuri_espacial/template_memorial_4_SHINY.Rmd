@@ -20,6 +20,7 @@ theme:
 ---
 
 <style>
+
 body{
   text-size:12px;
   size: A4;
@@ -216,3 +217,34 @@ Proprietário(a): `r V$nome`
 
 
 
+<!-- # https://stackoverflow.com/questions/3341485/how-to-make-a-html-page-in-a4-paper-size-pages -->
+
+
+<!-- I saw this solution after searching at google, search for "A4 CSS page template" (codepen.io). It shows an A4 (A3,A5, also portrait) sized area in the browser, using the <page> tag. Inside this tag the content is shown, but absolute position is still with respect to browser area. -->
+
+<!-- body { -->
+<!--   background: rgb(204,204,204);  -->
+<!-- } -->
+<!-- page { -->
+<!--   background: white; -->
+<!--   display: block; -->
+<!--   margin: 0 auto; -->
+<!--   margin-bottom: 0.5cm; -->
+<!--   box-shadow: 0 0 0.5cm rgba(0,0,0,0.5); -->
+<!-- } -->
+<!-- page[size="A4"] {   -->
+<!--   width: 21cm; -->
+<!--   height: 29.7cm;  -->
+<!-- } -->
+<!-- page[size="A4"][layout="portrait"] { -->
+<!--   width: 29.7cm; -->
+<!--   height: 21cm;   -->
+<!-- } -->
+<!-- @media print { -->
+<!--   body, page { -->
+<!--     margin: 0; -->
+<!--     box-shadow: 0; -->
+<!--   } -->
+<!-- } -->
+<!-- <page size="A4">A4</page> -->
+<!-- <page size="A4" layout="portrait">A4 portrait</page> -->
