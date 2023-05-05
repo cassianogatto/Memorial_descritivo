@@ -69,19 +69,21 @@ V <- params$V
 
 # SETUP fixed variables
 resp_tecnico <- "Fulana Ciclana – Geógrafa (CREAM-AM 123456789-0)"
+
 tipo_de_imovel <- "Rural"
-uso <- V$uso
+
 comarca <- 'Tabelião Zé Carioca'
+
 end <- ", Estrada Campos Elíseos, Ramal Brasileirinho, km8"
 
 uso <- V$uso
 
-M1 = paste0(V$dec_y_M01,' / ', V$dec_x_M01) 
-M2 = paste0(V$dec_y_M02,' / ', V$dec_x_M02)
-M3 = paste0(V$dec_y_M03,' / ', V$dec_x_M03)
-M4 = paste0(V$dec_y_M04,' / ', V$dec_x_M04)
-M5 = paste0(V$dec_y_M05,' / ', V$dec_x_M05)
-M6 = paste0(V$dec_y_M06,' / ', V$dec_x_M06)
+M1 = paste0(V$dms_y_M01,' / ', V$dms_x_M01) 
+M2 = paste0(V$dms_y_M02,' / ', V$dms_x_M02)
+M3 = paste0(V$dms_y_M03,' / ', V$dms_x_M03)
+M4 = paste0(V$dms_y_M04,' / ', V$dms_x_M04)
+M5 = paste0(V$dms_y_M05,' / ', V$dms_x_M05)
+M6 = paste0(V$dms_y_M06,' / ', V$dms_x_M06)
 
 ```
 
@@ -134,6 +136,7 @@ Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
 
 ```{r, echo =FALSE}
 library(knitr)
+library(tidyverse)
 pontos_tab <- tibble( Marcos = c("M01", "M02", "M03", "M04"),
                       Coordenadas = c(M1, M2, M3, M4))
 

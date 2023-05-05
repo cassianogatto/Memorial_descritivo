@@ -77,6 +77,10 @@ endereco <- paste0('Rua ', V$rua, ', ', V$casa)
 
 responsavel <- "Elvis Presley"
 
+# vantes 
+
+#vante1 = 2
+#vante2 = 3
 if (casa > 99){vante1 <- NA} else {if (casa > 22 ){vante1 <- 6} else{ if(casa == 21){vante1 <- 15} else{vante1 <- 8}}}
 if (casa > 99){vante2 <- NA} else {if  (casa > 22 ){vante2 <- 7} else{ if(casa == 21){vante21 <- 30} else{vante2 <- 16}}}
 ```

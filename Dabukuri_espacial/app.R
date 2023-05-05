@@ -37,7 +37,7 @@ ui <- navbarPage(
                         
                     selectInput(inputId = "topografico_template", label = "Topográfico template", 
                                    choices = dir()[dir() %>% grep(pattern = ".Rmd")],
-                                   selected = "topografico_template.Rmd"),
+                                   selected = "topografico_template1.Rmd"),
                 ),
        
                 column(8,
@@ -59,33 +59,34 @@ ui <- navbarPage(
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
             
             tags$h3("Casa Selecionada:"), tableOutput("V_tab"),
-   ),
+            
+            tags$h3("o arquivo Memorial gerado está em:"),
+                        
+            uiOutput("markdown_memorial"),
+            
+            tags$h3("o arquivo Topográfico gerado está em:"),
+                      
+            uiOutput("markdown_topografico"),
+    ),
+    
     navbarMenu("Documentos",
              
           tabPanel("Memorial",
                     
-                    tags$h3("o arquivo gerado está em:"),
-                        
-                    uiOutput("markdown_memorial"),
-
                     tags$h4("preview:"),
                     
                     #includeHTML("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_55.html"),
                       
-                    htmlOutput("preview_memorial")
+                    uiOutput("preview_memorial")
           ),
             
           tabPanel("Topográfico",
                       
-                    tags$h3("o arquivo gerado está em:"),
-                      
-                    uiOutput("markdown_topografico"),
-                    
                     tags$h4("preview:"),
                    
-                    htmlOutput("preview_topografico")
+                    uiOutput("preview_topografico")
           ),
-  )
+    )
 )
 
 server <- function(input, output, session) {
@@ -100,7 +101,8 @@ server <- function(input, output, session) {
     
     validate(need(ext == "csv", "Please upload a csv file"))
     
-    read.csv(file$datapath, header = TRUE) %>% as_tibble() %>% select(! contains('X'))
+    tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
+    
   })
   
   V_react <- reactive({
@@ -139,16 +141,13 @@ server <- function(input, output, session) {
   })
   
   # works only with the character for the whole file path... trying to make the paste0 works... it never ends...
-  output$preview_memorial <- renderUI({  includeHTML( 
-      
-      #paste0(getwd(),"/outputs/memorial_casa_", input$lista_de_id) 
-      
-      "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_56.html"
-      
-      ) })   # "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_55.html" )
-
+  output$preview_memorial <- renderUI({  
+    includeHTML( 
+      paste0("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_",input$lista_de_id,".html")
+    ) })
   
-  output$preview_topografico <- renderUI({  includeHTML( paste0(getwd(),"/outputs/topografico_casa_", input$lista_de_id) ) })
+  output$preview_topografico <- renderUI({  
+    includeHTML(  paste0("/outputs/topografico_casa_", input$lista_de_id, ".html") ) })
   
 }
 

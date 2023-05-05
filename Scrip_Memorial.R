@@ -9,12 +9,45 @@ library(tidyverse)
 
 # After so many changes to the table... last version is TAB_Kokama_lotes_4.csv
 
-tab <- read.csv("TAB_Kokama_lotes_4.csv", header = T) %>% as_tibble()
+# tab <- read.csv("TAB_Kokama_lotes_4.csv", header = T) %>% as_tibble()
+
+tab <- read.csv("TAB_Kokama5.csv", header = T) %>% as_tibble()
 
 tab <-
   tab %>% select(id, nome, cpf, rua, casa, contains("dec_x_"), contains("dec_y_"), contains("orient"),
                  contains("vizinho"), contains("x_"), contains("y_"), contains("obs"), area, perim, uso, contains("dist"), escala)
   
+
+#### LOAD IPIXUNA
+
+setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
+
+ipixuna <- read.csv('Ipixuna.csv') %>% as_tibble()
+
+ipixuna %>% names()
+
+ipixuna$nome <- ''; ipixuna$cpf <- ''; 
+
+ipixuna <- ipixuna %>% mutate(ponto = paste0("M0", ponto))
+
+ipixu <- ipixuna %>% select(id, terreno, nome, cpf, rua,  casa = casa_new, ponto, dms_x = x_dms, dms_y = y_dms, everything())
+
+ipixu <- ipixu %>% pivot_wider(id_cols = c(id, rua, terreno, casa), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
+
+write.csv(ipixu, "Ipixuna2.csv")
+
+
+p
+'> tab %>% names()
+[1] "X"              "id"             "nome"           "cpf"        "rua"            "casa"           "dec_y_M02"      "dec_y_M03"     
+[9] "dec_y_M04"      "dec_y_M05"      "dec_y_M06"      "dec_y_M01"  "orientacao"     "orient_lat_dir" "orient_fun"     "orient_lat_esq"
+[17] "vizinho_dir"    "vizinho_esqr"   "y_M02"          "y_M03"     "y_M04"          "y_M05"          "y_M06"          "y_M01"         
+[25] "observacoes"    "obs_frente"     "obs_lat_dir" "obs_lat_esq" "obs_fundos"     "area"           "perim"          "uso"           
+[33] "dist_frente"    "dist_lateral"   "escala" '
+
+
+
+
 
 
 'print Memorial e levantamento topográfico'
