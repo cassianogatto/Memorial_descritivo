@@ -1,0 +1,39 @@
+---
+pagetitle : "Instruções"
+author: "C.Gatto"
+output: 
+  html_document:
+    theme: cerulean
+
+
+---
+
+<style type="text/css">
+  body{
+  font-size: 16pt;
+}
+</style>
+
+<img width = 260px src = "www/DABUKURI.png" /> 
+
+Este é um app escrito para facilitar a confecção de dois tipos de documentos através do uso de *templates*: Memoriais Descritivos e Levantamentos Topográficos. Estes documentos estão no formado R-Markdown (.Rmd). Este tipo de arquivo permite que se utilize o ambiente 'R' para lidar com as variáveis que nos interessam para cada caso. Por exemplo, para cada terreno, há uma série de informações que estão armazenadas em uma tabela geral de cada comunidade, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Então, para que os templates funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
+
+<code> "id"   "nome"    "cpf"   "rua"   "casa"    "dms_x_M01"   "dms_y_M03"   "y_M04"   "x_M01"   "observacoes" etc...
+</code>
+
+Seguindo os seguintes passos pode-se facilmente gerar e conferir os dados de todos os terrenos com dados disponíveis:
+
+1. Escolha a comuniade desejada;
+2. Depois escolha a tabela específica de cada comunidade na primeira aba ("Comunidade");
+3. Encontre o proprietário e o terreno desejado e confira os principais dados - anote a 'ID' do terreno;
+4. Na aba "Dados individuais" digite o número da casa conforme o ID anotado anteriormente e verifique as informações mais uma vez;
+5. Na aba "Documentos" você pode verificar a versão final dos docs Memorial e Topográfico (se não carregar copie o endereço e abra no seu browser - ou reabra o app)
+6. Quaisquer modificações devem ser feitas na tabela e salvas no mesmo formato .csv da tabela original
+
+
+
+
+
+
+
+

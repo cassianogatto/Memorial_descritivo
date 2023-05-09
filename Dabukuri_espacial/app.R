@@ -15,15 +15,31 @@ ui <- navbarPage(
     
     # theme = bs_theme(version = 5, bootswatch = "lumen"),#custom_theme,
     
-    title = "DABUKURI - Direito ao Território", collapsible = TRUE, 
+    title = "DABUKURI - Direito ao Território", collapsible = TRUE,
     
-    tabPanel("Comunidade", icon = tags$img( src = "DABUKURI.jpg" ),
+    tabPanel("Instruções",
+             
+             fluidRow(
+                 
+                 column(2),
+                 column(8, 
+                        
+                        includeMarkdown("instrucoes.Rmd")
+                 ),
+                 column(2),
+             )
+             
+    ),
+    
+    tabPanel("Comunidade",
              
         fluidPage(
            
             theme = bs_theme(version = 5, bootswatch = "lumen"),
              
             fluidRow(
+                
+                img(width = "50px", src = "www/DABUKURI.png" ),
                  
                 column(4,
                        
@@ -42,10 +58,11 @@ ui <- navbarPage(
        
                 column(8,
                        
-                    uiOutput("comunidade_intro"),
+                    column(6,
+                           
+                           uiOutput("comunidade_intro")
+                    ),# tags$img( src = "www/ipixuna_satelite.png" ),
                     
-                    tags$img( src = "www/ipixuna_satelite.png" ),
-                       
                     tags$h3("Tabela Geral"),  tableOutput("tab"),
                 ),
              )
@@ -54,7 +71,7 @@ ui <- navbarPage(
 
     ),
   
-    tabPanel("Dados",
+    tabPanel("Dados individuais",
            
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
             
@@ -77,16 +94,32 @@ ui <- navbarPage(
                     
                     #includeHTML("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_55.html"),
                       
-                    uiOutput("preview_memorial")
+                   actionButton("preview_memo", "Preview"),
+                   
+                   checkboxInput("check_memo", "check to load file", value = FALSE),
+                   
+                   conditionalPanel(input$check_memo,{
+                       
+                       fileInput(inputId = "load_memorial_html", "Carregue o arquivo indicado", accept = ".html")
+                       
+                       uiOutput("loaded_memo_html")
+                   }),
+                   
+                   
+                   uiOutput("preview_memorial")
           ),
             
           tabPanel("Topográfico",
                       
-                    tags$h4("preview:"),
+                tags$h4("preview:"),
                    
-                    uiOutput("preview_topografico")
+                actionButton("preview_topo", "Preview"),   
+                   
+                uiOutput("preview_topografico")
           ),
-    )
+    ),
+    
+    
 )
 
 server <- function(input, output, session) {
@@ -140,17 +173,34 @@ server <- function(input, output, session) {
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
   })
   
-  # works only with the character for the whole file path... trying to make the paste0 works... it never ends...
-  output$preview_memorial <- renderUI({  
-    includeHTML( 
-      paste0("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_",input$lista_de_id,".html")
-    ) })
+  output$preview_memorial <- renderUI({
+      
+      if(input$preview_memo){
+            includeHTML( 
+                file.path("C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs", 
+                          paste0("memorial_casa_",input$lista_de_id,".html") ) 
+            )  }
+  })
   
-  output$preview_topografico <- renderUI({  
-    includeHTML(  paste0("/outputs/topografico_casa_", input$lista_de_id, ".html") ) })
+  output$preview_topografico <- renderUI({
+      
+      if(input$preview_topo){ 
+            includeHTML( 
+                file.path("C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/", 
+                          paste0("topografico_casa_",input$lista_de_id,".html") ) 
+            ) }
+  })
   
+  file_memo_html <- reactive({
+      
+  })
+  
+  output$loaded_memo_html <- renderUI({
+      includeHTML()
+  })
 }
 
+# C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/topografico_casa_4.html
 
 # runApp('Dabukuri_espacial')
 
