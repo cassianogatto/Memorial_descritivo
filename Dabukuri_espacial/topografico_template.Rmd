@@ -32,7 +32,7 @@ body{
   margin: 0;
   width: 297mm; 
   height: 209mm;
-  border: 0.2px solid black;
+  <!--border: 0.2px solid black;-->
 }
 @media print {
   @page {
@@ -40,9 +40,9 @@ body{
   }
 }
 .sheet {
-  width: 297mm; 
+  <!--width: 297mm; 
   height: 209mm
-  margin: 0px;
+  margin: 0px;-->
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
