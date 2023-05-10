@@ -16,6 +16,7 @@ output:
 
 
 <img width = 260px src = "DABUKURI.png" /> 
+<img width = 260px src = "COPIME.png" /> 
 
 Este é um app escrito para facilitar a confecção de dois tipos de documentos através do uso de *templates*: Memoriais Descritivos e Levantamentos Topográficos. Estes documentos estão no formado R-Markdown (.Rmd). Este tipo de arquivo permite que se utilize o ambiente 'R' para lidar com as variáveis que nos interessam para cada caso. Por exemplo, para cada terreno, há uma série de informações que estão armazenadas em uma tabela geral de cada comunidade, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Então, para que os templates funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
 
