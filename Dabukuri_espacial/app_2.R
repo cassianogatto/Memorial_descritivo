@@ -1,4 +1,4 @@
-# setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/")
+
 
 library(shiny)
 library(bslib)
@@ -9,6 +9,9 @@ custom_theme <- bs_theme(
     version = 5,    bg = "#FFFFFF",    fg = "#000000",    primary = "#0199F8",
     secondary = "#FF374B",    base_font = "Maven Pro"
 )
+
+# NÃO ESQUEÇA DE SETWD()!!
+# setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
 
 
 ui <- navbarPage(
@@ -48,11 +51,11 @@ ui <- navbarPage(
                     fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                     
                     selectInput(inputId = "memorial_template", label = "Arquivo markdown template", 
-                                   choices = dir()[dir() %>% grep(pattern = ".Rmd")],
+                                choices = dir()[dir() %>% grep(pattern =  "(?i)*memorial*")], #  choices = dir()[dir() %>% grep(pattern =  "memorial*.Rmd" )],
                                    selected = "template_memorial_4_SHINY.Rmd"),
                         
                     selectInput(inputId = "topografico_template", label = "Topográfico template", 
-                                   choices = dir()[dir() %>% grep(pattern = ".Rmd")],
+                                   choices = dir()[dir() %>% grep(pattern = "*topografico*")],
                                    selected = "topografico_template1.Rmd"),
                 ),
        
@@ -90,32 +93,17 @@ ui <- navbarPage(
              
           tabPanel("Memorial",
                     
-                    tags$h4("preview:"),
-                    
-                    #includeHTML("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/outputs/memorial_casa_55.html"),
-                      
-                   actionButton("preview_memo", "Preview"),
+                   selectInput("memo", "Memorial", choices = dir(path = "www", pattern = 'memorial_casa') ),
+                   textOutput('texto'),
                    
-                   checkboxInput("check_memo", "check to load file", value = FALSE),
-                   
-                   conditionalPanel(input$check_memo,{
-                       
-                       fileInput(inputId = "load_memorial_html", "Carregue o arquivo indicado", accept = ".html")
-                       
-                       uiOutput("loaded_memo_html")
-                   }),
-                   
-                   
-                   uiOutput("preview_memorial")
-          ),
-            
+                   uiOutput("loaded_memo_html")
+           ),
+
           tabPanel("Topográfico",
                       
-                tags$h4("preview:"),
+                    selectInput("topo", "Topografico", choices = dir(path = 'www', pattern = 'topografico_casa') ), 
                    
-                actionButton("preview_topo", "Preview"),   
-                   
-                uiOutput("preview_topografico")
+                    uiOutput("preview_topografico")
           ),
     ),
     
@@ -144,7 +132,7 @@ server <- function(input, output, session) {
     
     row_slice <- which(tab_react()$id == input$lista_de_id)
     
-    V <- tab_react() %>% slice(row_slice) #%>% as.list()
+    V <- tab_react() %>% slice(row_slice) 
   })
   
   output$tab <- renderTable({  tab_react() %>% select(1:5) })
@@ -153,14 +141,14 @@ server <- function(input, output, session) {
   
   output$comunidade_intro <- renderUI({ includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
             
-  # SALVE MEMORIAL
+  # SALVE MEMORIAL E TOPOGRAFICO
   
   output$markdown_memorial <- renderUI( {
     
     rmarkdown::render(input$"memorial_template",
                       output_format = "html_document",
                       output_file = paste0("memorial_casa_", input$lista_de_id), 
-                      output_dir = paste0(getwd(),'/outputs'),
+                      output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
   })
   
@@ -169,36 +157,33 @@ server <- function(input, output, session) {
     rmarkdown::render(input$"topografico_template",
                       output_format = "html_document",
                       output_file = paste0("topografico_casa_", input$lista_de_id), 
-                      output_dir = paste0(getwd(),'/outputs'),
+                      output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
   })
   
-  output$preview_memorial <- renderUI({
+  # LOAD HTML MEMORIAL E TOPOGRAFICO
+  
+  output$memo_out <- renderUI({
       
-      if(input$preview_memo){
-            includeHTML( 
-                file.path("C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs", 
-                          paste0("memorial_casa_",input$lista_de_id,".html") ) 
-            )  }
+      includeHTML( 
+          file.path(getwd(),'www', input$memo)
+      )  
   })
   
-  output$preview_topografico <- renderUI({
+  output$topo_out <- renderUI({
       
-      if(input$preview_topo){ 
-            includeHTML( 
-                file.path("C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/", 
-                          paste0("topografico_casa_",input$lista_de_id,".html") ) 
-            ) }
+      includeHTML( 
+          file.path(getwd(),'www', input$topo)
+      ) 
   })
   
-  file_memo_html <- reactive({
-      
-  })
   
-  output$loaded_memo_html <- renderUI({
-      includeHTML()
-  })
-}
+  output$texto <- renderText(
+      
+      file.path(getwd(),'www', input$memo)
+  )
+  
+ }
 
 # C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/topografico_casa_4.html
 
@@ -208,6 +193,29 @@ shinyApp( ui = ui, server = server, options = list(width = 100) )
 
 # Run the application with themer
 # run_with_themer( shinyApp( ui = ui, server = server, options = list(width = 100) ) )
+
+
+# file_memo_html <- reactive({
+#     
+# })
+# 
+
+# 
+# 
+# 
+# 
+# # chat help
+# 
+# # Define a reactiveFileReader to monitor the HTML file
+# output$myhtml <- reactiveFileReader(
+#     intervalMillis = 5000, # Check every second
+#     filePath = 
+#     "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/www/memorial_casa_4.html",
+#     session = NULL ,
+#     readFunc = function(filePath) {
+#         includeHTML(filePath)
+#     }
+# )# uiOutput("myhtml")
 
 
 
