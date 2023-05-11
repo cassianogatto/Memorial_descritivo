@@ -3,6 +3,7 @@
 library(shiny)
 library(bslib)
 library(dplyr)
+source("html_select_module_small.R")
 
 # https://appsilon.com/r-shiny-bslib/
 custom_theme <- bs_theme(
@@ -70,8 +71,6 @@ ui <- navbarPage(
                 ),
              )
          ),
-             
-
     ),
   
     tabPanel("Dados individuais",
@@ -81,61 +80,69 @@ ui <- navbarPage(
             tags$h3("Casa Selecionada:"), tableOutput("V_tab"),
             
             tags$h3("o arquivo Memorial gerado está em:"),
-                        
+                    
             uiOutput("markdown_memorial"),
             
             tags$h3("o arquivo Topográfico gerado está em:"),
-                      
+                  
             uiOutput("markdown_topografico"),
     ),
     
     navbarMenu("Documentos",
              
-          tabPanel("Memorial",
+            tabPanel("Memorial",
+                     
+                     ui_select_html(id = 'memo', type = 'memorial' , button_label = 'escolha a casa', action_label = "Mostrar"),
+                     
                     
-                   selectInput("memo", "Memorial", choices = dir(path = "www", pattern = 'memorial_casa') ),
-                   textOutput('texto'),
-                   
-                   uiOutput("loaded_memo_html")
-           ),
-
-          tabPanel("Topográfico",
+                   # selectInput("memo", "Memorial", choices = dir(path = "www", pattern = 'memorial_casa') ),
+                   # textOutput('texto'),
+                   # 
+                   # uiOutput("loaded_memo_html")
+            ),
+            
+            tabPanel("Topográfico",
+                     
+                     ui_select_html('topo', type = 'topografico' , button_label = 'escolha a casa', action_label = "Mostrar")
                       
-                    selectInput("topo", "Topografico", choices = dir(path = 'www', pattern = 'topografico_casa') ), 
-                   
-                    uiOutput("preview_topografico")
-          ),
+                    # selectInput("topo", "Topografico", choices = dir(path = 'www', pattern = 'topografico_casa') ), 
+                    # 
+                    # uiOutput("preview_topografico")
+            ),
+            
+            # tabPanel(
+            #   
+            #         ui_select_html('select_1'),
+            # )
     ),
-    
-    
 )
 
 server <- function(input, output, session) {
   
   tab_react <- reactive(  {
     
-    file <- input$filetab
+        file <- input$filetab
+        
+        ext <- tools::file_ext(file$datapath)
+        
+        req(file)
+        
+        validate(need(ext == "csv", "Please upload a csv file"))
+        
+        tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
     
-    ext <- tools::file_ext(file$datapath)
-    
-    req(file)
-    
-    validate(need(ext == "csv", "Please upload a csv file"))
-    
-    tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
-    
-  })
+    }  )
   
-  V_react <- reactive({
+  V_react <- reactive(  {
     
     req(tab_react())
     
     row_slice <- which(tab_react()$id == input$lista_de_id)
     
     V <- tab_react() %>% slice(row_slice) 
-  })
+  }  )
   
-  output$tab <- renderTable({  tab_react() %>% select(1:5) })
+  output$tab <- renderTable( {  tab_react() %>% select(1:5) } )
   
   output$V_tab <- renderTable(  tab_react() %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% slice( which(tab_react()$id == input$lista_de_id) )  )
   
@@ -150,7 +157,7 @@ server <- function(input, output, session) {
                       output_file = paste0("memorial_casa_", input$lista_de_id), 
                       output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
-  })
+  } )
   
   output$markdown_topografico <- renderUI( {
     
@@ -159,31 +166,31 @@ server <- function(input, output, session) {
                       output_file = paste0("topografico_casa_", input$lista_de_id), 
                       output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
-  })
+  } )
   
   # LOAD HTML MEMORIAL E TOPOGRAFICO
   
-  output$memo_out <- renderUI({
-      
-      includeHTML( 
-          file.path(getwd(),'www', input$memo)
-      )  
-  })
+  # output$memo_out <- renderUI({
+  #     
+  #     includeHTML( 
+  #         file.path(getwd(),'www', input$memo)
+  #     )  
+  # })
+  # 
+  # output$topo_out <- renderUI({
+  #     
+  #     includeHTML( 
+  #         file.path(getwd(),'www', input$topo)
+  #     ) 
+  # })
+  # 
+  # output$texto <- renderText( file.path(getwd(),'www', input$memo) )
+
+  server_select_html('memo')
   
-  output$topo_out <- renderUI({
-      
-      includeHTML( 
-          file.path(getwd(),'www', input$topo)
-      ) 
-  })
+  server_select_html("topo")
   
-  
-  output$texto <- renderText(
-      
-      file.path(getwd(),'www', input$memo)
-  )
-  
- }
+}
 
 # C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/topografico_casa_4.html
 
