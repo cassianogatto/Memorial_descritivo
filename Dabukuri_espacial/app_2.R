@@ -23,27 +23,15 @@ ui <- navbarPage(
     
     tabPanel("Instruções",
              
-             fluidRow(
-                 
-                 column(2),
-                 column(8, 
-                        
-                        includeMarkdown("instrucoes.Rmd")
-                 ),
-                 column(2),
-             )
+             fluidRow(  column(2),  column(8, includeMarkdown("instrucoes.Rmd")  ), column(2),  )
              
     ),
     
     tabPanel("Comunidade",
              
-        fluidPage(
-           
-            theme = bs_theme(version = 5, bootswatch = "lumen"),
+        fluidPage(   theme = bs_theme(version = 5, bootswatch = "lumen"),
              
-            fluidRow(
-                
-                img(width = "50px", src = "www/DABUKURI.png" ),
+            fluidRow(    img(width = "50px", src = "www/DABUKURI.png" ),
                  
                 column(4,
                        
@@ -88,38 +76,46 @@ ui <- navbarPage(
             uiOutput("markdown_topografico"),
     ),
     
-    navbarMenu("Documentos",
-             
-            tabPanel("Memorial",
+    tabPanel("Selecione Documento",
                      
-                     ui_select_html(id = 'memo', type = 'memorial' , button_label = 'escolha a casa', action_label = "Mostrar"),
+                     fileInput(inputId = 'file_html', label = 'input HTML', multiple = FALSE, accept = '.html'),
                      
-                    
-                   # selectInput("memo", "Memorial", choices = dir(path = "www", pattern = 'memorial_casa') ),
-                   # textOutput('texto'),
-                   # 
-                   # uiOutput("loaded_memo_html")
-            ),
-            
-            tabPanel("Topográfico",
-                     
-                     ui_select_html('topo', type = 'topografico' , button_label = 'escolha a casa', action_label = "Mostrar")
-                      
-                    # selectInput("topo", "Topografico", choices = dir(path = 'www', pattern = 'topografico_casa') ), 
-                    # 
-                    # uiOutput("preview_topografico")
-            ),
-            
-            # tabPanel(
-            #   
-            #         ui_select_html('select_1'),
-            # )
+                     uiOutput("file_html")
     ),
+            
+            
+     # navbarMenu("Documentos",       
+            # tabPanel("Memorial",
+            #          
+            #         ui_select_html(id = 'memo', type = 'memorial', button_label = 'escolha a casa', action_label = "Mostrar"),
+            #         
+            #         uiOutput("memo_out")
+            #           
+            #         
+            #        # selectInput("memo", "Memorial", choices = dir(path = "www", pattern = 'memorial_casa') ),
+            #        # textOutput('texto'),
+            #        # 
+            #        # uiOutput("loaded_memo_html")
+            # ),
+            # 
+            # tabPanel("Topográfico",
+            #          
+            #         ui_select_html(id = 'topo', type = 'topografico' , button_label = 'escolha a casa', action_label = "Mostrar"),
+            #         
+            #         uiOutput("topo_out")
+            #           
+            #         # selectInput("topo", "Topografico", choices = dir(path = 'www', pattern = 'topografico_casa') ), 
+            #         # 
+            #         # uiOutput("preview_topografico")
+            # ),
+    # ),
 )
 
 server <- function(input, output, session) {
+    
+    options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large datasets
   
-  tab_react <- reactive(  {
+    tab_react <- reactive(  {
     
         file <- input$filetab
         
@@ -132,64 +128,72 @@ server <- function(input, output, session) {
         tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
     
     }  )
-  
-  V_react <- reactive(  {
+    
+    V_react <- reactive(  {
     
     req(tab_react())
     
     row_slice <- which(tab_react()$id == input$lista_de_id)
     
     V <- tab_react() %>% slice(row_slice) 
-  }  )
-  
-  output$tab <- renderTable( {  tab_react() %>% select(1:5) } )
-  
-  output$V_tab <- renderTable(  tab_react() %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% slice( which(tab_react()$id == input$lista_de_id) )  )
-  
-  output$comunidade_intro <- renderUI({ includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
-            
-  # SALVE MEMORIAL E TOPOGRAFICO
-  
-  output$markdown_memorial <- renderUI( {
+    }  )
     
-    rmarkdown::render(input$"memorial_template",
+    output$tab <- renderTable( {  tab_react() %>% select(1:5) } )
+    
+    output$V_tab <- renderTable(  tab_react() %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% slice( which(tab_react()$id == input$lista_de_id) )  )
+    
+    output$comunidade_intro <- renderUI({ includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
+            
+# SALVE MEMORIAL E TOPOGRAFICO
+    
+    output$markdown_memorial <- renderUI( {
+    
+            rmarkdown::render(input$"memorial_template",
                       output_format = "html_document",
                       output_file = paste0("memorial_casa_", input$lista_de_id), 
                       output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
-  } )
-  
-  output$markdown_topografico <- renderUI( {
+    } )
     
-    rmarkdown::render(input$"topografico_template",
+    output$markdown_topografico <- renderUI( {
+    
+            rmarkdown::render(input$"topografico_template",
                       output_format = "html_document",
                       output_file = paste0("topografico_casa_", input$lista_de_id), 
                       output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
-  } )
+    } )
+    
+# LOAD HTML MEMORIAL E TOPOGRAFICO
+    output$file_html <- renderUI({
+      
+      file <- input$file_html
+      
+      includeHTML( file$datapath )
+  })
   
-  # LOAD HTML MEMORIAL E TOPOGRAFICO
-  
-  # output$memo_out <- renderUI({
-  #     
-  #     includeHTML( 
-  #         file.path(getwd(),'www', input$memo)
-  #     )  
-  # })
-  # 
-  # output$topo_out <- renderUI({
-  #     
-  #     includeHTML( 
-  #         file.path(getwd(),'www', input$topo)
-  #     ) 
-  # })
-  # 
-  # output$texto <- renderText( file.path(getwd(),'www', input$memo) )
+# output$memo_out <- renderUI({
+#     
+#     includeHTML( 
+#         file.path(getwd(),'www', input$memo)
+#     )  
+# })
+# 
+# output$topo_out <- renderUI({
+#     
+#     includeHTML( 
+#         file.path(getwd(),'www', input$topo)
+#     ) 
+# })
+# 
+# output$texto <- renderText( file.path(getwd(),'www', input$memo) )
+# MODULE select_html is NOT working as
+# output$memo_out <- server_select_html(id = 'memo')
+# 
+# output$topo_out <- server_select_html(id = 'topo')
+# 
+# 
 
-  server_select_html('memo')
-  
-  server_select_html("topo")
-  
 }
 
 # C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/topografico_casa_4.html
@@ -202,29 +206,20 @@ shinyApp( ui = ui, server = server, options = list(width = 100) )
 # run_with_themer( shinyApp( ui = ui, server = server, options = list(width = 100) ) )
 
 
-# file_memo_html <- reactive({
-#     
-# })
-# 
 
-# 
-# 
-# 
-# 
 # # chat help
 # 
 # # Define a reactiveFileReader to monitor the HTML file
 # output$myhtml <- reactiveFileReader(
 #     intervalMillis = 5000, # Check every second
-#     filePath = 
-#     "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/www/memorial_casa_4.html",
+#     filePath =   "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/www/memorial_casa_4.html",
 #     session = NULL ,
 #     readFunc = function(filePath) {
 #         includeHTML(filePath)
 #     }
-# )# uiOutput("myhtml")
-
-
+# )
+# UI
+# uiOutput("myhtml")
 
 
 
