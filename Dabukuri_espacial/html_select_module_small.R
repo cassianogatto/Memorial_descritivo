@@ -1,7 +1,7 @@
 
 
 
-ui_select_html <- function( id, type = 'topografico' , button_label = 'choose file', action_label = "Mostrar"){
+select_html_ui <- function( id, type = '' , button_label = 'choose file', action_label = "Mostrar"){
     
     tagList(
         
@@ -16,7 +16,7 @@ ui_select_html <- function( id, type = 'topografico' , button_label = 'choose fi
 }
 
 
-server_select_html <- function(id){
+select_html_server <- function(id){
     
     moduleServer(id, function(input, output, session){
         
@@ -33,12 +33,14 @@ select_html_App <- function(){
     
     ui <- fluidPage(
         
-        ui_select_html("select1")
+        select_html_ui("select1")
     )
+    
     server <- function(input, output, session) {
         
-        server_select_html("select1")
+        select_html_server("select1")
     }
+    
     shinyApp(ui,server)
 }
 
