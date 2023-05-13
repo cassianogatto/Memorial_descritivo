@@ -90,7 +90,7 @@ M6 = paste0(V$dms_y_M06,' / ', V$dms_x_M06)
 
 
 <!-- HEADERR -->
-<div class="container">
+<div class="container" width = "190mm">
 <table style = "border:0px">
 <tr>
 
@@ -112,7 +112,7 @@ M6 = paste0(V$dms_y_M06,' / ', V$dms_x_M06)
 
 <!-- MAIN - DATA -->
 
-<div class="container" style=" margin:0px; padding-left, padding-right:5px; border:1px solid black; text-align: justified; font-size: 16px;">
+<div class="container" style=" width :190mm; margin:0px; padding-left, padding-right:5px; border:1px solid black; text-align: justified; font-size: 16px;">
 <h6 style="text-align: left;"> <b>Dados do Imóvel</b> </h6> <!-- style="text-align: center;" -->
 
 Tipo de Imóvel: __`r toupper(tipo_de_imovel)`__; Uso: __`r toupper(uso)`__;

@@ -76,7 +76,7 @@ V <- params$V
 endereco <- paste0('Rua ', V$rua, ', ', V$casa)
 
 responsavel <- "Elvis Presley"
-
+if (casa == 22){     vante1 <- 10;     vante2 <- 15 } 
 if (casa > 99){vante1 <- NA} else {if (casa > 22 ){vante1 <- 6} else{ if(casa == 21){vante1 <- 15} else{vante1 <- 8}}}
 if (casa > 99){vante2 <- NA} else {if  (casa > 22 ){vante2 <- 7} else{ if(casa == 21){vante21 <- 30} else{vante2 <- 16}}}
 ```
@@ -172,7 +172,7 @@ knitr::include_graphics(figure_path)
 </tr>
 
 <tr height = 30px>
-<td width = 20% > Escala: `V$escala` </td>
+<td width = 20% > Escala: `r V$escala` </td>
 <td width = 40%> Município: Manaus AM </td>
 <td width = 20% style="text-align:left"> Visto: </td>
 <td width = 20%> ART: `r #V$art` </td>
