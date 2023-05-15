@@ -38,24 +38,15 @@ ui <- navbarPage(
                     radioButtons('comunidade', 'Escolha a comunidade', c('Kokama', 'Ipixuna'), inline = TRUE),
 
                     fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
-                    
-                    selectInput(inputId = "memorial_template", label = "Arquivo markdown template", 
-                                choices = dir()[dir() %>% grep(pattern =  "(?i)*memorial*")], #  choices = dir()[dir() %>% grep(pattern =  "memorial*.Rmd" )],
-                                   selected = "template_memorial_4_SHINY.Rmd"),
-                        
-                    selectInput(inputId = "topografico_template", label = "Topográfico template", 
-                                   choices = dir()[dir() %>% grep(pattern = "*topografico*")],
-                                   selected = "topografico_template1.Rmd"),
                 ),
        
                 column(8,
                        
-                    column(6,
-                           
-                           uiOutput("comunidade_intro")
-                    ),# tags$img( src = "www/ipixuna_satelite.png" ),
+                    column(6, uiOutput("comunidade_intro") ),
                     
-                    tags$h3("Tabela Geral"),  tableOutput("tab"),
+                    tags$h3("Tabela Geral"),  
+                    
+                    tableOutput("tab"),
                 ),
              )
          ),
@@ -65,7 +56,19 @@ ui <- navbarPage(
            
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
             
-            tags$h3("Casa Selecionada:"), tableOutput("V_tab"),
+            tags$h3("Casa Selecionada:"), 
+            
+            tableOutput("V_tab"),
+            
+            tags$h3("Selecione os templates .Rmd para o Memorial e o levantamento Topográfico"),
+            
+            selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
+                        choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")], #  choices = dir()[dir() %>% grep(pattern =  "memorial*.Rmd" )],
+                        selected = "template_memorial_4_SHINY.Rmd"),
+            
+            selectInput(inputId = "topografico_template", label = "Topográfico template", 
+                        choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
+                        selected = "topografico_template1.Rmd"),
             
             tags$h3("o arquivo Memorial gerado está em:"),
                     
