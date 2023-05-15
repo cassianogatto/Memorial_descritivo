@@ -1,0 +1,21 @@
+---
+title: "julena"
+output: html_document
+date: "2023-05-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Juliana + Helena =
+
+# Julena
+
+
+
+```{r }
+print("como a vida é bela!!")
+
+2 + 2
+```

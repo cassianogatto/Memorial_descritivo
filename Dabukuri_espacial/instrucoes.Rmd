@@ -10,18 +10,47 @@ output:
 
 <style type="text/css">
   body{
-  font-size: 16pt;
+  width: 100%;
+  margin: 40px;
+  padding: 60px;
+  font-size: 14pt;
+  text-align: justify;
 }
 </style>
 
-<img width = 160px src = "DABUKURI.png" >
-<img width = 160px src = "COPIME.png" align = "right" > 
+<img width = 140px src = "DABUKURI.png" >
+<img width = 140px src = "COPIME.png" align = "right" > 
 
-Este é um app escrito para facilitar a confecção de dois tipos de documentos através do uso de *templates*: Memoriais Descritivos e Levantamentos Topográficos. Estes documentos estão no formado R-Markdown (.Rmd). Este tipo de arquivo permite que se utilize o ambiente 'R' para lidar com as variáveis que nos interessam para cada caso. Por exemplo, para cada terreno, há uma série de informações que estão armazenadas em uma tabela geral de cada comunidade, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Então, para que os templates funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
+__Apresentação__
+
+Este é um app para a organização de dados territoriais e para a confecção de dois tipos de documentos indispensáveis à regularização fundiária urbana de famílias indígenas na região de Manaus e entorno: memoriais descritivos e levantamentos topográficos. Estes documentos estão entre os produtos produzidos pelo Laboratório Dabukuri no âmbito do Projeto **Povos originários e o direito à cidade: politicas públicas e o direito territorial em contexto urbano**, financiado pelo edital 005/2022 - HUMANITAS – CT&I FAPEAM. O projeto conta com a parceria da Coordenação dos Povos Indígenas de Manaus e Entorno - COPIME e possui outras atribuições e objetivos, como a identificação de conflitos e dificuldades relacionados à ocupação e regularização de territórios em ambientes urbanos.
+
+No modelo de regularização por lotes individuais de áreas da SUFRAMA cada família terá direito a um lote que será associado a um único CPF - conforme prevê a legislação específica (e.g. Decreto 10592 e Lei 11952). Assim, para a confecção do memorial e levantamento topográficos foram realizadas reuniões com lideranças e nas comunidades para identificar áreas individuais e áreas comunitárias, e associar os atributos de geo-referenciamento e dados dos futuros proprietários. A comunidade Kokama - Nova Esperança (AKIN) localizada no Ramal do Brasileirinho, foco de nossas atividades iniciais, está em uma área ocupada anteriormente a 2008, e compreende aproximadamente 25 terrenos individuais. Já o assentamente Ipixuna-Iawareté é uma ocupação mais recente, mas que tem respaldo de processo judicial e reconhecimento por parte da empresa à qual o terreno foi cedido pela Suframa. Em Ipixuna, no entanto, são mais de 200 terrenos carentes de regularização fundiária.
+
+__Instruções de uso__
+
+O App está organizado por abas (acima). 
+
+1. A aba de *Apresentação* é esta página que você está lendo agora.
+
+2. Na segunda aba, *Comunidade*, após a seleção pode-se obter informações gerais sobre a comunidade. __Importante:__ é nesta aba que se seleciona a tabela de dados da comunidade em interesse para a geração dos documentos.
+
+3. Na aba *Dados individuais* pode-se selecionar lotes individuais, um a um, e checar informações importantes. Antes de gerar os documentos, deve-se confirmar se os *templates* selecionados correspondem às versões corretas de memorial e topográfico que serão utilizados para gerar os documentos (existem dois botões para isso). Os documentos gerados são armazenados nos endereços específicos apresentados, em uma pasta chamada */www/* no diretório do arquivo do App ('C:/...Dabukuri_espacial/www/memorial_casa_XX.html).
+
+4. Por fim, na aba *Documentos* pode-se acessar quaisquer documentos html gerados na página, tanto memoriais descritivos quanto levantamentos topográficos.
+
+
+Estruturação de *templates* e da tabela
+
+Este App utiliza o ambiente 'R' para aplicar variáveis que nos interessam, como tamanho do terreno e nome do proprietário, sobre um modelo fixo que contém a estrutura básica dos documentos. *Templates* estão no formado *R-Markdown* (.Rmd).
+
+Uma tabela geral, mostrada na aba *Comunidade*, possui todos os atributos de todos os terrenos de uma comunidade. Cada linha desta tabela tras as informações relativas a cada terreno, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Para gerar os documentos, a aplicação dos *templates* usa as informações de uma única linha da tabela, que é escolhida pela aba *Dados individuais*. Os nomes das colunas são usadas para reconhecer as variáveis. Para que os *templates* funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
 
 <code> "id"   "nome"    "cpf"   "rua"   "casa"    "dms_x_M01"   "dms_y_M03"   "y_M04"   "x_M01"   "observacoes" etc...
 </code>
 
+
+<!--
 Seguindo os seguintes passos pode-se facilmente gerar e conferir os dados de todos os terrenos com dados disponíveis:
 
 1. Escolha a comuniade desejada;
@@ -31,7 +60,7 @@ Seguindo os seguintes passos pode-se facilmente gerar e conferir os dados de tod
 5. Na aba "Documentos" você pode verificar a versão final dos docs Memorial e Topográfico (se não carregar copie o endereço e abra no seu browser - ou reabra o app)
 6. Quaisquer modificações devem ser feitas na tabela e salvas no mesmo formato .csv da tabela original
 
-
+-->
 
 
 
