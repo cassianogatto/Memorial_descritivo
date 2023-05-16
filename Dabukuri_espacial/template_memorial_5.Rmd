@@ -100,7 +100,7 @@ Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
 
 ```{r, echo =FALSE}
 library(knitr)
-library(tidyverse)
+
 pontos_tab <- tibble( Marcos = c("M01", "M02", "M03", "M04"), Coordenadas = c(M1, M2, M3, M4))
 
 if(V$id == 1){  pontos_tab[5:6, 1] <- c("M05", "M06")

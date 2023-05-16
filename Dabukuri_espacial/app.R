@@ -1,7 +1,7 @@
 library(shiny)
 library(bslib)
-library(dplyr)
-source("html_select_module_small.R")
+library(tidyverse)
+# source("html_select_module_small.R")
 
 # https://appsilon.com/r-shiny-bslib/
 custom_theme <- bs_theme(
@@ -51,28 +51,30 @@ ui <-
     
     title = "DABUKURI - Direito ao Território", collapsible = TRUE,
     
-    theme = bs_theme(version = 5, bootswatch = "lumen"),
+    theme = bs_theme(version = 5, bootswatch = "flatly"),
     
     tabPanel("Apresentação",
              
              fluidRow(  column(2),  column(8, includeMarkdown("instrucoes.Rmd")  ), column(2),  )
              
     ),
-    # "Comunidade"
+    
+    # "Comunidade" AQUI SELECAO DE COMUNIDADE DEVE ESCOLHER A TABELA BASE OU CHECKBOX PARA ESCOLHER OUTRA...
+    
     tabPanel("Comunidade",
              
              sidebarLayout(
                  
-                 sidebarPanel(width = 2,
+                 sidebarPanel(width = 3,
                      
-                    img(width = "50px", src = "www/DABUKURI.png" ),
+                    div(align = 'center', img(width = "80px", src = "DABUKURI.png" )),
                  
                     radioButtons('comunidade', 'Escolha a comunidade', c('Kokama', 'Ipixuna'), inline = TRUE),
 
                     fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                 ),
                  
-                mainPanel(width = 10,
+                mainPanel(width = 9,
                     
                     uiOutput("comunidade_intro"),
                 
@@ -82,62 +84,96 @@ ui <-
                  )
              ),
     ),
-  
+    
+    # Dados individuais
+    
     tabPanel("Dados individuais",
            
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
             
-            tags$h3("Casa Selecionada:"), 
-            
-            tableOutput("V_tab"),
-            
-            
-            tags$h3("Selecione os templates .Rmd para o Memorial e o levantamento Topográfico e use os botôes pra gerar os docs"),
+            tags$h3("Casa Selecionada:"),
             
             fluidRow(
-                div(class = 'container',
-                column(6,    
+                
+                column(8,  tableOutput("V_tab"),  ),
+                
+                column(4, uiOutput("image_dados_individuais"),  ),
+            ),
             
-                    selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
-                                choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
-                                selected = "template_memorial_4_SHINY.Rmd"),
+            tags$h5("Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos. 
+                    Os documentos gerados estarão disponíveis nos respectivos links 
+                    e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
+            
+            checkboxInput('input_templates',"Se desejar escolher outros templates, 'tique' este quadradinho", value = FALSE),
+            
+            conditionalPanel( condition = "input.input_templates == true",
+                
+                tags$h5("Após selecionar os templates gere os documentos e verifique o link."),
+                
+                br(),
+                
+                fluidRow(
                     
-                    actionButton('get_memorial',"gerar memorial"),
+                    div(class = 'container',
+                        
+                        column(6,    
+                               
+                               selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
+                                           choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
+                                           selected = "template_memorial_4_SHINY.Rmd"),
+                        )),
                     
-                    tags$h3("o arquivo Memorial gerado está em:"),
-                            
-                    uiOutput("markdown_memorial"),
-                )),
+                    div(class = 'container',
+                        
+                        column(6,
+                               
+                               selectInput(inputId = "topografico_template", label = "Topográfico template", 
+                                           choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
+                                           selected = "topografico_template1.Rmd"),
+                        )),
+                ),
+                
+            ),
+            
+            fluidRow(
+                
                 div(class = 'container',
-                column(6,
-                   
-                    selectInput(inputId = "topografico_template", label = "Topográfico template", 
-                                choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
-                                selected = "topografico_template1.Rmd"),
                     
-                    actionButton("get_topografico","gerar topografico"),
+                    column(6,    
+                           
+                           actionButton('get_memorial',"gerar memorial"),
+                           
+                           tags$h3("o arquivo Memorial gerado está em:"),
+                           
+                           uiOutput("markdown_memorial"),
+                    )),
+                
+                div(class = 'container',
                     
-                    tags$h3("o arquivo Topográfico gerado está em:"),
-                          
-                    uiOutput("markdown_topografico"),
-                )),
+                    column(6,
+                           
+                           actionButton("get_topografico","gerar topografico"),
+                           
+                           tags$h3("o arquivo Topográfico gerado está em:"),
+                           
+                           uiOutput("markdown_topografico"),
+                    )),
             ),
     ),
     
     tabPanel("Selecione Documento",
                
-            fileInput(inputId = 'file_html', label = 'na pasta www escolha o memorial ou levantamento topografico HTML', multiple = FALSE,
-                              accept = '.html'),
+            fileInput(inputId = 'file_html', label = 'na pasta www escolha o memorial ou levantamento topografico HTML', 
+                                multiple = FALSE, accept = '.html'),
                  
             uiOutput("file_html") ,
-            
     ),
 )
 )
 
 server <- function(input, output, session) {
     
-    options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large datasets
+    options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
   
     tab_react <- reactive(  {
     
@@ -162,11 +198,23 @@ server <- function(input, output, session) {
         V <- tab_react() %>% slice(row_slice) 
     }  )
     
-    output$tab <- renderTable( {  tab_react() %>% select(1:5) } )
+    output$tab <- renderTable( {  tab_react() %>% 
+            
+            select(id, nome, cpf, rua, casa, area, perim, dist_frente, dist_lateral, observacoes, obs_frente, obs_lat_dir, obs_lat_esq, obs_fundos,
+                   
+                  X1 = dms_x_M01, Y1 = dms_y_M01, X2 = dms_x_M02, Y2 = dms_y_M02, X3 = dms_x_M03, Y3 = dms_y_M03,  X4 = dms_x_M04, Y4 = dms_y_M04)
+    } )
     
-    output$V_tab <- renderTable(  tab_react() %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% slice( which(tab_react()$id == input$lista_de_id) )  )
+    output$V_tab <- renderTable(  tab_react() %>% 
+                      select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>%
+                          slice( which(tab_react()$id == input$lista_de_id) )  )
     
     output$comunidade_intro <- renderUI({ includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
+    
+    output$image_dados_individuais <- renderUI(
+        
+            file <- paste0()
+    )
             
 # SALVE MEMORIAL E TOPOGRAFICO
     
@@ -202,6 +250,21 @@ server <- function(input, output, session) {
     
 }
     
+
+
+# runApp('Dabukuri_espacial')
+
+# Normal Run App
+
+shinyApp( ui = ui, server = server, options = list(width = 100) )
+
+
+# Run the application with themer
+
+# run_with_themer( shinyApp( ui = ui, server = server, options = list(width = 100) ) )
+
+
+
 # navbarMenu("Documentos",       
 # tabPanel("Memorial",
 #          
@@ -246,25 +309,9 @@ server <- function(input, output, session) {
 # output$memo_out <- server_select_html(id = 'memo')
 # 
 # output$topo_out <- server_select_html(id = 'topo')
-# 
-# 
 
-
-
-# C:/Users/cassiano/hubic/DABUKURI/Memorial_descritivo/Dabukuri_espacial/outputs/topografico_casa_4.html
-
-# runApp('Dabukuri_espacial')
-
-shinyApp( ui = ui, server = server, options = list(width = 100) )
-
-# Run the application with themer
-# run_with_themer( shinyApp( ui = ui, server = server, options = list(width = 100) ) )
-
-
-
-# # chat help
-# 
 # # Define a reactiveFileReader to monitor the HTML file
+
 # output$myhtml <- reactiveFileReader(
 #     intervalMillis = 5000, # Check every second
 #     filePath =   "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/www/memorial_casa_4.html",
@@ -290,6 +337,7 @@ shinyApp( ui = ui, server = server, options = list(width = 100) )
 
 # Download
 # output$downloadReport <- downloadHandler(
+
 #     filename = function() {
 #         paste('my-report', sep = '.', switch(
 #             input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
