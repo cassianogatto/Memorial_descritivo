@@ -63,26 +63,36 @@ ui <-
     
     tabPanel("Comunidade",
              
-             sidebarLayout(
+            fluidRow(
                  
-                 sidebarPanel(width = 3,
+                 column(width = 4,
                      
-                    div(align = 'center', img(width = "80px", src = "DABUKURI.png" )),
+                    div(align = 'justify', img(width = "80px", src = "DABUKURI.png" ), 
+                                            
+                                            img(width = "80px", src = "COPIME.png" )),
                  
                     radioButtons('comunidade', 'Escolha a comunidade', c('Kokama', 'Ipixuna'), inline = TRUE),
-
-                    fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
+                    
+                    checkboxInput("box_select_tab","Escolher a tabela com os dados da comunidade?", value = FALSE),
+                    
+                    conditionalPanel(condition = "input.box_select_tab == true",
+                                     
+                          fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
+                    )
                 ),
                  
-                mainPanel(width = 9,
+                column(width = 8,
                     
                     uiOutput("comunidade_intro"),
                 
-                    tags$h3("Tabela Geral"),  
-                
-                    tableOutput("tab"), 
-                 )
-             ),
+                    tags$h3("Tabela Geral"),
+                )
+            ),
+            
+            fluidPage(
+             
+             tableOutput("tab"), 
+            )
     ),
     
     # Dados individuais
@@ -91,20 +101,32 @@ ui <-
            
             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
             
-            tags$h3("Casa Selecionada:"),
+            tags$h5("Detalhes"),
             
             fluidRow(
                 
-                column(8,  tableOutput("V_tab"),  ),
+                column(5,
+                    
+                    p("Posição do terreno na comunidade"),
+                    
+                    imageOutput("inset") 
+                ),
                 
-                column(4, uiOutput("image_dados_individuais"),  ),
+                column(5,
+                    
+                    p('Esquema do terreno'),
+                    
+                    imageOutput("image")
+                ),
             ),
             
-            tags$h5("Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos. 
-                    Os documentos gerados estarão disponíveis nos respectivos links 
+            tableOutput("V_tab"),
+            
+            tags$h5("Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
+            tags$h5("Os documentos gerados estarão disponíveis nos respectivos links 
                     e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
             
-            checkboxInput('input_templates',"Se desejar escolher outros templates, 'tique' este quadradinho", value = FALSE),
+            checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
             
             conditionalPanel( condition = "input.input_templates == true",
                 
@@ -176,17 +198,25 @@ server <- function(input, output, session) {
     options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
   
     tab_react <- reactive(  {
-    
-        file <- input$filetab
         
-        ext <- tools::file_ext(file$datapath)
-        
-        req(file)
-        
-        validate(need(ext == "csv", "Please upload a csv file"))
-        
-        tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
-    
+        if(input$box_select_tab){
+            
+            file <- input$filetab
+            
+            ext <- tools::file_ext(file$datapath)
+            
+            req(file)
+            
+            validate(need(ext == "csv", "Please upload a csv file"))
+            
+            tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
+            
+        } else {
+            
+            switch(input$comunidade, Kokama = read.csv("TAB_Kokama6.csv"), Ipixuna = read.csv("Ipixuna.csv")) 
+            
+            # if (input$comunidade == "Kokama") { tab <- read.csv("TAB_Kokama6.csv") } else {data.frame(Importante = "escolha uma tabela válida")}
+        }
     }  )
     
     V_react <- reactive(  {
@@ -206,16 +236,29 @@ server <- function(input, output, session) {
     } )
     
     output$V_tab <- renderTable(  tab_react() %>% 
-                      select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>%
-                          slice( which(tab_react()$id == input$lista_de_id) )  )
+                        select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>%
+                        slice( which(tab_react()$id == input$lista_de_id) )  )
     
     output$comunidade_intro <- renderUI({ includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    output$image_dados_individuais <- renderUI(
+    output$inset <- renderImage({
         
-            file <- paste0()
-    )
+            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", input$lista_de_id, ".png", sep = '')))
+        
+                # normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
             
+            list(src = file1, width = '450px')
+            
+    },   deleteFile = FALSE)
+            
+    output$image <- renderImage({
+    
+            file2 <- normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
+            
+            list(src = file2, width = '450px')
+    
+    }, deleteFile = FALSE)
+
 # SALVE MEMORIAL E TOPOGRAFICO
     
     output$markdown_memorial <- renderUI(  {
