@@ -98,7 +98,6 @@ ui <-
         tabPanel("Dados individuais",
                  
                 br(),
-                br(),
                
                 numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
                 
@@ -195,8 +194,10 @@ ui <-
         navbarMenu("Selecione Documento",
         
                 tabPanel("Memorial",
-                     
-                        tags$h5("Se desejar consultar para outra casa, clique e escolha; se não encontar tente gerá-lo na aba Dados Individuais"),
+                         
+                        tags$h5("Para imprimir abra o endereço gerado na aba anterior ('C:/.../www/memorial_casa_X.html') no seu browser e 'imprima' em PDF (ctrl P)."),
+                        br(),
+                        tags$code("Se desejar consultar para outra casa, clique e escolha na pasta /www; se não encontar tente gerá-lo na aba 'Dados Individuais'"),
                            
                         checkboxInput("another_memo", "escolha casa ID", value = FALSE),
                         
@@ -210,7 +211,9 @@ ui <-
                 
                 tabPanel("Topografico",
                          
-                        tags$h5("Aqui você deve selecionar o arquivo com o documento de interesse, na pasta www; se não encontar tente gerá-lo na aba Dados Individuais"),
+                        tags$h5("Para imprimir abra o endereço gerado na aba anterior ('C:/.../www/memorial_casa_X.html') no seu browser e 'imprima' em PDF (ctrl P)."),
+                        br(),
+                        tags$code("Se desejar consultar para outra casa, clique e escolha na pasta /www; se não encontar tente gerá-lo na aba 'Dados Individuais'"),
                         
                         checkboxInput("another_topo", "escolha casa ID", value = FALSE),
                         
