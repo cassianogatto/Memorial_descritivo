@@ -22,7 +22,7 @@ tab <-
 
 setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
 
-ipixuna <- read.csv('Ipixuna.csv') %>% as_tibble()
+ipixuna <- read.csv('Ipixuna2.csv') %>% as_tibble()
 
 ipixuna %>% names()
 

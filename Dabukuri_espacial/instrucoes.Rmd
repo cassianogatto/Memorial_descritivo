@@ -4,10 +4,8 @@ author: "C.Gatto"
 output: 
   html_document:
     theme: cerulean
-
-
 ---
-
+<head>
 <style type="text/css">
   body{
   width: 100%;
@@ -17,15 +15,26 @@ output:
   text-align: justify;
 }
 </style>
+</head>
 
-<img width = 140px src = "DABUKURI.png" >
-<img width = 140px src = "COPIME.png" align = "right" > 
+<body>
+<table>
+<tr>
+<td width = '15%'> <img width = 140px src = "DABUKURI.png" ></td>
+
+<td width = '65%'><h3> Povos originários e o direito à cidade: políticas públicas e o direito territorial em contexto urbano </h3>
+<p font-size = '14px' align = 'right' > edital 005/2022 - HUMANITAS – CT&I FAPEAM</p>
+</td>
+
+<td width = '15%'> <img width = 140px src = "COPIME.png" align = "right" > </td>
+</tr>
+</table>
 
 __Apresentação__
 
-Este é um app para a organização de dados territoriais e para a confecção de dois tipos de documentos indispensáveis à regularização fundiária urbana de famílias indígenas na região de Manaus e entorno: memoriais descritivos e levantamentos topográficos. Estes documentos estão entre os produtos produzidos pelo Laboratório Dabukuri no âmbito do Projeto **Povos originários e o direito à cidade: politicas públicas e o direito territorial em contexto urbano**, financiado pelo edital 005/2022 - HUMANITAS – CT&I FAPEAM. O projeto conta com a parceria da Coordenação dos Povos Indígenas de Manaus e Entorno - COPIME e possui outras atribuições e objetivos, como a identificação de conflitos e dificuldades relacionados à ocupação e regularização de territórios em ambientes urbanos.
+Este é um app para a organização de dados territoriais e para a confecção de dois documentos, memoriais descritivos e levantamentos topográficos, elaborados aqui como instrumentos complementares para a regularização fundiária urbana de famílias indígenas na região de Manaus e entorno. Estes documentos estão entre os produtos do Laboratório Dabukuri no âmbito do Projeto **Povos originários e o direito à cidade: politicas públicas e o direito territorial em contexto urbano**, financiado pelo edital 005/2022 - HUMANITAS – CT&I FAPEAM. O projeto conta com a parceria da Coordenação dos Povos Indígenas de Manaus e Entorno - COPIME e possui outras atribuições e objetivos, como a identificação de conflitos, barreiras legais e dificuldades relacionados à ocupação e regularização de territórios em ambientes urbanos.
 
-No modelo de regularização por lotes individuais de áreas da SUFRAMA cada família terá direito a um lote que será associado a um único CPF - conforme prevê a legislação específica (e.g. Decreto 10592 e Lei 11952). Assim, para a confecção do memorial e levantamento topográficos foram realizadas reuniões com lideranças e nas comunidades para identificar áreas individuais e áreas comunitárias, e associar os atributos de geo-referenciamento e dados dos futuros proprietários. A comunidade Kokama - Nova Esperança (AKIN) localizada no Ramal do Brasileirinho, foco de nossas atividades iniciais, está em uma área ocupada anteriormente a 2008, e compreende aproximadamente 25 terrenos individuais. Já o assentamente Ipixuna-Iawareté é uma ocupação mais recente, mas que tem respaldo de processo judicial e reconhecimento por parte da empresa à qual o terreno foi cedido pela Suframa. Em Ipixuna, no entanto, são mais de 200 terrenos carentes de regularização fundiária.
+No modelo de regularização por lotes individuais de áreas da SUFRAMA cada família tem direito a um lote associado a um único CPF - conforme prevê a legislação específica (e.g. Decreto 10592 e Lei 11952). Para isso estão sendo realizadas reuniões com lideranças e nas comunidades para identificar áreas individuais e áreas comunitárias, e associar as unidades de geo-referenciamento aos dados dos futuros proprietários. A comunidade Kokama - Nova Esperança (AKIN) localizada no Ramal do Brasileirinho, foco de nossas atividades iniciais, está em uma área ocupada anteriormente a 2008, e compreende aproximadamente 25 terrenos individuais. Já o assentamento Ipixuna-Iawareté é uma ocupação mais recente sob processo judicial em andamento, mas é reconhecida como tendo direito à terra por parte da empresa originalmente responsável pela sua salvaguarda junto à Suframa. A comunidade Ipixuna-Iawarete é muito mais heterogênea. Entre os mais de 200 terrenos em processo de regularização fundiária existem membros de povos diversos, tais como Ipixuna, Tukano, Desana, Sateré, Mura, Tikuna, Kokama, entre outros, assim como membros da comunidade não auto-identificados como indígenas.
 
 __Instruções de uso__
 
@@ -33,7 +42,7 @@ O App está organizado por abas (acima).
 
 1. A aba de *Apresentação* é esta página que você está lendo agora.
 
-2. Na segunda aba, *Comunidade*, após a seleção pode-se obter informações gerais sobre a comunidade. __Importante:__ é nesta aba que se seleciona a tabela de dados da comunidade em interesse para a geração dos documentos.
+2. Na segunda aba, *Comunidade*, pode-se obter informações gerais sobre cada comunidade. __Importante:__ é nesta aba que se seleciona a tabela de dados da comunidade em interesse para a geração dos documentos.
 
 3. Na aba *Dados individuais* pode-se selecionar lotes individuais, um a um, e checar informações importantes. Antes de gerar os documentos, deve-se confirmar se os *templates* selecionados correspondem às versões corretas de memorial e topográfico que serão utilizados para gerar os documentos (existem dois botões para isso). Os documentos gerados são armazenados nos endereços específicos apresentados, em uma pasta chamada */www/* no diretório do arquivo do App ('C:/...Dabukuri_espacial/www/memorial_casa_XX.html).
 
@@ -62,7 +71,7 @@ Seguindo os seguintes passos pode-se facilmente gerar e conferir os dados de tod
 
 -->
 
-
+</body>
 
 
 
