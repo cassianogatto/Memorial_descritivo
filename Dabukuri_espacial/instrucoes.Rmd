@@ -23,7 +23,7 @@ output:
 <td width = '15%'> <img width = 140px src = "DABUKURI.png" ></td>
 
 <td width = '65%'><h3> Povos originários e o direito à cidade: políticas públicas e o direito territorial em contexto urbano </h3>
-<div align = 'right' font-size = '14px' > edital 005/2022 - HUMANITAS – CT&I FAPEAM  <img width = 150px src = "FAPEAM.png" align = "right" > </div>
+<div align = 'center' font-size = '14px' > edital 005/2022 - HUMANITAS – CT&I FAPEAM  <img width = 150px src = "FAPEAM.png"  > </div>
 </td>
 
 <td width = '15%'> <img width = 140px src = "COPIME.png" align = "right" > </td>
