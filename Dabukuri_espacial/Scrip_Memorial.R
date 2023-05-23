@@ -11,16 +11,17 @@ library(tidyverse)
 '> getwd()
 [1] "C:/Users/HUMANITAS-FAPEAM - 4/Documents/Cassiano/Memorial_descritivo2/Memorial_descritivo"'
 
-# After so many changes to the table... last version is TAB_Kokama_lotes_4.csv
+# REMEMBER TO ASSIGN    row.names = FALSE  to save csv!
 
-# tab <- read.csv("TAB_Kokama_lotes_4.csv", header = T) %>% as_tibble()
+# tab %>% write.csv("TAB_Kokama6.csv", row.names = F)
 
-tab <- read.csv("TAB_Kokama5.csv", header = T) %>% as_tibble()
+tab <- read.csv("TAB_Kokama6.csv", header = T) %>% as_tibble()
 
-tab <-
-  tab %>% select(id, nome, cpf, rua, casa, contains("dec_x_"), contains("dec_y_"), contains("orient"),
-                 contains("vizinho"), contains("x_"), contains("y_"), contains("obs"), area, perim, uso, contains("dist"), escala)
-  
+tab <- tab %>% select(id, nome, cpf, rua, casa, dist_frente, dist_lateral, escala, perim, area, 
+                      dms_x_M01, dms_y_M01, dms_x_M02, dms_y_M02, dms_x_M03, dms_y_M03,
+                      dms_x_M04, dms_y_M04, everything())
+
+tab %>% write.csv("TAB_Kokama6.csv", row.names = F)
 
 #### LOAD IPIXUNA
 
