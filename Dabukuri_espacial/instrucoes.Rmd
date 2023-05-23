@@ -44,7 +44,7 @@ O App está organizado por abas (acima).
 
 1. A aba de *Apresentação* é esta página que você está lendo agora.
 
-2. Na segunda aba, *Comunidade*, pode-se obter informações gerais sobre cada comunidade. __Importante:__ é nesta aba que se seleciona a tabela de dados da comunidade em interesse para a geração dos documentos.
+2. Escolha a comuniade desejada na segunda aba - os dados sobre os terrenos serão automaticamente carregados e podem ser conferidos em sua totalidade abaixo. Alternativamente, pode-se escolher outra tabela selecionando o arquivo. Neste caso a formatação da tabela deve seguir as recomendações no fim desta página.
 
 3. Na aba *Dados individuais* pode-se selecionar lotes individuais, um a um, e checar informações importantes. Antes de gerar os documentos, deve-se confirmar se os *templates* selecionados correspondem às versões corretas de memorial e topográfico que serão utilizados para gerar os documentos (existem dois botões para isso). Os documentos gerados são armazenados nos endereços específicos apresentados, em uma pasta chamada */www/* no diretório do arquivo do App ('C:/...Dabukuri_espacial/www/memorial_casa_XX.html).
 
@@ -60,18 +60,6 @@ Uma tabela geral, mostrada na aba *Comunidade*, possui todos os atributos de tod
 <code> "id"   "nome"    "cpf"   "rua"   "casa"    "dms_x_M01"   "dms_y_M03"   "y_M04"   "x_M01"   "observacoes" etc...
 </code>
 
-
-<!--
-Seguindo os seguintes passos pode-se facilmente gerar e conferir os dados de todos os terrenos com dados disponíveis:
-
-1. Escolha a comuniade desejada;
-2. Depois escolha a tabela específica de cada comunidade na primeira aba ("Comunidade");
-3. Encontre o proprietário e o terreno desejado e confira os principais dados - anote a 'ID' do terreno;
-4. Na aba "Dados individuais" digite o número da casa conforme o ID anotado anteriormente e verifique as informações mais uma vez;
-5. Na aba "Documentos" você pode verificar a versão final dos docs Memorial e Topográfico (se não carregar copie o endereço e abra no seu browser - ou reabra o app)
-6. Quaisquer modificações devem ser feitas na tabela e salvas no mesmo formato .csv da tabela original
-
--->
 
 </body>
 
