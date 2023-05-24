@@ -5,14 +5,23 @@ output:
     theme: cerulean
 date: ""
 ---
-<div class = 'container'>
+
+<table>
+<tr>
+<td>
 
 <img align = "right" width = 160px src = "DABUKURI.png" /> 
 
 A comunidade __Ipixuna - Iawareté__ congrega representantes de mais de duas dezenas de povos indígenas em um ambiente urbano em Manaus. Localiza-se na Avenida Palmeira do Miriti, na Zona Leste de Manaus. Juntamente com a COPIME, o lab Dabukuri está fazendo o levantamento, o geo-referenciamento e a confecção de documentação complementar aos pedidos de regularização fundiária das famílias da comunidade junto à Suframa. Nesta comunidade foram identificados mais de 200 terrenos e seu geo-referenciamento segue em andamento.
 
+</td>
+
+<td>
+<div class = 'container'>
 <img width = "900" src = "ipixuna_grid_geral.png"/>
 
 Imagem de satélite com destaque para os terrenos em processo de regularização.
-
 </div>
+</td>
+</tr>
+</table>
