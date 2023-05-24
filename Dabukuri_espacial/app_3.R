@@ -101,105 +101,83 @@ ui <-
         
         tabPanel("Dados individuais",
                  
-                br(),
-                
-                tags$h5("casa selecionada:"),
+                br(), tags$h5("casa selecionada:"),
                 
                 textOutput("casa_selecionada") ,
                 
-                checkboxInput('select_column',"Escolher pela ID?", value = FALSE),
-                
-                conditionalPanel(condition = 'input.select_column == true',
-                                 
-                    # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
-                    
-                    numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
-                ),
-                
-                tags$h5("Detalhes"),
-                
-                textOutput('test'),
-                
-                fluidRow(
-                    
-                    column(5,
-                        
-                        p("Posição do terreno na comunidade"),
-                        
-                        imageOutput("inset") 
-                    ),
-                    
-                    column(5,
-                        
-                        p('Esquema do terreno'),
-                        
-                        imageOutput("image")
-                    ),
-                ),
-                
+                # selected casa
                 div(class = 'container', style = "border: 1px solid black; width: 100%",
                     
                     tableOutput("V_tab")
                 ),
                 
-                tags$h5("Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
-                tags$h5("Os documentos gerados estarão disponíveis nos respectivos links 
+                br(),
+                
+                fluidRow(
+                    
+                    column(2, checkboxInput('select_column',"Mas, se preferir, pode escolher pela ID...", value = FALSE) ),
+                    
+                    column(2,
+                           
+                        conditionalPanel(condition = 'input.select_column == true',
+                                 
+                            # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
+                    
+                            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
+                        ),   
+                    ),
+                    
+                    column(8,
+                           
+                        fluidRow(
+                    
+                            column(5, p("Posição do terreno na comunidade"),  imageOutput("inset")  ),
+                    
+                            column(5,  p('Esquema do terreno'), imageOutput("image") ),
+                        ),    
+                    ),
+                ),
+                
+                br(),
+                
+                tags$code(style = "font-size:18px ", "Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
+                tags$code(style = "font-size:18px ", "Os documentos gerados estarão disponíveis nos respectivos links 
                         e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
                 
-                # HTML("<br>"),
-                
-                # box(
-                    
-                    checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
-                # ),
+                checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
                 
                 conditionalPanel( condition = "input.input_templates == true",
                     
                     tags$h5("Após selecionar os templates gere os documentos e verifique o link."),
                     
-                    br(),
-                    
                     fluidRow(
-                        
-                        div(class = 'container',
-                            
-                            column(6,    
-                                   
-                                   selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
-                                               choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
-                                               selected = "template_memorial_4_SHINY.Rmd"),
-                            )),
-                        
-                        div(class = 'container',
-                            
-                            column(6,
-                                   
-                                   selectInput(inputId = "topografico_template", label = "Topográfico template", 
+                        column(6,     selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
+                                           choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
+                                           selected = "template_memorial_4_SHINY.Rmd"),
+                        ),
+                        column(6,    selectInput(inputId = "topografico_template", label = "Topográfico template", 
                                                choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
                                                selected = "topografico_template1.Rmd"),
-                            )),
+                        ),
                     ),
-                    
                 ),
                 
                 fluidRow(
                     
                     div(class = 'container',
                         
-                        column(6,    
-                               
-                               actionButton('get_memorial',"gerar memorial"),
+                        column(6,    actionButton('get_memorial',"gerar memorial"),
                                
                                tags$h3("o arquivo Memorial gerado está em:"),
                                
                                uiOutput("markdown_memorial"),
+                               
+                               
                         )),
                     
                     div(class = 'container',
                         
-                        column(6,
-                               
-                               actionButton("get_topografico","gerar topografico"),
+                        column(6,  actionButton("get_topografico","gerar topografico"),
                                
                                tags$h3("o arquivo Topográfico gerado está em:"),
                                
@@ -248,8 +226,8 @@ ui <-
     )
 )
 
+# ADD PATH to Viewer
 addResourcePath("tmpuser", getwd())
-
 
 # server -----
 server <- function(input, output, session) {
@@ -272,7 +250,7 @@ server <- function(input, output, session) {
             
         } else {
             
-            switch(input$comunidade, Kokama = read.csv("TAB_Kokama6.csv"), Ipixuna = read.csv("Ipixuna3.csv")) 
+            switch(input$comunidade, Kokama = read.csv("TAB_Kokama7.csv"), Ipixuna = read.csv("Ipixuna3.csv")) 
             
             # if (input$comunidade == "Kokama") { tab <- read.csv("TAB_Kokama6.csv") } else {data.frame(Importante = "escolha uma tabela válida")}
         }
@@ -294,12 +272,7 @@ server <- function(input, output, session) {
     
     }  )
     
-    output$test <- renderText(input$tab_row_selected)
-    
-    output$tab <- renderDataTable(   tab_react(), 
-                options = list(scrollX = TRUE, pageLength = 30, autoWidth = TRUE, 
-                            columnDefs = list(list( targets = 2, width = '600px' ) ) )
-     )
+    output$tab <- renderDataTable(   tab_react(),  options = list(scrollX = TRUE, pageLength = 30, autoWidth = TRUE, columnDefs = list(list( targets = 2, width = '600px' ) ) ) )
     
     output$casa_selecionada <- renderText(input$tab_rows_selected)
     
@@ -395,7 +368,10 @@ server <- function(input, output, session) {
         }
     })
     
-
+    
+    # output$test <- renderText(input$tab_row_selected)
+    
+    
 }      
 
 
