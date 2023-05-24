@@ -250,7 +250,7 @@ server <- function(input, output, session) {
             
         } else {
             
-            switch(input$comunidade, Kokama = read.csv("TAB_Kokama7.csv"), Ipixuna = read.csv("Ipixuna3.csv")) 
+            switch(input$comunidade, Kokama = read.csv("TAB_Kokama9.csv", check.names = F), Ipixuna = read.csv("Ipixuna3.csv", check.names = F)) 
             
             # if (input$comunidade == "Kokama") { tab <- read.csv("TAB_Kokama6.csv") } else {data.frame(Importante = "escolha uma tabela válida")}
         }
