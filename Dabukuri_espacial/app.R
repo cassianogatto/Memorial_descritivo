@@ -268,7 +268,7 @@ server <- function(input, output, session) {
             
             validate(need(ext == "csv", "Please upload a csv file"))
             
-            tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
+            tab <- read.csv(file$datapath, header = TRUE, check.names = FALSE) %>% as_tibble()
             
         } else {
             
@@ -294,6 +294,9 @@ server <- function(input, output, session) {
     
     }  )
     
+<<<<<<< HEAD
+    output$tab <- renderDT( {  tab_react() # %>%  select(id, nome, cpf, rua, casa, area, perim, dist_frente, dist_lateral, observacoes, obs_frente, obs_lat_dir, obs_lat_esq, obs_fundos, X1 = dms_x_M01, Y1 = dms_y_M01, X2 = dms_x_M02, Y2 = dms_y_M02, X3 = dms_x_M03, Y3 = dms_y_M03,  X4 = dms_x_M04, Y4 = dms_y_M04)
+=======
     output$test <- renderText(input$tab_row_selected)
     
     output$tab <- renderDataTable(   tab_react(), 
@@ -312,6 +315,7 @@ server <- function(input, output, session) {
                 select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% 
                     
                 slice( row_slice  )  
+>>>>>>> 844e38aa4035f35a8e033894231b919b1023ca6c
     } )
     
     output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
@@ -407,7 +411,7 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 
 # Run the application with themer
 
-# run_with_themer(  shinyApp( ui = ui, server = server, options = list(width = 100) ) )
+# run_with_themer(  shinyApp( ui = ui, server = server))#, options = list(width = 100) ) )
 
 
 # runApp('Dabukuri_espacial')

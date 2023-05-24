@@ -2,6 +2,10 @@ library(rmarkdown)
 library(htmltools)
 library(tidyverse)
 
+# # remember !!
+# > tab |> write.csv(file.choose(), row.names = FALSE)
+# > tab <- read.csv(file.choose(), check.names = FALSE)
+
 
 #### LOAD TABLE KOKAMA ----
 '> getwd()
