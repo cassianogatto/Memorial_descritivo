@@ -14,14 +14,14 @@ custom_theme <- bs_theme(
 # setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
 
 
-# ui -----
+# UI -----
 ui <- 
-    
+    # CSS head ----
     tagList(tags$head(tags$style(HTML(" 
               
        body{
           align: center;
-          text-size:14px;
+          text-size:12px;
           margin: 0px;
           padding:20px;
           width: auto; 
@@ -52,7 +52,8 @@ ui <-
     
         theme = bs_theme(version = 5, bootswatch = "flatly"),
         
-        #
+        
+        # apresentação ----
         tabPanel("Apresentação",
                  
                  fluidRow(  column(2),  column(8, includeMarkdown("instrucoes.Rmd")  ), column(2),  )
@@ -64,7 +65,7 @@ ui <-
                  
                 fluidRow(
                      
-                     column(width = 4,
+                     column(width =2,
                          
                         div(align = 'justify', img(width = "80px", src = "DABUKURI.png" ), 
                                                 
@@ -80,7 +81,7 @@ ui <-
                         )
                     ),
                      
-                    column(width = 8,
+                    column(width = 10,
                         
                         uiOutput("comunidade_intro"),
                     )
@@ -88,107 +89,80 @@ ui <-
                 
                 fluidPage(
                     
-                    tags$h3("Tabela Geral"),
+                    tags$h3("tabela geral - dados da comunidade"),
                     
-                    tags$h5("verifique os dados e escolha uma casa (id)"),
+                    tags$h5(tags$b(style = 'align: center; color:black ; border: 1px solid black; background: orange', "Selecione a casa desejada!")),
                     
                     DTOutput("tab"), 
                 )
         ),
         
         
-        # dados individuais ----
         
+        # dados individuais ----
         tabPanel("Dados individuais",
                  
-                br(),
-                
-                tags$h5("casa selecionada:"),
+                br(), tags$h5("casa selecionada:"),
                 
                 textOutput("casa_selecionada") ,
                 
-                checkboxInput('select_column',"Escolher pela ID?", value = FALSE),
+                div(class = 'container', style = "border: 1px solid black; width: 100%",  tableOutput("V_tab")  ),
                 
-                conditionalPanel(condition = 'input.select_column == true',
-                                 
-                    # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
-                    
-                    numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
-                ),
-                
-                tags$h5("Detalhes"),
-                
-                textOutput('test'),
+                br(),
                 
                 fluidRow(
                     
-                    column(5,
-                        
-                        p("Posição do terreno na comunidade"),
-                        
-                        imageOutput("inset") 
+                    column(2, 
+                           
+                        checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
+                           
+                        conditionalPanel(condition = 'input.select_por_id == true',
+                                 
+                            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL), # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
+                        ),   
                     ),
                     
-                    column(5,
-                        
-                        p('Esquema do terreno'),
-                        
-                        imageOutput("image")
+                    column(8,
+                           
+                        fluidRow(
+                    
+                            column(5, p("Posição do terreno na comunidade"),  imageOutput("inset")  ),
+                    
+                            column(5,  p('Esquema do terreno'), imageOutput("image") ),
+                        ),    
                     ),
                 ),
                 
-                div(class = 'container', style = "border: 1px solid black; width: 100%",
-                    
-                    tableOutput("V_tab")
-                ),
+                br(),
                 
-                tags$h5("Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
-                tags$h5("Os documentos gerados estarão disponíveis nos respectivos links 
-                        e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
+                tags$code(style = "font-size:18px ", "Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
                 
-                # HTML("<br>"),
+                tags$code(style = "font-size:18px ", "Os documentos gerados estarão disponíveis nos respectivos links 
+                                            e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
                 
-                # box(
-                    
-                    checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
-                # ),
+                checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
                 
                 conditionalPanel( condition = "input.input_templates == true",
                     
                     tags$h5("Após selecionar os templates gere os documentos e verifique o link."),
                     
-                    br(),
-                    
                     fluidRow(
-                        
-                        div(class = 'container',
-                            
-                            column(6,    
-                                   
-                                   selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
-                                               choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
-                                               selected = "template_memorial_4_SHINY.Rmd"),
-                            )),
-                        
-                        div(class = 'container',
-                            
-                            column(6,
-                                   
-                                   selectInput(inputId = "topografico_template", label = "Topográfico template", 
+                        column(6,     selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
+                                           choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
+                                           selected = "template_memorial_4_SHINY.Rmd"),
+                        ),
+                        column(6,    selectInput(inputId = "topografico_template", label = "Topográfico template", 
                                                choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
                                                selected = "topografico_template1.Rmd"),
-                            )),
+                        ),
                     ),
-                    
                 ),
                 
                 fluidRow(
                     
                     div(class = 'container',
                         
-                        column(6,    
-                               
-                               actionButton('get_memorial',"gerar memorial"),
+                        column(6,    actionButton('get_memorial',"gerar memorial"),
                                
                                tags$h3("o arquivo Memorial gerado está em:"),
                                
@@ -197,9 +171,7 @@ ui <-
                     
                     div(class = 'container',
                         
-                        column(6,
-                               
-                               actionButton("get_topografico","gerar topografico"),
+                        column(6,  actionButton("get_topografico","gerar topografico"),
                                
                                tags$h3("o arquivo Topográfico gerado está em:"),
                                
@@ -207,7 +179,6 @@ ui <-
                         )),
                 ),
         ),
-        
         
         # visualização ----
         navbarMenu("Visualização",
@@ -248,14 +219,19 @@ ui <-
     )
 )
 
+# ADD PATH to Viewer
 addResourcePath("tmpuser", getwd())
 
 
-# server -----
+# SERVER -----
 server <- function(input, output, session) {
     
     options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
-  
+    
+    react_list <- reactiveValues(selec = NULL)
+    
+    observe(  if(input$select_por_id){ react_list$selec <- input$lista_de_id  } else { react_list$selec <- input$tab_rows_selected  } )
+    
     tab_react <- reactive(  {
         
         if(input$box_select_tab){
@@ -268,11 +244,11 @@ server <- function(input, output, session) {
             
             validate(need(ext == "csv", "Please upload a csv file"))
             
-            tab <- read.csv(file$datapath, header = TRUE, check.names = FALSE) %>% as_tibble()
+            tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
             
         } else {
             
-            switch(input$comunidade, Kokama = read.csv("TAB_Kokama6.csv"), Ipixuna = read.csv("Ipixuna3.csv")) 
+            switch(input$comunidade, Kokama = read.csv("TAB_Kokama9.csv", check.names = F), Ipixuna = read.csv("Ipixuna3.csv", check.names = F)) 
             
             # if (input$comunidade == "Kokama") { tab <- read.csv("TAB_Kokama6.csv") } else {data.frame(Importante = "escolha uma tabela válida")}
         }
@@ -280,61 +256,45 @@ server <- function(input, output, session) {
     
     V_react <- reactive(  {
         
-        req(input$tab_rows_selected)
-        
         req( tab_react() )
         
-        row_slice <- input$tab_rows_selected
-    
+        if(input$select_por_id){ row_slice <- which( tab_react()[,"id"] == input$lista_de_id ) } else { row_slice <- input$tab_rows_selected }
+            
         # col <- which( names( tab_react() == input$coluna_select ) )
-        
         # row_slice <- which( tab_react()[,col] == input$lista_de_id )
         
-        V <- tab_react() %>% slice( row_slice ) 
+        V <- tab_react() %>% slice( row_slice )
     
     }  )
     
-<<<<<<< HEAD
-    output$tab <- renderDT( {  tab_react() # %>%  select(id, nome, cpf, rua, casa, area, perim, dist_frente, dist_lateral, observacoes, obs_frente, obs_lat_dir, obs_lat_esq, obs_fundos, X1 = dms_x_M01, Y1 = dms_y_M01, X2 = dms_x_M02, Y2 = dms_y_M02, X3 = dms_x_M03, Y3 = dms_y_M03,  X4 = dms_x_M04, Y4 = dms_y_M04)
-=======
-    output$test <- renderText(input$tab_row_selected)
+    output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    output$tab <- renderDataTable(   tab_react(), 
-                options = list(scrollX = TRUE, pageLength = 30, autoWidth = TRUE, 
-                            columnDefs = list(list( targets = 2, width = '600px' ) ) )
-     )
+    output$tab <- renderDataTable(   tab_react(),  options = list(scrollX = TRUE, selection = 'single', pageLength = 30, autoWidth = TRUE, columnDefs = list(list( targets = 2, width = '600px' ) ) ) )
     
     output$casa_selecionada <- renderText(input$tab_rows_selected)
     
     output$V_tab <- renderTable( { 
         
-        row_slice <- which(tab_react()$id == input$lista_de_id)    
-                    
-        tab_react() %>% 
+        V_react() %>% 
                                       
-                select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% 
-                    
-                slice( row_slice  )  
->>>>>>> 844e38aa4035f35a8e033894231b919b1023ca6c
+                select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) # %>%  slice( row_slice  )  
     } )
-    
-    output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
     output$inset <- renderImage({
         
-            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", input$lista_de_id, ".png", sep = '')))
+            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", react_list$selec, ".png", sep = '')))
         
                 # normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
             
-            list(src = file1, width = '450px')
+            list(src = file1, width = '500px')
             
     },   deleteFile = FALSE )
             
     output$image <- renderImage({
     
-            file2 <- normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
+            file2 <- normalizePath(file.path( './figures', paste0("casa___", react_list$selec, ".png")))
             
-            list(src = file2, width = '450px')
+            list(src = file2, width = '500px')
     
     },  deleteFile = FALSE )
 
@@ -346,9 +306,9 @@ server <- function(input, output, session) {
         
             rmarkdown::render(input$"memorial_template",
                       output_format = "html_document",
-                      output_file = paste0("memorial_casa_", input$lista_de_id), 
+                      output_file = paste0("memorial_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
-                      params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
+                      params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
     
     output$markdown_topografico <- renderUI(  {
@@ -357,9 +317,9 @@ server <- function(input, output, session) {
             
             rmarkdown::render(input$"topografico_template",
                       output_format = "html_document",
-                      output_file = paste0("topografico_casa_", input$lista_de_id), 
+                      output_file = paste0("topografico_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
-                      params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
+                      params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
     
 # LOAD HTML MEMORIAL E TOPOGRAFICO
@@ -377,7 +337,7 @@ server <- function(input, output, session) {
             
         } else {
             
-            path = paste0("tmpuser/www/memorial_casa_", input$lista_de_id, ".html")
+            path = paste0("tmpuser/www/memorial_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1000', height='1300')
         }
@@ -393,13 +353,13 @@ server <- function(input, output, session) {
             
         } else {
             
-            path = paste0("tmpuser/www/topografico_casa_", input$lista_de_id, ".html")
+            path = paste0("tmpuser/www/topografico_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1300', height='1000')
         }
     })
     
-
+    
 }      
 
 
@@ -411,7 +371,7 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 
 # Run the application with themer
 
-# run_with_themer(  shinyApp( ui = ui, server = server))#, options = list(width = 100) ) )
+# run_with_themer(  shinyApp( ui = ui, server = server, options = list(width = 100) ) )
 
 
 # runApp('Dabukuri_espacial')
@@ -425,37 +385,12 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 
 
 
-# 
 # output$texto <- renderText( file.path(getwd(),'www', input$memo) )
 # MODULE select_html is NOT working as
 # output$memo_out <- server_select_html(id = 'memo')
 # 
 # output$topo_out <- server_select_html(id = 'topo')
 
-# # Define a reactiveFileReader to monitor the HTML file
-
-# output$myhtml <- reactiveFileReader(
-#     intervalMillis = 5000, # Check every second
-#     filePath =   "C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial/www/memorial_casa_4.html",
-#     session = NULL ,
-#     readFunc = function(filePath) {
-#         includeHTML(filePath)
-#     }
-# )
-# UI
-# uiOutput("myhtml")
-
-
-
-# load figures in Mdown through R
-
-# ```{r, out.width=='350px', fig.align='right'}
-# 
-# figure_path <- paste0('figures/casa__', V$id, '.png')  ## CHECK FIGURES' ID !!
-# 
-# knitr::include_graphics(figure_path)
-# 
-# ```
 
 # Download
 # output$downloadReport <- downloadHandler(

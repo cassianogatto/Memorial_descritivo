@@ -16,12 +16,12 @@ custom_theme <- bs_theme(
 
 # ui -----
 ui <- 
-    
+    # CSS head ----
     tagList(tags$head(tags$style(HTML(" 
               
        body{
           align: center;
-          text-size:14px;
+          text-size:12px;
           margin: 0px;
           padding:20px;
           width: auto; 
@@ -52,11 +52,13 @@ ui <-
     
         theme = bs_theme(version = 5, bootswatch = "flatly"),
         
-        #
+        
+        # apresentação ----
         tabPanel("Apresentação",
                  
                  fluidRow(  column(2),  column(8, includeMarkdown("instrucoes.Rmd")  ), column(2),  )
         ),
+        
         
         # comunidade ----
         
@@ -90,40 +92,34 @@ ui <-
                     
                     tags$h3("Tabela Geral"),
                     
-                    tags$h5("verifique os dados e escolha uma casa (id)"),
+                    tags$h4(tags$b(style = 'align: center; color:orange; border: 1px solid black;', "Selecione a casa desejada")),
                     
                     DTOutput("tab"), 
                 )
         ),
         
         
-        # dados individuais ----
         
+        # dados individuais ----
         tabPanel("Dados individuais",
                  
                 br(), tags$h5("casa selecionada:"),
                 
                 textOutput("casa_selecionada") ,
                 
-                # selected casa
-                div(class = 'container', style = "border: 1px solid black; width: 100%",
-                    
-                    tableOutput("V_tab")
-                ),
+                div(class = 'container', style = "border: 1px solid black; width: 100%",  tableOutput("V_tab")  ),
                 
                 br(),
                 
                 fluidRow(
                     
-                    column(2, checkboxInput('select_column',"Mas, se preferir, pode escolher pela ID...", value = FALSE) ),
-                    
-                    column(2,
+                    column(2, 
                            
-                        conditionalPanel(condition = 'input.select_column == true',
+                        checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
+                           
+                        conditionalPanel(condition = 'input.select_por_id == true',
                                  
-                            # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
-                    
-                            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL),
+                            numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL), # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
                         ),   
                     ),
                     
@@ -141,8 +137,9 @@ ui <-
                 br(),
                 
                 tags$code(style = "font-size:18px ", "Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
+                
                 tags$code(style = "font-size:18px ", "Os documentos gerados estarão disponíveis nos respectivos links 
-                        e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
+                                            e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
                 
                 checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
                 
@@ -171,8 +168,6 @@ ui <-
                                tags$h3("o arquivo Memorial gerado está em:"),
                                
                                uiOutput("markdown_memorial"),
-                               
-                               
                         )),
                     
                     div(class = 'container',
@@ -185,7 +180,6 @@ ui <-
                         )),
                 ),
         ),
-        
         
         # visualização ----
         navbarMenu("Visualização",
@@ -229,11 +223,16 @@ ui <-
 # ADD PATH to Viewer
 addResourcePath("tmpuser", getwd())
 
+
 # server -----
 server <- function(input, output, session) {
     
     options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
-  
+    
+    react_list <- reactiveValues(selec = NULL)
+    
+    observe(  if(input$select_por_id){ react_list$selec <- input$lista_de_id  } else { react_list$selec <- input$tab_rows_selected  } )
+    
     tab_react <- reactive(  {
         
         if(input$box_select_tab){
@@ -258,52 +257,45 @@ server <- function(input, output, session) {
     
     V_react <- reactive(  {
         
-        req(input$tab_rows_selected)
-        
         req( tab_react() )
         
-        row_slice <- input$tab_rows_selected
-    
+        if(input$select_por_id){ row_slice <- which( tab_react()[,"id"] == input$lista_de_id ) } else { row_slice <- input$tab_rows_selected }
+            
         # col <- which( names( tab_react() == input$coluna_select ) )
-        
         # row_slice <- which( tab_react()[,col] == input$lista_de_id )
         
-        V <- tab_react() %>% slice( row_slice ) 
+        V <- tab_react() %>% slice( row_slice )
     
     }  )
     
-    output$tab <- renderDataTable(   tab_react(),  options = list(scrollX = TRUE, pageLength = 30, autoWidth = TRUE, columnDefs = list(list( targets = 2, width = '600px' ) ) ) )
+    output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
+    
+    output$tab <- renderDataTable(   tab_react(),  options = list(scrollX = TRUE, selection = 'single', pageLength = 30, autoWidth = TRUE, columnDefs = list(list( targets = 2, width = '600px' ) ) ) )
     
     output$casa_selecionada <- renderText(input$tab_rows_selected)
     
     output$V_tab <- renderTable( { 
         
-        row_slice <- which(tab_react()$id == input$lista_de_id)    
-                    
-        tab_react() %>% 
+        V_react() %>% 
                                       
-                select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) %>% 
-                    
-                slice( row_slice  )  
+                select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) # %>%  slice( row_slice  )  
     } )
-    
-    output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
     output$inset <- renderImage({
         
-            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", input$lista_de_id, ".png", sep = '')))
+            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", react_list$selec, ".png", sep = '')))
         
                 # normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
             
-            list(src = file1, width = '450px')
+            list(src = file1, width = '500px')
             
     },   deleteFile = FALSE )
             
     output$image <- renderImage({
     
-            file2 <- normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
+            file2 <- normalizePath(file.path( './figures', paste0("casa___", react_list$selec, ".png")))
             
-            list(src = file2, width = '450px')
+            list(src = file2, width = '500px')
     
     },  deleteFile = FALSE )
 
@@ -315,9 +307,9 @@ server <- function(input, output, session) {
         
             rmarkdown::render(input$"memorial_template",
                       output_format = "html_document",
-                      output_file = paste0("memorial_casa_", input$lista_de_id), 
+                      output_file = paste0("memorial_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
-                      params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
+                      params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
     
     output$markdown_topografico <- renderUI(  {
@@ -326,9 +318,9 @@ server <- function(input, output, session) {
             
             rmarkdown::render(input$"topografico_template",
                       output_format = "html_document",
-                      output_file = paste0("topografico_casa_", input$lista_de_id), 
+                      output_file = paste0("topografico_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
-                      params = list(tab = tab_react(), casa = input$lista_de_id, V = V_react() )  )
+                      params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
     
 # LOAD HTML MEMORIAL E TOPOGRAFICO
@@ -346,7 +338,7 @@ server <- function(input, output, session) {
             
         } else {
             
-            path = paste0("tmpuser/www/memorial_casa_", input$lista_de_id, ".html")
+            path = paste0("tmpuser/www/memorial_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1000', height='1300')
         }
@@ -362,14 +354,11 @@ server <- function(input, output, session) {
             
         } else {
             
-            path = paste0("tmpuser/www/topografico_casa_", input$lista_de_id, ".html")
+            path = paste0("tmpuser/www/topografico_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1300', height='1000')
         }
     })
-    
-    
-    # output$test <- renderText(input$tab_row_selected)
     
     
 }      
