@@ -64,8 +64,10 @@ ui <-
         tabPanel("Comunidade",
                  
                 fluidRow(
+                    
+                    theme = bs_theme(version = 5, bootswatch = "flatly"),
                      
-                     column(width =2,
+                    column(width =2,
                          
                         div(align = 'justify', img(width = "80px", src = "DABUKURI.png" ), 
                                                 
@@ -89,9 +91,18 @@ ui <-
                 
                 fluidPage(
                     
-                    tags$h3("tabela geral - dados da comunidade"),
+                    tags$h3("Tabela dos dados da comunidade"),
                     
-                    tags$h5(tags$b(style = 'align: center; color:black ; border: 1px solid black; background: orange', "Selecione a casa desejada!")),
+                    tags$h5(""),
+                    
+                    fluidRow(
+                        
+                        column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ) ),
+                            
+                        column(2,  actionButton('clear1', 'Ou apague a seleção aqui  ;-)', class = 'btn-primary btn-lg' ), ),
+                    ),
+                    
+                    hr(),
                     
                     DTOutput("tab"), 
                 )
@@ -223,10 +234,14 @@ ui <-
 addResourcePath("tmpuser", getwd())
 
 
+# ----
+
 # SERVER -----
 server <- function(input, output, session) {
     
     options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
+    
+    options(DT.options = list(pageLength = 30))
     
     react_list <- reactiveValues(selec = NULL)
     
@@ -269,9 +284,18 @@ server <- function(input, output, session) {
     
     output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    output$tab <- renderDataTable(   tab_react(),  options = list(scrollX = TRUE, selection = 'single', pageLength = 30, autoWidth = TRUE, columnDefs = list(list( targets = 2, width = '600px' ) ) ) )
+    output$tab <- renderDT(   tab_react(),
+                              editable = 'cell', server = TRUE,
+                              options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
+                                             , pageLength = 30, columnDefs = list(list( targets = 2, width = '400px' ) ) 
+                                         ) )
     
-    output$casa_selecionada <- renderText(input$tab_rows_selected)
+    # manipulating  DT tab
+    proxy = dataTableProxy('tab')
+    # reset selection
+    observeEvent( input$clear1, {    proxy %>% selectRows(NULL)    } )
+    
+    output$casa_selecionada <- renderText( input$tab_rows_selected )
     
     output$V_tab <- renderTable( { 
         
@@ -371,7 +395,7 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 
 # Run the application with themer
 
-# run_with_themer(  shinyApp( ui = ui, server = server, options = list(width = 100) ) )
+ # run_with_themer(  shinyApp( ui = ui, server = server, options = list(width = 100) ) )
 
 
 # runApp('Dabukuri_espacial')
