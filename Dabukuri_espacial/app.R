@@ -113,7 +113,7 @@ ui <-
         # dados individuais ----
         tabPanel("Dados individuais",
                  
-                br(), tags$h5("casa selecionada:"),
+                br(), tags$h5("linha da tabela selecionada; ID casa selecionada"),
                 
                 textOutput("casa_selecionada") ,
                 
@@ -243,9 +243,11 @@ server <- function(input, output, session) {
     
     options(DT.options = list(pageLength = 30))
     
-    react_list <- reactiveValues(selec = NULL)
+    react_list <- reactiveValues(selec = NULL) # I could have used input$tab_rows_selected as in V_tab but this is an option to store the reactive value as well, and can be expanded to encompass other values
     
-    observe(  if(input$select_por_id){ react_list$selec <- input$lista_de_id  } else { react_list$selec <- input$tab_rows_selected  } )
+    observe(  
+        
+        if( input$select_por_id ){ react_list$selec <- input$lista_de_id  } else { react_list$selec <- V_react()$id[1]  } )
     
     tab_react <- reactive(  {
         
@@ -295,7 +297,7 @@ server <- function(input, output, session) {
     # reset selection
     observeEvent( input$clear1, {    proxy %>% selectRows(NULL)    } )
     
-    output$casa_selecionada <- renderText( input$tab_rows_selected )
+    output$casa_selecionada <- renderText( paste(input$tab_rows_selected, "; ", V_react()$id) )
     
     output$V_tab <- renderTable( { 
         

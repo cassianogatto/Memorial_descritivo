@@ -54,9 +54,11 @@ V <- params$V
 endereco <- paste0('Rua ', V$rua, ', ', V$casa)
 
 responsavel <- "Elvis Presley"
-if (casa == 22){     vante1 <- 10;     vante2 <- 15 } 
-if (casa > 99){vante1 <- NA} else {if (casa > 22 ){vante1 <- 6} else{ if(casa == 21){vante1 <- 15} else{vante1 <- 8}}}
-if (casa > 99){vante2 <- NA} else {if  (casa > 22 ){vante2 <- 7} else{ if(casa == 21){vante21 <- 30} else{vante2 <- 16}}}
+# if (Comunidade == Kokama)
+# if (casa > 99){vante1 <- NA} else {if (casa > 22 ){vante1 <- 6} else{ if(casa == 21){vante1 <- 15} else{vante1 <- 8}}}
+# if (casa > 99){vante2 <- NA} else {if (casa > 22 ){vante2 <- 7} else{ if(casa == 21){vante21 <- 30} else{vante2 <- 16}}}
+# if (casa == 22)   vante1 <- 10     
+# if (casa == 22)   vante2 <- 15  
 ```
 
 <!-- MAP + 2 INSETS (SMALL MAP AND SMALL TABLE) -->
@@ -99,10 +101,10 @@ knitr::include_graphics(figure_path)
     td { border: 0.3 px solid black; text-align: center; padding:3px }
   </style>
 <tr><td> Estação </td><td> Vante </td><td> Distância(m) </td></tr>
-<tr><td>M01</td> <td>M02</td> <td>`r vante1` m </td></tr>
-<tr><td>M02</td> <td>M03</td> <td>`r vante2` m </td></tr>
-<tr><td>M03</td> <td>M04</td> <td>`r vante1` m </td></tr>
-<tr><td>M04</td> <td>M01</td> <td>`r vante2` m </td></tr>
+<tr><td>M01</td> <td>M02</td> <td>`r V$dist_frente` m </td></tr>
+<tr><td>M02</td> <td>M03</td> <td>`r V$dist_lateral` m </td></tr>
+<tr><td>M03</td> <td>M04</td> <td>`r V$dist_frente` m </td></tr>
+<tr><td>M04</td> <td>M01</td> <td>`r V$dist_lateral` m </td></tr>
 </table>
 </td></tr></table></div>
 
