@@ -27,19 +27,17 @@ tab %>% write.csv("TAB_Kokama6.csv", row.names = F)
 
 setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
 
-ipixuna <- read.csv('Ipixuna2.csv') %>% as_tibble()
+ipixuna <- read.csv('Ipixuna4_longer.csv') %>% as_tibble()
 
 ipixuna %>% names()
 
-ipixuna$nome <- ''; ipixuna$cpf <- ''; 
-
 ipixuna <- ipixuna %>% mutate(ponto = paste0("M0", ponto))
 
-ipixu <- ipixuna %>% select(id, terreno, nome, cpf, rua,  casa = casa_new, ponto, dms_x = x_dms, dms_y = y_dms, everything())
+ipixu <- ipixuna %>% select(id = 'ID_GERAL', nome, cpf, rua,  ponto, dms_x, dms_y, everything())
 
-ipixu <- ipixu %>% pivot_wider(id_cols = c(id, rua, terreno, casa), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
+ipixu <- ipixu %>% pivot_wider(id_cols = c(id, rua), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
 
-write.csv(ipixu, "Ipixuna2.csv")
+write.csv(ipixu, "Ipixuna5.csv")
 
 
 p
