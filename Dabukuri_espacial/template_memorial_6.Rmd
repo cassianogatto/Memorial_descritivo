@@ -1,0 +1,207 @@
+---
+title: '&#32;'
+
+output: html_document
+
+params:
+  tab: NULL
+  casa: NULL
+  V: NULL
+---
+<header>
+<style>
+<!--
+body{
+ align: center;
+ text-size:14px;
+ size: A4;
+ margin: 0px;
+ padding:2px;
+ width: 210mm; 
+ height: 297mm;
+ <!--border: 1px solid blue; - ->
+}
+-->
+@media print {
+  @page {
+    size: A4;
+  }
+}
+
+.container {
+ align-items: center;
+ justify-content: center 
+ display: flex;
+ column-gap: 5px;
+ <!--width: 209mm;-->
+ margin: 2px;
+ padding: 2px;
+ <!-- height: 297mm; -->
+ <!-- border: 0.2px solid blue; -->
+}
+</style>
+</header>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# LOAD params listfrom rmarkdown::render in Shiny 
+tab <- params$tab
+casa <- params$casa
+i = which(tab$id == casa)
+V <- params$V
+
+# SETUP fixed variables
+resp_tecnico <- "Fulana Ciclana – Geógrafa (CREAM-AM 123456789-0)"
+tipo_de_imovel <- "Rural"
+comarca <- 'Tabelião Zé Carioca'
+end <- ", Estrada Campos Elíseos, Ramal Brasileirinho, km8"
+uso <- V$uso
+# pontos coordenadas
+M1 = paste0(V$dms_y_M01,' / ', V$dms_x_M01) 
+M2 = paste0(V$dms_y_M02,' / ', V$dms_x_M02)
+M3 = paste0(V$dms_y_M03,' / ', V$dms_x_M03)
+M4 = paste0(V$dms_y_M04,' / ', V$dms_x_M04)
+M5 = paste0(V$dms_y_M05,' / ', V$dms_x_M05)
+M6 = paste0(V$dms_y_M06,' / ', V$dms_x_M06)
+```
+
+<body>
+<div class="container" width = '209mm' height = '295mm' style = "border:1 px solid black ">
+
+<!-- HEADER -->
+<div class="container" width = "190mm">
+<table>   <!-- style = "border:0px"> --> 
+<tr>
+<td width = 70%> <h1>  Memorial Descritivo  </h1> </td>
+<td width = auto > <h3 > DABUKURI </h3> </td>
+<td> <img width = 120px src = "figures/DABUKURI.png"> </td>
+</tr>
+</table> 
+</div>
+
+<!-- Dados do Imóvel -->
+<div class="container" width = '190mm'  style = "margin:0px; border:0px solid black; 
+padding-left, padding-right:5px; text-align: justified; font-size: 16px;">
+    
+<h4 style="text-align: left;">  Dados do Imóvel  </h4>
+Tipo de Imóvel: __`r toupper(tipo_de_imovel)`__; Uso: __`r toupper(uso)`__;
+Proprietário:  __`r V$nome`__ ;  CPF: __`r V$cpf`__;
+Endereço: __`r paste0(V$rua, ", casa nº", V$id, end, ", Manaus, Brasil")`__;
+Comarca: __`r comarca`__;
+Área: __`r V$area`m^2^__; Perímetro: __`r V$perim`m__;
+Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
+</div>
+
+<!-- Limites e confrontações do terreno -->
+<div class="container" width = '190mm' style=" margin:0px; padding:10px; border-bottom:0px solid black; text-align: center; font-size: 14px;">
+<table> <tr> <td width = 40% >
+<h4 style="text-align: left;"> Limites e confrontações do terreno </h4>
+
+```{r, echo =FALSE}
+library(knitr)
+
+pontos_tab <- tibble( Marcos = c("M01", "M02", "M03", "M04"), Coordenadas = c(M1, M2, M3, M4))
+
+if(V$id == 1){  pontos_tab[5:6, 1] <- c("M05", "M06")
+                pontos_tab[5:6, 2] <- c(M5, M6)     }
+# knitr::kable prints the table
+kable(pontos_tab, format = 'simple', padding = 0)
+```
+
+<!-- blanck column -->
+<td width = 5%> </td>
+
+<!-- map -->
+<td width = 45% >
+```{r, out.width=='350px', fig.align='right'}
+
+figure_path <- paste0('figures/casa__', V$id, '.png')
+
+knitr::include_graphics(figure_path)
+```
+</td>
+</tr>
+</table>
+</div>
+
+<br>
+
+<!-- Descrição das faces do terreno -->
+<div class = "container" width = "190mm" style = " font-size:14px; text-align:justify; border: 0px">
+
+<h4 style="text-align: left;"> Descrição das faces do terreno </h4>
+
+__Frente (`r toupper(V$orientacao)`)__:  `r ifelse ( ! is.na(tab[i,"obs_frente"]), tab[i,"obs_frente"], "")`, corresponde ao segmento que une os marcos M-01 (`r M1`) e M-02 (`r M2`), com comprimento de `r V$dist_frente` metros.
+
+__Lateral direita (`r toupper(V$orient_lat_dir)`)__: `r ifelse(!is.na(V$vizinho_dir), paste0( "confronta-se com o terreno da casa ", eval(parse(text = V$vizinho_dir)), "."), "")` É constituída pela linha imaginária entre os marcos M-02 (`r M2`) e M-03 (`r M3`), com `r V$dist_lateral` metros. `r ifelse ( ! is.na(tab[i,"obs_lat_dir"]), tab[i,"obs_lat_dir"], "")` 
+
+__Fundos (`r toupper(V$orient_fun)`)__: o fundo do terreno é demarcado pelos pontos M-03 (`r M3`) e M-04 (`r M4`), distantes `r V$dist_frente` metros entre si. `r ifelse ( ! is.na(tab[i,"obs_fundos"]), tab[i,"obs_fundos"], "")` 
+
+__Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinho_esq), eval(parse(text = V$vizinho_esq)) %>% paste0(" confronta-se com o terreno da casa ", . , "."), "")` A linha que une os marcos M-04 (`r M4`) e M-01 (`r M1`) com `r V$dist_lateral` metros. `r ifelse ( ! is.na(tab[i,"obs_lat_esq"]), tab[i,"obs_lat_esq"], "")` 
+
+<!-- observations? -->
+`r ifelse ( ! is.na(tab[i,"observacoes"]), paste0("Observações: ",tab[i,"observacoes"]), "")`
+
+</div>
+
+<br>
+<br>
+
+<!-- TAIL -->
+<div font-size = '14px' width = '100%' border = '1px solid yellow'>
+<p style="text-align: right;  font-size = 12px;"> Manaus 03, de março de 2023. </p>
+<!--div class = "container" style = "border:0px; display:flex" -->
+
+<br>
+
+<table style="font-size:16px; border-collapse: separate; border-spacing: 20px; ">
+<tr>
+<td width= 40% style = "border-top:1px solid black;"> <p style= "text-align:center;"> Responsável técnico: `r resp_tecnico` </p></td>
+<td width = 9% style = "border-top: 0px"> </td>
+<td width=40% style = "border-top:1px solid black;"> <p style="font-size:16px; text-align:center;"> Proprietário(a): `r V$nome`</p></td>
+</tr>
+</table>
+</div>
+
+
+</div>
+</body>
+
+
+
+
+
+
+
+<!-- # https://stackoverflow.com/questions/3341485/how-to-make-a-html-page-in-a4-paper-size-pages -->
+
+
+<!-- I saw this solution after searching at google, search for "A4 CSS page template" (codepen.io). It shows an A4 (A3,A5, also portrait) sized area in the browser, using the <page> tag. Inside this tag the content is shown, but absolute position is still with respect to browser area. -->
+
+<!-- body { -->
+<!--   background: rgb(204,204,204);  -->
+<!-- } -->
+<!-- page { -->
+<!--   background: white; -->
+<!--   display: block; -->
+<!--   margin: 0 auto; -->
+<!--   margin-bottom: 0.5cm; -->
+<!--   box-shadow: 0 0 0.5cm rgba(0,0,0,0.5); -->
+<!-- } -->
+<!-- page[size="A4"] {   -->
+<!--   width: 21cm; -->
+<!--   height: 29.7cm;  -->
+<!-- } -->
+<!-- page[size="A4"][layout="portrait"] { -->
+<!--   width: 29.7cm; -->
+<!--   height: 21cm;   -->
+<!-- } -->
+<!-- @media print { -->
+<!--   body, page { -->
+<!--     margin: 0; -->
+<!--     box-shadow: 0; -->
+<!--   } -->
+<!-- } -->
+<!-- <page size="A4">A4</page> -->
+<!-- <page size="A4" layout="portrait">A4 portrait</page> -->
