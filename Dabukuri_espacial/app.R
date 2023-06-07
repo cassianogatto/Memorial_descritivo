@@ -99,7 +99,7 @@ ui <-
                         
                         column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ) ),
                             
-                        column(2,  actionButton('clear1', 'Ou apague a seleção aqui  ;-)', class = 'btn-primary btn-lg' ), ),
+                        column(2,  actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
                     ),
                     
                     hr(),
@@ -226,6 +226,36 @@ ui <-
                         uiOutput("file_topo_html") ,
                          
                  ),
+        ),
+        
+        # editor ----
+        
+        tabPanel("Editor",
+            
+            fluidRow(
+                
+                column(3,   
+                       
+                       fileInput("upload", "Choose CSV File", multiple = FALSE,
+                              accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
+                ),
+                
+                column(4,   
+                       
+                       tags$h5("tabela em edição:"),  
+                       
+                       tags$code( style = "font-size: 26px", textOutput("tab2_name"), ),
+                       
+                ),
+                column(3,  
+                       
+                       tags$h5( style = "color:red", "Salve as suas modificações na tabela!" ),
+                       
+                       downloadButton('download', class = 'btn-danger'),
+                ),
+            ),  
+            
+            DTOutput('tab2')
         ),
     )
 )
@@ -386,6 +416,44 @@ server <- function(input, output, session) {
             tags$iframe(seamless="seamless",  src= path,  width='1300', height='1000')
         }
     })
+    
+    
+    
+# SERVER FOR TABLE EDITOR
+    
+    observe({
+        
+        req(input$upload)
+        
+        react_list$tab2_edit = #read.csv('TAB_Kokama9.csv', check.names = F)
+            read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL)
+        
+    })
+    
+    output$tab2_name = renderText(input$upload$name)
+    
+    output$tab2 = renderDT(react_list$tab2_edit, selection = 'none', rownames = F, editable = T)
+    
+    
+    # this is the 'EDITOR'
+    
+    proxy = dataTableProxy('tab2')
+    
+    observeEvent(input$tab2_cell_edit, {
+        info = input$tab2_cell_edit
+        str(info)
+        i = info$row
+        j = info$col + 1  # column index offset by 1
+        v = info$value
+        react_list$tab2_edit[i, j] <<- DT::coerceValue(v, react_list$tab2_edit[i, j])
+        replaceData(proxy, react_list$tab2_edit, resetPaging = FALSE, rownames = FALSE)
+    })
+    
+    # save to file
+    
+    output$download <- downloadHandler("example.csv",
+                                       content = function(file){ write.csv(react_list$tab2_edit, file, row.names = F) },
+                                       contentType = "text/csv")
     
     
 }      

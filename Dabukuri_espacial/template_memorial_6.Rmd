@@ -134,11 +134,11 @@ knitr::include_graphics(figure_path)
 
 __Frente (`r toupper(V$orientacao)`)__:  `r ifelse ( ! is.na(tab[i,"obs_frente"]), tab[i,"obs_frente"], "")`, corresponde ao segmento que une os marcos M-01 (`r M1`) e M-02 (`r M2`), com comprimento de `r V$dist_frente` metros.
 
-__Lateral direita (`r toupper(V$orient_lat_dir)`)__: `r ifelse(!is.na(V$vizinho_dir), paste0( "confronta-se com o terreno da casa ", eval(parse(text = V$vizinho_dir)), "."), "")` É constituída pela linha imaginária entre os marcos M-02 (`r M2`) e M-03 (`r M3`), com `r V$dist_lateral` metros. `r ifelse ( ! is.na(tab[i,"obs_lat_dir"]), tab[i,"obs_lat_dir"], "")` 
+__Lateral direita (`r toupper(V$orient_lat_dir)`)__: `r ifelse(!is.na(V$vizinho_dir), paste0( "Confronta-se com o terreno da casa ", V$vizinho_dir, "."), "")`. É constituída pela linha imaginária entre os marcos M-02 (`r M2`) e M-03 (`r M3`), com `r V$dist_lateral` metros; `r ifelse ( ! is.na(tab[i,"obs_lat_dir"]), tab[i,"obs_lat_dir"], "")` 
 
 __Fundos (`r toupper(V$orient_fun)`)__: o fundo do terreno é demarcado pelos pontos M-03 (`r M3`) e M-04 (`r M4`), distantes `r V$dist_frente` metros entre si. `r ifelse ( ! is.na(tab[i,"obs_fundos"]), tab[i,"obs_fundos"], "")` 
 
-__Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinho_esq), V$vizinho_esq %>% paste0(" confronta-se com o terreno da casa ", . , "."), "")` A linha que une os marcos M-04 (`r M4`) e M-01 (`r M1`) com `r V$dist_lateral` metros. `r ifelse ( ! is.na(tab[i,"obs_lat_esq"]), tab[i,"obs_lat_esq"], "")` 
+__Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinho_esq), paste0(" Confronta-se com o terreno da casa ", V$vizinho_esq, "."), "")` A linha que une os marcos M-04 (`r M4`) e M-01 (`r M1`) com `r V$dist_lateral` metros; `r ifelse ( ! is.na(tab[i,"obs_lat_esq"]), tab[i,"obs_lat_esq"], "")`
 
 <!-- observations? -->
 `r ifelse ( ! is.na(tab[i,"observacoes"]), paste0("Observações: ",tab[i,"observacoes"]), "")`
