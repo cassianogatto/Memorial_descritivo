@@ -235,27 +235,24 @@ ui <-
             fluidRow(
                 
                 column(3,   
-                       
                        fileInput("upload", "Choose CSV File", multiple = FALSE,
                               accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
                 ),
                 
                 column(4,   
-                       
                        tags$h5("tabela em edição:"),  
                        
                        tags$code( style = "font-size: 26px", textOutput("tab2_name"), ),
                        
                 ),
                 column(3,  
-                       
                        tags$h5( style = "color:red", "Salve as suas modificações na tabela!" ),
                        
                        downloadButton('download', class = 'btn-danger'),
                 ),
             ),  
             
-            DTOutput('tab2')
+            div(style = "font-size: 70%; height: 20px;", DTOutput('tab2') )
         ),
     )
 )
@@ -271,7 +268,7 @@ server <- function(input, output, session) {
     
     options(shiny.maxRequestSize=1000*1024^2) # this is required for uploading large files.
     
-    options(DT.options = list(pageLength = 30))
+    options(DT.options = list(pageLength = 50, lineHeight='70%', columnDefs = list( list( targets = 2, width = '400px' ) ) ))
     
     react_list <- reactiveValues(selec = NULL) # I could have used input$tab_rows_selected as in V_tab but this is an option to store the reactive value as well, and can be expanded to encompass other values
     
@@ -318,10 +315,12 @@ server <- function(input, output, session) {
     
     output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    output$tab <- renderDT(   tab_react(),
+    output$tab <- renderDT(  tab_react(),
+                             
                               editable = 'cell', server = TRUE,
+                             
                               options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
-                                             , pageLength = 30, columnDefs = list(list( targets = 2, width = '400px' ) ) 
+                                             , pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
                                          ) )
     
     # manipulating  DT tab
@@ -416,23 +415,28 @@ server <- function(input, output, session) {
             tags$iframe(seamless="seamless",  src= path,  width='1300', height='1000')
         }
     })
-    
-    
-    
-# SERVER FOR TABLE EDITOR
+  
+    # server functions for TABLE EDITOR
     
     observe({
         
         req(input$upload)
         
         react_list$tab2_edit = #read.csv('TAB_Kokama9.csv', check.names = F)
-            read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL)
+            read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL, check.names = FALSE)
         
     })
     
     output$tab2_name = renderText(input$upload$name)
     
-    output$tab2 = renderDT(react_list$tab2_edit, selection = 'none', rownames = F, editable = T)
+    output$tab2 = renderDT(  DT::datatable(react_list$tab2_edit) # %>% DT::formatStyle( lineHeight='70%' )
+                            , selection = 'none', rownames = F, editable = T    )
+    
+    # output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
+    #                          options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
+    #                                         , pageLength = 30, columnDefs = list(list( targets = 2, width = '400px' ) ) 
+    #                          ) )
+    
     
     
     # this is the 'EDITOR'
