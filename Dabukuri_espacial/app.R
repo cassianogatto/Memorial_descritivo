@@ -52,7 +52,6 @@ ui <-
     
         theme = bs_theme(version = 5, bootswatch = "flatly"),
         
-        
         # apresentação ----
         tabPanel("Apresentação",
                  
@@ -63,48 +62,60 @@ ui <-
         
         tabPanel("Comunidade",
                  
-                fluidRow(
+                tags$h3("Tabela dos dados da comunidade"),
+                
+                tags$h5("Aqui você pode visualizar toda a comunidade e selecionar, uma à uma, casas para criar o Memorial Descritivo e o Levantamento Topográfico na próxima aba de 'Dados individuais'"),
+                
+                br(),
+                 
+                fluidRow( # theme = bs_theme(version = 5, bootswatch = "flatly"),
                     
-                    theme = bs_theme(version = 5, bootswatch = "flatly"),
-                     
-                    column(width =2,
+                    column( width =2,
+                            
+                        div(class = "card", style = "padding:10px;",
                          
-                        div(align = 'justify', img(width = "80px", src = "DABUKURI.png" ), 
-                                                
-                                                img(width = "80px", src = "COPIME.png" )),
-                     
-                        radioButtons('comunidade', 'Escolha a comunidade', c('Kokama', 'Ipixuna'), inline = TRUE),
-                        
-                        checkboxInput("box_select_tab","Escolher a tabela com os dados da comunidade?", value = FALSE),
-                        
-                        conditionalPanel(condition = "input.box_select_tab == true",
-                                         
-                              fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
-                        )
-                    ),
+                            div( 
+                                
+                                img(width = "80px", align = "left", src = "DABUKURI.png" ), 
+                                                    
+                                img(width = "80px", align = "right", src = "COPIME.png" )),
+                            
+                            radioButtons('comunidade', 'Escolha a comunidade', c('Kokama', 'Ipixuna'), inline = TRUE),
+                    )),
                      
                     column(width = 10,
-                        
-                        uiOutput("comunidade_intro"),
-                    )
+                           
+                       div(class = "card", style = "padding:10px;",
+                           
+                           uiOutput("comunidade_intro")
+                       ),
+                      
+                    ),
+                ),
+                
+                br(),
+                
+                checkboxInput("box_select_tab","Prefer escolher a tabela com os dados da comunidade?", value = FALSE),
+                
+                conditionalPanel(condition = "input.box_select_tab == true",
+                                 
+                                 fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                 ),
                 
                 fluidPage(
                     
-                    tags$h3("Tabela dos dados da comunidade"),
-                    
-                    tags$h5(""),
-                    
                     fluidRow(
                         
-                        column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ) ),
+                        column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ), ),
                             
-                        column(2,  actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
+                        column(2, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
                     ),
                     
                     hr(),
                     
-                    DTOutput("tab"), 
+                    div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", 
+                        
+                        DTOutput("tab")), 
                 )
         ),
         
@@ -113,25 +124,30 @@ ui <-
         # dados individuais ----
         tabPanel("Dados individuais",
                  
-                br(), tags$h5("linha da tabela selecionada; ID casa selecionada"),
+                tags$h3("Dados individuais de cada terreno"),
+                
+                tags$h5("Aqui você pode conferir os detalhes de lotes individuais e criar o Memorial Descritivo e o Levantamento Topográfico."),
+                
+                HTML("<br>"),
                 
                 textOutput("casa_selecionada") ,
                 
-                div(class = 'container', style = "border: 1px solid black; width: 100%",  tableOutput("V_tab")  ),
-                
-                br(),
-                
-                fluidRow(
+                div(#style = "font-size: 90%; height: 10px; white-space: nowrap;", 
                     
-                    column(2, 
-                           
-                        checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
-                           
-                        conditionalPanel(condition = 'input.select_por_id == true',
+                    DTOutput("V_tab"),
+                ),
+                
+                HTML("<br>"),
+                
+                checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
+                
+                conditionalPanel(condition = 'input.select_por_id == true',
                                  
                             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL), # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
-                        ),   
-                    ),
+                ),
+                
+                
+                fluidRow(
                     
                     column(8,
                            
@@ -148,8 +164,12 @@ ui <-
                 
                 tags$code(style = "font-size:18px ", "Use os botôes pra gerar os docs baseados nos templates base para Memoriais e Levantamentos Topográficos."),
                 
+                HTML("<br>"),
+                
                 tags$code(style = "font-size:18px ", "Os documentos gerados estarão disponíveis nos respectivos links 
                                             e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
+                
+                HTML("<br>"),
                 
                 checkboxInput('input_templates',"Escolher outros templates?", value = FALSE),
                 
@@ -252,7 +272,9 @@ ui <-
                 ),
             ),  
             
-            div(style = "font-size: 70%; height: 20px;", DTOutput('tab2') )
+            textOutput('proxy'),
+            
+            div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", DTOutput('tab2') )
         ),
     )
 )
@@ -288,15 +310,14 @@ server <- function(input, output, session) {
             
             validate(need(ext == "csv", "Please upload a csv file"))
             
-            tab <- read.csv(file$datapath, header = TRUE) %>% as_tibble()
+            tab <- read.csv(file$datapath, check.names = F, header = TRUE) %>% as_tibble()
             
         } else {
             
             # ipixuna5.csv is NOT WORKING figure out what is going on!!!!!!!!!
             
-            switch(input$comunidade, Kokama = read.csv("TAB_Kokama9.csv", check.names = F), Ipixuna = read.csv("Ipixuna3.csv", check.names = F)) 
+            switch(input$comunidade, Kokama = read.csv("TAB_Kokama9.csv", check.names = F), Ipixuna = read.csv("Ipixuna5.csv",  header = TRUE)) # cannot use row.names = F for Ipixuna! only ??!!
             
-            # if (input$comunidade == "Kokama") { tab <- read.csv("TAB_Kokama6.csv") } else {data.frame(Importante = "escolha uma tabela válida")}
         }
     }  )
     
@@ -309,35 +330,34 @@ server <- function(input, output, session) {
         # col <- which( names( tab_react() == input$coluna_select ) )
         # row_slice <- which( tab_react()[,col] == input$lista_de_id )
         
-        V <- tab_react() %>% slice( row_slice )
+        V <- tab_react() %>% slice( row_slice )  %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim, everything())
     
     }  )
     
     output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    output$tab <- renderDT(  tab_react(),
+    # RESET not working anymore... :-(
+    output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
                              
-                              editable = 'cell', server = TRUE,
-                             
-                              options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
-                                             , pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
-                                         ) )
+                              options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
+                                             
+                                        pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
+                 ) )
     
     # manipulating  DT tab
     proxy = dataTableProxy('tab')
-    # reset selection
+    
+    # reset selection is NOT WORKING anymore!!!!
     observeEvent( input$clear1, {    proxy %>% selectRows(NULL)    } )
     
-    output$casa_selecionada <- renderText( paste(input$tab_rows_selected, "; ", V_react()$id) )
+    output$casa_selecionada <- renderText( paste("linha da tabela selecionada:", input$tab_rows_selected, ";  ID casa selecionada:", V_react()$id) )
     
-    output$V_tab <- renderTable( { 
-        
-        V_react() %>% 
-                                      
-                select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim) # %>%  slice( row_slice  )  
-    } )
+    output$V_tab <- renderDT(   V_react(), 
+                                options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
+                                    pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) )
+     )
     
-    output$inset <- renderImage({
+    output$inset <- renderImage( {
         
             file1 <- normalizePath(file.path( './figures/inset', paste("inset__", react_list$selec, ".png", sep = '')))
         
@@ -347,13 +367,13 @@ server <- function(input, output, session) {
             
     },   deleteFile = FALSE )
             
-    output$image <- renderImage({
+    output$image <- renderImage( {
     
             file2 <- normalizePath(file.path( './figures', paste0("casa___", react_list$selec, ".png")))
             
             list(src = file2, width = '500px')
     
-    },  deleteFile = FALSE )
+    },   deleteFile = FALSE )
 
 # SALVE MEMORIAL E TOPOGRAFICO
     
@@ -416,21 +436,22 @@ server <- function(input, output, session) {
         }
     })
   
-    # server functions for TABLE EDITOR
+# server functions for TABLE EDITOR
     
     observe({
         
         req(input$upload)
         
-        react_list$tab2_edit = #read.csv('TAB_Kokama9.csv', check.names = F)
+        react_list$tab2_edit = # read.csv('TAB_Kokama9.csv', check.names = F)
+            
             read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL, check.names = FALSE)
         
     })
     
     output$tab2_name = renderText(input$upload$name)
     
-    output$tab2 = renderDT(  DT::datatable(react_list$tab2_edit) # %>% DT::formatStyle( lineHeight='70%' )
-                            , selection = 'none', rownames = F, editable = T    )
+    output$tab2 = renderDT( react_list$tab2_edit # %>% DT::formatStyle( lineHeight='70%' ) # tryed to use DT::datatable(react_list$tab2_edit)
+                            ,  rownames = F,   editable = 'cell', server = TRUE  ) # editable = TRUE, selection = 'none',
     
     # output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
     #                          options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
@@ -441,7 +462,9 @@ server <- function(input, output, session) {
     
     # this is the 'EDITOR'
     
-    proxy = dataTableProxy('tab2')
+    proxy = dataTableProxy( 'tab2' )
+    
+    output$proxy = renderText(str(dataTableProxy( 'tab2' )))
     
     observeEvent(input$tab2_cell_edit, {
         info = input$tab2_cell_edit
@@ -449,7 +472,9 @@ server <- function(input, output, session) {
         i = info$row
         j = info$col + 1  # column index offset by 1
         v = info$value
-        react_list$tab2_edit[i, j] <<- DT::coerceValue(v, react_list$tab2_edit[i, j])
+        
+        react_list$tab2_edit[i, j] <- DT::coerceValue(v, react_list$tab2_edit[i, j])
+        
         replaceData(proxy, react_list$tab2_edit, resetPaging = FALSE, rownames = FALSE)
     })
     
@@ -458,8 +483,6 @@ server <- function(input, output, session) {
     output$download <- downloadHandler("example.csv",
                                        content = function(file){ write.csv(react_list$tab2_edit, file, row.names = F) },
                                        contentType = "text/csv")
-    
-    
 }      
 
 
@@ -475,10 +498,6 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 
 
 # runApp('Dabukuri_espacial')
-
-
-
-
 
 
 
