@@ -340,7 +340,7 @@ server <- function(input, output, session) {
     output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
                              
                               options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
-                                             
+                                         
                                         pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
                  ) )
     

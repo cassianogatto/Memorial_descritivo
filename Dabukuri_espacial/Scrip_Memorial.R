@@ -29,26 +29,21 @@ setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memoria
 
 ipixuna <- read.csv('Ipixuna4_longer.csv') %>% as_tibble()
 
+ipi4 <-read.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Old_stuf/Ipixuna4_longer.csv", check.names = F)
+ipixuna <- ipi4 %>% as_tibble()
+
 ipixuna %>% names()
 
 ipixuna <- ipixuna %>% mutate(ponto = paste0("M0", ponto))
 
 ipixu <- ipixuna %>% select(id = 'ID_GERAL', nome, cpf, rua,  ponto, dms_x, dms_y, everything())
 
-ipixu <- ipixu %>% pivot_wider(id_cols = c(id, rua), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
+ipixu <- ipixu %>% pivot_wider(id_cols = c(id, nome, cpf, rua), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
 
-write.csv(ipixu, "Ipixuna5.csv")
-
-
-p
-'> tab %>% names()
-[1] "X"              "id"             "nome"           "cpf"        "rua"            "casa"           "dec_y_M02"      "dec_y_M03"     
-[9] "dec_y_M04"      "dec_y_M05"      "dec_y_M06"      "dec_y_M01"  "orientacao"     "orient_lat_dir" "orient_fun"     "orient_lat_esq"
-[17] "vizinho_dir"    "vizinho_esqr"   "y_M02"          "y_M03"     "y_M04"          "y_M05"          "y_M06"          "y_M01"         
-[25] "observacoes"    "obs_frente"     "obs_lat_dir" "obs_lat_esq" "obs_fundos"     "area"           "perim"          "uso"           
-[33] "dist_frente"    "dist_lateral"   "escala" '
+ipixu %>% arrange(desc(id))
 
 
+write.csv(ipixu, "Ipixuna6.csv", row.names = F)
 
 
 
