@@ -27,23 +27,27 @@ tab %>% write.csv("TAB_Kokama6.csv", row.names = F)
 
 setwd("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Dabukuri_espacial")
 
-ipixuna <- read.csv('Ipixuna4_longer.csv') %>% as_tibble()
+# ipixuna <- read.csv('Ipixuna4_longer.csv') %>% as_tibble()
 
-ipi4 <-read.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Old_stuf/Ipixuna4_longer.csv", check.names = F)
-ipixuna <- ipi4 %>% as_tibble()
+ipixuna <- read.csv('Ipixuna7.csv', check.names = F) %>% as_tibble()
+
+# ipi4 <-read.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/Old_stuf/Ipixuna4_longer.csv", check.names = F)
+# ipixuna <- ipi4 %>% as_tibble()
 
 ipixuna %>% names()
+
+ipixuna <- ipixuna %>% arrange(ID_GERAL, ponto)
 
 ipixuna <- ipixuna %>% mutate(ponto = paste0("M0", ponto))
 
 ipixu <- ipixuna %>% select(id = 'ID_GERAL', nome, cpf, rua,  ponto, dms_x, dms_y, everything())
 
-ipixu <- ipixu %>% pivot_wider(id_cols = c(id, nome, cpf, rua), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
+ipixu <- ipixu %>% pivot_wider(id_cols = c(id, nome, cpf, rua, SEMSA, frente, lateral), names_from = ponto, values_from = c(dms_x, dms_y, x, y))
 
-ipixu %>% arrange(desc(id))
+ipixu %>% filter(nome != "")
 
 
-write.csv(ipixu, "Ipixuna6.csv", row.names = F)
+write.csv(ipixu, "Ipixuna8.csv", row.names = F)
 
 
 
