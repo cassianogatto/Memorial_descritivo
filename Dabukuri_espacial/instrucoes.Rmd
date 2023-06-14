@@ -48,20 +48,20 @@ O App está organizado por abas (acima).
 
 1. A aba de *Apresentação* é esta página que você está lendo agora.
 
-2. Escolha a comuniade desejada na segunda aba - os dados sobre os terrenos serão automaticamente carregados e podem ser conferidos em sua totalidade abaixo. Alternativamente, pode-se escolher outra tabela selecionando o arquivo. Neste caso a formatação da tabela deve seguir as recomendações no fim desta página.
+2. Escolha a *Comunidade* desejada na segunda aba - os dados sobre os terrenos serão automaticamente carregados e podem ser conferidos em sua totalidade abaixo. Para produzir os documentos (próxima aba) deve-se selecionar um terreno (uma linha da tabela) aqui. Alternativamente, pode-se escolher outra tabela selecionando o arquivo. Neste caso a formatação da tabela deve seguir o modelo das tabelas padronizadas (veja abaixo).
 
 3. Na aba *Dados individuais* pode-se selecionar lotes individuais, um a um, e checar informações importantes. Antes de gerar os documentos, deve-se confirmar se os *templates* selecionados correspondem às versões corretas de memorial e topográfico que serão utilizados para gerar os documentos (existem dois botões para isso). Os documentos gerados são armazenados nos endereços específicos apresentados, em uma pasta chamada */www/* no diretório do arquivo do App ('C:/...Dabukuri_espacial/www/memorial_casa_XX.html).
 
-4. Por fim, na aba *Documentos* pode-se acessar quaisquer documentos html gerados na página, tanto memoriais descritivos quanto levantamentos topográficos.
+4. Na aba *Documentos* pode-se acessar quaisquer documentos html gerados na página, tanto memoriais descritivos quanto levantamentos topográficos.
 
-
+5. A ferramenta *Editor* possibilita a edição dos dados dos lotes. Para isso deve-se carregar a tabela, clicar nas células a serem editadas e, após edição, salvar a tabela como a mesma tabela ou com outro nome.  
 
 
 __Estruturação de *templates* e da tabela__
 
-Este App utiliza o ambiente 'R' para aplicar variáveis que nos interessam, como tamanho do terreno e nome do proprietário, sobre um modelo fixo que contém a estrutura básica dos documentos. *Templates* estão no formado *R-Markdown* (.Rmd).
+Este App utiliza o ambiente 'R' para aplicar variáveis que nos interessam, como tamanho do terreno e nome do proprietário, sobre um modelo fixo que contém a estrutura básica dos documentos e que depende da tabela formatada de acordo com o padrão de colunas. *Templates* estão no formado *R-Markdown* (.Rmd).
 
-Uma tabela geral, mostrada na aba *Comunidade*, possui todos os atributos de todos os terrenos de uma comunidade. Cada linha desta tabela tras as informações relativas a cada terreno, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Para gerar os documentos, a aplicação dos *templates* usa as informações de uma única linha da tabela, que é escolhida pela aba *Dados individuais*. Os nomes das colunas são usadas para reconhecer as variáveis. Para que os *templates* funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
+Uma tabela geral, mostrada na aba *Comunidade*, possui todos os atributos de todos os terrenos de uma comunidade. Cada linha desta tabela traz as informações relativas a cada terreno, como nome e cpf do proprietário, as coordenadas e valores dos limites dos terrenos, etc. Para gerar os documentos, a aplicação dos *templates* usa as informações de uma única linha da tabela, que é escolhida pela aba *Dados individuais*. Os nomes das colunas são usadas para reconhecer as variáveis. Para que os *templates* funcionem perfeitamente as tabelas devem ser padronizadas com relação ao nome das variáveis e formato dos dados. Alguns exemplos de nome de colunas são mostrados abaixo:
 
 <code> "id"   "nome"    "cpf"   "rua"   "casa"    "dms_x_M01"   "dms_y_M03"   "y_M04"   "x_M01"   "observacoes" etc...
 </code>

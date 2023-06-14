@@ -253,16 +253,14 @@ ui <-
         tabPanel("Editor",
             
             fluidRow(
-                
                 column(3,   
                        fileInput("upload", "Choose CSV File", multiple = FALSE,
                               accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
                 ),
-                
                 column(4,   
                        tags$h5("tabela em edição:"),  
                        
-                       tags$code( style = "font-size: 26px", textOutput("tab2_name"), ),
+                       style = "font-size: 26px", textOutput("tab2_name"), 
                        
                 ),
                 column(3,  
@@ -281,9 +279,6 @@ ui <-
 
 # ADD PATH to Viewer
 addResourcePath("tmpuser", getwd())
-
-
-# ----
 
 # SERVER -----
 server <- function(input, output, session) {
@@ -442,9 +437,7 @@ server <- function(input, output, session) {
         
         req(input$upload)
         
-        react_list$tab2_edit = # read.csv('TAB_Kokama9.csv', check.names = F)
-            
-            read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL, check.names = FALSE)
+        react_list$tab2_edit = read.csv(input$upload$datapath, header = TRUE, sep = ",", stringsAsFactors = FALSE,  row.names = NULL, check.names = FALSE)
         
     })
     
@@ -452,13 +445,6 @@ server <- function(input, output, session) {
     
     output$tab2 = renderDT( react_list$tab2_edit # %>% DT::formatStyle( lineHeight='70%' ) # tryed to use DT::datatable(react_list$tab2_edit)
                             ,  rownames = F,   editable = 'cell', server = TRUE  ) # editable = TRUE, selection = 'none',
-    
-    # output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
-    #                          options = list(scrollX = TRUE, selection = 'single', autoWidth = TRUE
-    #                                         , pageLength = 30, columnDefs = list(list( targets = 2, width = '400px' ) ) 
-    #                          ) )
-    
-    
     
     # this is the 'EDITOR'
     
@@ -485,16 +471,13 @@ server <- function(input, output, session) {
                                        contentType = "text/csv")
 }      
 
-
-
 # Normal Run App ----
 
 shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browser = TRUE) )
 
-
 # Run the application with themer
 
- # run_with_themer(  shinyApp( ui = ui, server = server, options = list(width = 100) ) )
+# run_with_themer( shinyApp( ui = ui, server = server, options = list(width = 100) ) )
 
 
 # runApp('Dabukuri_espacial')
