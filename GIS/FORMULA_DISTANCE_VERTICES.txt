@@ -1,0 +1,50 @@
+CASE
+	WHEN ponto = 1
+	THEN round( 111000 * 
+		distance(
+			$geometry,
+			geometry( 
+				get_feature( 'vertices_ipixuna', 
+					map('ID_GERAL', ID_GERAL, 'ponto', 2 ) 
+				) 
+			) 
+		), 	
+	0)
+	
+	WHEN ponto = 2
+	THEN round( 111000 * 
+		distance(
+			$geometry,
+			geometry( 
+				get_feature( 'vertices_ipixuna', 
+					map('ID_GERAL', ID_GERAL, 'ponto', 3 ) 
+				) 
+			) 
+		), 	
+	0)
+	
+	WHEN ponto = 3
+	THEN round( 111000 * 
+		distance(
+			$geometry,
+			geometry( 
+				get_feature( 'vertices_ipixuna', 
+					map('ID_GERAL', ID_GERAL, 'ponto', 4 ) 
+				) 
+			) 
+		), 	
+	0)
+	WHEN ponto = 4
+	THEN round( 111000 * 
+		distance(
+			$geometry,
+			geometry( 
+				get_feature( 'vertices_ipixuna', 
+					map('ID_GERAL', ID_GERAL, 'ponto', 1 ) 
+				) 
+			) 
+		), 	
+	0)
+	
+	ELSE NULL
+END

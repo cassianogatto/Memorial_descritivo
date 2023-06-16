@@ -1,0 +1,49 @@
+{
+    "author": "HUMANITAS_FAPEAM-PC",
+    "exported_at": "2023-06-16T18:23:25",
+    "expressions": [
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": " \"terrestial\" = 'true' AND\r\n \"marine\" = 'false' ",
+            "group": "user",
+            "name": "\"terrestial\" = 'true' AND \"marine\" = 'false'",
+            "type": "expression"
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": " \"terrestial\" = 'true' AND\r\n \"marine\" = 'false' AND\r\n \"freshwater\" = 'true'",
+            "group": "user",
+            "name": "\"terrestial\" = 'true' AND \"marine\" = 'false' AND \"freshwater\" = 'true'",
+            "type": "expression"
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": "CASE\r\n  WHEN ponto > 1\r\n\tTHEN round( distance( $geometry,\r\n\t\tgeometry(get_feature_by_id('vertices_ipixuna',  $id - 1)) ) * 111000, 0)\r\nEND\r\n",
+            "group": "user",
+            "name": "dist_vert",
+            "type": "expression"
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": "\r\n\r\nCASE\r\n  WHEN ponto > 1\r\n\tTHEN distance( $geometry,\r\n\t\tgeometry(get_feature_by_id('vertices_ipixuna',  $id - 1)) )\r\nEND\r\n",
+            "group": "user",
+            "name": "dist_vertex",
+            "type": "expression"
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": "CASE\r\n  WHEN ponto > 1\r\n\tTHEN distance( $geometry,\r\n\t\tgeometry(get_feature_by_id('vertices_ipixuna',  $id - 1)) ) * 111000\r\nEND\r\n",
+            "group": "user",
+            "name": "dist_vertices",
+            "type": "expression"
+        },
+        {
+            "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>",
+            "expression": "CASE\r\n\tWHEN ponto > 1\r\n\tTHEN round( 111000 * \r\n\t\tdistance(\r\n\t\t\t$geometry,\r\n\t\t\tgeometry( \r\n\t\t\t\tget_feature( 'vertices_ipixuna', \r\n\t\t\t\t\tmap('ID_GERAL', ID_GERAL, 'ponto', to_int(\"ponto\") - 1 ) \r\n\t\t\t\t) \r\n\t\t\t) \r\n\t\t), \t\r\n\t0)\r\n\t\t\r\n\tELSE round( 111000 * \r\n\t\tdistance(\r\n\t\t\t$geometry,\r\n\t\t\tgeometry( \r\n\t\t\t\tget_feature( 'vertices_ipixuna', \r\n\t\t\t\t\tmap('ID_GERAL', ID_GERAL, 'ponto', 4 ) \r\n\t\t\t\t) \r\n\t\t\t) \r\n\t\t), \t\r\n\t0)\r\n\t\r\nEND\r\n",
+            "group": "user",
+            "name": "distance",
+            "type": "expression"
+        }
+    ],
+    "qgis_version": "3.28.1-Firenze"
+}
