@@ -48,7 +48,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # LOAD params listfrom rmarkdown::render in Shiny 
 tab <- params$tab
 casa <- params$casa
-i = which(tab$id == casa)
+i <- which(tab$id == casa)
 V <- params$V
 
 # SETUP fixed variables
@@ -57,6 +57,7 @@ tipo_de_imovel <- "Rural"
 comarca <- 'Tabelião Zé Carioca'
 end <- ", Estrada Campos Elíseos, Ramal Brasileirinho, km8"
 uso <- V$uso
+
 # pontos coordenadas
 M1 = paste0(V$dms_y_M01,' / ', V$dms_x_M01) 
 M2 = paste0(V$dms_y_M02,' / ', V$dms_x_M02)
@@ -100,6 +101,7 @@ Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
 
 ```{r, echo =FALSE}
 library(knitr)
+library(dplyr)
 
 pontos_tab <- tibble( Marcos = c("M01", "M02", "M03", "M04"), Coordenadas = c(M1, M2, M3, M4))
 

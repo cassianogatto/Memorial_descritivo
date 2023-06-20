@@ -1,0 +1,151 @@
+---
+title: '&#32;'
+
+pagetitle: "levantamento topografico"
+
+output: html_document
+
+params:
+  tab: NULL
+  casa: NULL
+  V: NULL
+
+---
+
+<style>
+body{
+  text-size:14px;
+  size: A4 landscape;
+  margin: 0;
+  width: 297mm; 
+  height: 209mm;
+  <!--border: 0.2px solid black;-->
+}
+@media print {
+  @page {
+    size: A4 landscape;
+  }
+}
+.container {
+  align-items: center;
+  justify-content: center 
+  display: grid;<!--  flex; -->
+  grid-template-columns: 600px auto ;
+  column-gap: 5px;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+
+library(rmarkdown)
+library(dplyr)
+library(stringr)
+
+# read params list given by rmarkdown::render 
+
+tab <- params$tab
+
+casa <- params$casa
+
+V <- params$V
+
+# variables
+endereco <- paste0('Rua ', V$rua, ', ', V$casa)
+
+responsavel <- "Elvis Presley"
+
+```
+
+<!-- MAP + 2 INSETS (SMALL MAP AND SMALL TABLE) -->
+<div class="container" width = 100% style = "border:1px solid black">
+
+<table style="border:0px margin:0px" >
+<!-- first row -->
+<tr>
+<td rowspan = '3' width = 80% style = "border:0px;">
+
+<div class = 'image' style="float:left">
+```{r, out.width= '100%', fig.align='left', } 
+
+if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/',V$comunidade[1], '/casa___', V$id, '.png')
+
+    } else {figure_path <- paste0('figures/casa___', V$id, '.png')}
+
+knitr::include_graphics(figure_path)
+```
+</div>
+
+</td>
+
+<td style='border:0px; '> <!-- <img width = 60px src = "figures/DABUKURI.png"> <b> DABUKURI</b> -->
+</td></tr>
+
+<!--tr><td style='border:0px; display:flex'><b style = 'float;left'> COPIME </b><img width = 60px  style = "float:right" src = "figures/COPIME.png"></td></tr-->
+
+<!-- second row -->
+<tr>
+<td style = 'border:0px' >
+```{r, out.width= '100%', fig.align='left', }
+
+if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1],'/inset/inset__', V$id, '.png')
+
+   } else { figure_path <- paste0('figures/inset/inset__', V$id, '.png') }  ## CHECK FIGURES' ID !!
+
+knitr::include_graphics(figure_path)
+```
+</td>
+</tr>
+
+<!-- third row -->
+<tr>
+<td style='border:0px'>
+<table style="border-collapse: separate; border-spacing: 0px; background: #ddd">
+  <style>
+    td { border: 0.3 px solid black; text-align: center; padding:3px }
+  </style>
+<tr><td> Estação </td><td> Vante </td><td> Distância(m) </td></tr>
+<tr><td>M01</td> <td>M02</td> <td>`r V$dist_frente` m </td></tr>
+<tr><td>M02</td> <td>M03</td> <td>`r V$dist_lateral` m </td></tr>
+<tr><td>M03</td> <td>M04</td> <td>`r V$dist_frente` m </td></tr>
+<tr><td>M04</td> <td>M01</td> <td>`r V$dist_lateral` m </td></tr>
+</table>
+</td></tr></table></div>
+
+<div class = "container" width = 100% style = "border:1px solid black">
+<table style="border-collapse: separate; border-spacing: 8px;">
+  <style>
+    td { border: 2px solid black; text-align: center; }
+  </style>
+<tr height = 45px>
+  <td width = 20% > 
+  <img width = 60px src = "figures/DABUKURI.png">
+  <b>DABUKURI</b> 
+  </td>
+  <td width = 60% colspan="2"> <b>LEVANTAMENTO TOPOGRÁFICO PLANIALTIMÉTRICO LOTE REMANESCENTE</b> </td>
+  <td width = 20%> Responsável técnico: `r responsavel`</td>
+</tr>
+
+<tr height = 30px>
+  <td width = 20% > Área total: `r V$area` </td>
+  <td width = 60% colspan="2"> Proprietário(a): __`r V$nome`__ </td>
+  <td width = 20%> Data: `r Sys.Date() %>% format("%d %m %Y")`</td>
+</tr>
+
+<tr height = 30px>
+<td width = 20% > Perimetro: `r V$perim` </td>
+<td width = 60% colspan="2"> Localização: __`r endereco `__ </td>
+<td width = 20%> Datum: WGS84 </td>
+</tr>
+
+<tr height = 30px>
+<td width = 20% > Escala: `r V$escala` </td>
+<td width = 40%> Município: Manaus AM </td>
+<td width = 20% style="text-align:left"> Visto: </td>
+<td width = 20%> ART: `r #V$art` </td>
+</tr>
+
+</table>
+
+</div>
+

@@ -50,6 +50,20 @@ ipixu %>% filter(nome != "")
 write.csv(ipixu, "Ipixuna8.csv", row.names = F)
 
 
+# TABELA GERAL
+
+tg <- read.csv("TABELA GERAL.csv",check.names = F)
+
+kk < read.csv("TAB_Kokama9.csv", check.names = F)
+
+
+
+
+
+
+
+
+
 
 
 'print Memorial e levantamento topográfico'

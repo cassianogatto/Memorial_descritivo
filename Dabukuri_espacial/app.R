@@ -167,7 +167,7 @@ ui <-
                 HTML("<br>"),
                 
                 tags$code(style = "font-size:18px ", "Os documentos gerados estarão disponíveis nos respectivos links 
-                                            e poderão ser abertos no seu browser, ou na aba 'Documentos' deste App"),
+                                            e poderão ser abertos no seu browser, ou na aba 'Visualização' deste App"),
                 
                 HTML("<br>"),
                 
@@ -180,7 +180,7 @@ ui <-
                     fluidRow(
                         column(6,     selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
                                            choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
-                                           selected = "template_memorial_4_SHINY.Rmd"),
+                                           selected = "template_memorial_6.Rmd"),
                         ),
                         column(6,    selectInput(inputId = "topografico_template", label = "Topográfico template", 
                                                choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
@@ -217,9 +217,10 @@ ui <-
                 tabPanel("Memorial",
                          
                         tags$h5("Para imprimir abra o endereço gerado na aba anterior ('C:/.../www/memorial_casa_X.html') no seu browser e 'imprima' em PDF (ctrl P)."),
+                        
                         br(),
-                        tags$code("Se desejar consultar para outra casa, clique e escolha na pasta /www; se não encontar tente gerá-lo na aba 'Dados Individuais'"),
-                           
+                        tags$code(tags$strong("Se desejar consultar para outra casa, clique e escolha na pasta /www; se não encontar tente gerá-lo na aba 'Dados Individuais'")),
+                        
                         checkboxInput("another_memo", "escolha casa ID", value = FALSE),
                         
                         conditionalPanel(condition = 'input.another_memo == true',
@@ -307,6 +308,8 @@ server <- function(input, output, session) {
             
             tab <- read.csv(file$datapath, check.names = F, header = TRUE) %>% as_tibble()
             
+            if('comunidade' %in% names(tab)) tab <- tab %>% filter(comunidade == input$comunidade)
+            
         } else {
             
             # ipixuna5.csv is NOT WORKING figure out what is going on!!!!!!!!!
@@ -320,12 +323,12 @@ server <- function(input, output, session) {
         
         req( tab_react() )
         
-        if(input$select_por_id){ row_slice <- which( tab_react()[,"id"] == input$lista_de_id ) } else { row_slice <- input$tab_rows_selected }
+        if(input$select_por_id){ row_slice <- which( tab_react()[,"id"] == input$lista_de_id ) } else { row_slice <- input$tab_rows_selected[1] }
             
         # col <- which( names( tab_react() == input$coluna_select ) )
         # row_slice <- which( tab_react()[,col] == input$lista_de_id )
         
-        V <- tab_react() %>% slice( row_slice )  %>% select(id, nome, cpf, rua, casa, contains("dist_"), escala, observacoes, area, perim, everything())
+        V <- tab_react() %>% slice( row_slice )  %>% select(id, nome, cpf, rua, casa, dist_frente, dist_lateral, escala, observacoes, area, perim, everything())
     
     }  )
     
@@ -380,6 +383,8 @@ server <- function(input, output, session) {
                       output_format = "html_document",
                       output_file = paste0("memorial_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
+                      
+                      # params passed to the template !!
                       params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
     
