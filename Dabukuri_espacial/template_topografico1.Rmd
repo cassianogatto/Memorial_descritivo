@@ -68,7 +68,7 @@ responsavel <- "Elvis Presley"
 <div class = 'image' style="float:left">
 ```{r, out.width= '100%', fig.align='left', } 
 
-if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/',V$comunidade[1], '/casa___', V$id, '.png')
+if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1], '/', V$comunidade[1], '_casa_', V$id, '.png')
 
     } else {figure_path <- paste0('figures/casa___', V$id, '.png')}
 
@@ -88,7 +88,7 @@ knitr::include_graphics(figure_path)
 <td style = 'border:0px' >
 ```{r, out.width= '100%', fig.align='left', }
 
-if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1],'/inset/inset__', V$id, '.png')
+if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1], '/', V$comunidade[1],'_inset_casa_', V$id, '.png')
 
    } else { figure_path <- paste0('figures/inset/inset__', V$id, '.png') }  ## CHECK FIGURES' ID !!
 

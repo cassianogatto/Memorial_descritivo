@@ -21,9 +21,9 @@ ui <-
               
        body{
           align: center;
-          text-size:12px;
+          text-size:10px;
           margin: 0px;
-          padding:20px;
+          padding:10px;
           width: auto; 
           height: auto;
       }
@@ -50,9 +50,10 @@ ui <-
 
         title = "DABUKURI - Direito ao Território", collapsible = TRUE,
     
-        theme = bs_theme(version = 5, bootswatch = "flatly"),
+        theme = bs_theme(version = 5, bootswatch = "flatly", font_scale = 0.95),
         
         # apresentação ----
+        
         tabPanel("Apresentação",
                  
                  fluidRow(  column(2),  column(8, includeMarkdown("instrucoes.Rmd")  ), column(2),  )
@@ -62,15 +63,15 @@ ui <-
         
         tabPanel("Comunidade",
                  
-                tags$h3("Tabela dos dados da comunidade"),
-                
-                tags$h5("Aqui você pode visualizar toda a comunidade e selecionar, uma à uma, casas para criar o Memorial Descritivo e o Levantamento Topográfico na próxima aba de 'Dados individuais'"),
-                
-                br(),
-                 
                 fluidRow( # theme = bs_theme(version = 5, bootswatch = "flatly"),
                     
                     column( width =2,
+                            
+                        tags$h3("Tabela dos dados da comunidade"),
+                        
+                        tags$h5("Aqui você pode visualizar toda a comunidade e selecionar, uma à uma, casas para criar o Memorial Descritivo e o Levantamento Topográfico na próxima aba de 'Dados individuais'"),
+                        
+                        br(),
                             
                         div(class = "card", style = "padding:10px;",
                          
@@ -95,33 +96,30 @@ ui <-
                 
                 br(),
                 
+                fluidRow(
+                    
                 checkboxInput("box_select_tab","Prefer escolher a tabela com os dados da comunidade?", value = FALSE),
                 
                 conditionalPanel(condition = "input.box_select_tab == true",
                                  
-                                 fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
+                         fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                 ),
                 
-                fluidPage(
+                column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ), ),
                     
-                    fluidRow(
-                        
-                        column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ), ),
+                column(2, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
+                ),
+                
+                div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", 
                             
-                        column(2, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
-                    ),
-                    
-                    hr(),
-                    
-                    div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", 
-                        
-                        DTOutput("tab")), 
-                )
+                    DTOutput("tab")
+                ), 
+                
         ),
         
         
         
-        # dados individuais ----
+# dados individuais ----
         tabPanel("Dados individuais",
                  
                 tags$h3("Dados individuais de cada terreno"),
@@ -178,13 +176,13 @@ ui <-
                     tags$h5("Após selecionar os templates gere os documentos e verifique o link."),
                     
                     fluidRow(
-                        column(6,     selectInput(inputId = "memorial_template", label = "Arquivo memorial template", 
+                        column(6,     selectInput(inputId = "memorial_template", label = "Arquivo template memorial", 
                                            choices = dir()[dir() %>% grep(pattern =  "*template_memorial*")],
-                                           selected = "template_memorial_6.Rmd"),
+                                           selected = "template_memorial_7.Rmd"),
                         ),
-                        column(6,    selectInput(inputId = "topografico_template", label = "Topográfico template", 
-                                               choices = dir()[dir() %>% grep(pattern = "*template_topografico*")],
-                                               selected = "topografico_template1.Rmd"),
+                        column(6,    selectInput(inputId = "topografico_template", label = "Template topográfico", 
+                                               choices = dir()[dir() %>% grep(pattern = "*topografico*")],
+                                               selected = "template_topografico1.Rmd"),
                         ),
                     ),
                 ),
@@ -193,7 +191,9 @@ ui <-
                     
                     div(class = 'container',
                         
-                        column(6,    actionButton('get_memorial',"gerar memorial"),
+                        column(6,    
+                               
+                               actionButton('get_memorial',"gerar memorial"),
                                
                                tags$h3("o arquivo Memorial gerado está em:"),
                                
@@ -202,7 +202,9 @@ ui <-
                     
                     div(class = 'container',
                         
-                        column(6,  actionButton("get_topografico","gerar topografico"),
+                        column(6,  
+                               
+                               actionButton("get_topografico","gerar topografico"),
                                
                                tags$h3("o arquivo Topográfico gerado está em:"),
                                
@@ -314,7 +316,9 @@ server <- function(input, output, session) {
             
             # ipixuna5.csv is NOT WORKING figure out what is going on!!!!!!!!!
             
-            switch(input$comunidade, Kokama = read.csv("TAB_Kokama9.csv", check.names = F), Ipixuna = read.csv("Ipixuna5.csv",  header = TRUE)) # cannot use row.names = F for Ipixuna! only ??!!
+            tab <-  read.csv("TABELA GERAL.csv", check.names = F)
+            
+            if('comunidade' %in% names(tab)) tab <- tab %>% filter(comunidade == input$comunidade)
             
         }
     }  )
@@ -357,17 +361,15 @@ server <- function(input, output, session) {
     
     output$inset <- renderImage( {
         
-            file1 <- normalizePath(file.path( './figures/inset', paste("inset__", react_list$selec, ".png", sep = '')))
+            file1 <- normalizePath(file.path( './figures/', input$comunidade, '/', paste0(input$comunidade, "_inset_casa_", react_list$selec, ".png", sep = '')))
         
-                # normalizePath(file.path( './figures', paste0("casa___",input$lista_de_id, ".png")))
-            
             list(src = file1, width = '500px')
             
     },   deleteFile = FALSE )
             
     output$image <- renderImage( {
     
-            file2 <- normalizePath(file.path( './figures', paste0("casa___", react_list$selec, ".png")))
+            file2 <- normalizePath(file.path( './figures/',  input$comunidade, '/',  paste0(input$comunidade, "_casa_", react_list$selec, ".png")))
             
             list(src = file2, width = '500px')
     
@@ -478,7 +480,7 @@ server <- function(input, output, session) {
 
 # Normal Run App ----
 
-shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browser = TRUE) )
+shinyApp( ui = ui, server = server) #width = 100, launch_browser = TRUE) )
 
 # Run the application with themer
 
@@ -488,6 +490,8 @@ shinyApp( ui = ui, server = server, options = list()) #width = 100, lauch_browse
 # runApp('Dabukuri_espacial')
 
 
+# theme preview
+# bs_theme_preview( bs_theme(bootswatch = "flatly") )
 
 
 

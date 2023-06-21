@@ -18,10 +18,10 @@ A comunidade __Ipixuna - Iawareté__ congrega representantes de mais de duas dez
 
 <td>
 <div class = 'container'>
-<img width = "900" src = "ipixuna_grid_geral.png"/>
-
-Imagem de satélite com destaque para os terrenos em processo de regularização.
+<img width = "600" src = "ipixuna_satelite.png"/>
 </div>
+Imagem de satélite com destaque para os terrenos em processo de regularização.
+
 </td>
 </tr>
 </table>

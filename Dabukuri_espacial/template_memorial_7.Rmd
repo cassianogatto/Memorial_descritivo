@@ -106,7 +106,7 @@ kable(pontos_tab, format = 'simple', padding = 0)
 <td width = 45% >
 ```{r, out.width=='350px', fig.align='right'}
 
-figure_path <- paste0('figures/casa__', V$id, '.png')
+if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1], '/', V$comunidade[1], '_P&B_casa_', V$id, '.png') } else { figure_path <- paste0('figures/casa__', V$id, '.png')}
 
 knitr::include_graphics(figure_path)
 ```
