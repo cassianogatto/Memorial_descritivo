@@ -105,9 +105,10 @@ ui <-
                          fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                 ),
                 
-                column(3, actionButton('fake', "Selecione apenas UMA casa na tabela abaixo", class = 'btn-primary btn-lg' ), ),
-                    
+                column(3, div( style = 'color:black ; background:grey; padding:5px;', tags$h4("Selecione apenas UMA casa na tabela abaixo") ), ),
+                
                 column(2, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
+                
                 ),
                 
                 div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", 
@@ -119,7 +120,7 @@ ui <-
         
         
         
-# dados individuais ----
+        # dados individuais ----
         tabPanel("Dados individuais",
                  
                 tags$h3("Dados individuais de cada terreno"),
@@ -214,6 +215,7 @@ ui <-
         ),
         
         # visualização ----
+
         navbarMenu("Visualização",
         
                 tabPanel("Memorial",
@@ -273,7 +275,7 @@ ui <-
                 ),
             ),  
             
-            textOutput('proxy'),
+            textOutput('proxy2'),
             
             div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", DTOutput('tab2') )
         ),
@@ -455,9 +457,9 @@ server <- function(input, output, session) {
     
     # this is the 'EDITOR'
     
-    proxy = dataTableProxy( 'tab2' )
+    proxy2 = dataTableProxy( 'tab2' )
     
-    output$proxy = renderText(str(dataTableProxy( 'tab2' )))
+    output$proxy2 = renderText(str(dataTableProxy( 'tab2' )))
     
     observeEvent(input$tab2_cell_edit, {
         info = input$tab2_cell_edit
@@ -468,7 +470,7 @@ server <- function(input, output, session) {
         
         react_list$tab2_edit[i, j] <- DT::coerceValue(v, react_list$tab2_edit[i, j])
         
-        replaceData(proxy, react_list$tab2_edit, resetPaging = FALSE, rownames = FALSE)
+        replaceData(proxy2, react_list$tab2_edit, resetPaging = FALSE, rownames = FALSE)
     })
     
     # save to file
