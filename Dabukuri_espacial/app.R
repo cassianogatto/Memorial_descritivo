@@ -46,9 +46,9 @@ ui <-
     
     " ) ) ),
     
-    navbarPage(position = 'fixed-top', 
+    navbarPage(position = 'fixed-top', collapsible = TRUE, windowTitle = "DABUKURI", 
 
-        title = "DABUKURI - Direito ao Território", collapsible = TRUE,
+        title = "DABUKURI - Direito ao Território", 
     
         theme = bs_theme(version = 5, bootswatch = "flatly", font_scale = 0.95),
         
@@ -105,9 +105,11 @@ ui <-
                          fileInput( inputId = "filetab",  label = "Comunidade (tabela '.csv') ", accept = c(".csv"), multiple=TRUE),
                 ),
                 
-                column(3, div( style = 'color:black ; background:grey; padding:5px;', tags$h4("Selecione apenas UMA casa na tabela abaixo") ), ),
                 
-                column(2, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-secondary btn-lg' ), ),
+                
+                column(3, actionButton('fake', 'Lembre-se de selecionar APENAS UMA casa na tabela abaixo', class = 'btn-secondary' ), ), # column(3, div( style = 'color:black ; background:grey; padding:5px;', tags$h4("Selecione apenas UMA casa na tabela abaixo") ), ),
+                
+                column(3, actionButton('clear1', 'Apague a(s) seleção(ôes) aqui', class = 'btn-primary' ), ),
                 
                 ),
                 
