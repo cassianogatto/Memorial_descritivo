@@ -51,9 +51,13 @@ casa <- params$casa
 V <- params$V
 
 # variables
-endereco <- paste0('Rua ', V$rua, ', ', V$casa)
 
-responsavel <- "Elvis Presley"
+end <- switch( V$comunidade, Kokama = ", Estrada Campos Elíseos, Ramal Brasileirinho, km8",
+                            Ipixuna = ", Avenida Palmeira do Miriti, Distrito Industrial II - 69075")
+
+endereco <- paste0('Rua ', V$rua, ', ', V$casa, end)
+
+responsavel <- "Ivani Ferreira de Faria – Geógrafa (CREAM-AM 123456789-0)"
 
 ```
 
@@ -123,7 +127,7 @@ knitr::include_graphics(figure_path)
   <b>DABUKURI</b> 
   </td>
   <td width = 60% colspan="2"> <b>LEVANTAMENTO TOPOGRÁFICO PLANIALTIMÉTRICO LOTE REMANESCENTE</b> </td>
-  <td width = 20%> Responsável técnico: `r responsavel`</td>
+  <td width = 20%> Responsável técnica: `r responsavel`</td>
 </tr>
 
 <tr height = 30px>

@@ -69,15 +69,15 @@ ui <-
                             
                         tags$h3("Tabela dos dados da comunidade"),
                         
-                        tags$h5("Aqui você pode visualizar toda a comunidade e selecionar, uma à uma, casas para criar o Memorial Descritivo e o Levantamento Topográfico na próxima aba de 'Dados individuais'"),
+                        tags$h5("Aqui você pode visualizar toda a comunidade e selecionar, 
+                                uma à uma, casas para criar o Memorial Descritivo e o Levantamento 
+                                Topográfico na próxima aba, 'Dados individuais'"),
                         
                         br(),
                             
                         div(class = "card", style = "padding:10px;",
                          
-                            div( 
-                                
-                                img(width = "80px", align = "left", src = "DABUKURI.png" ), 
+                            div( img(width = "80px", align = "left", src = "DABUKURI.png" ), 
                                                     
                                 img(width = "80px", align = "right", src = "COPIME.png" )),
                             
@@ -86,7 +86,7 @@ ui <-
                      
                     column(width = 10,
                            
-                       div(class = "card", style = "padding:10px;",
+                       div(class = "card", style = "padding:20px;",
                            
                            uiOutput("comunidade_intro")
                        ),
@@ -340,9 +340,12 @@ server <- function(input, output, session) {
     
     }  )
     
-    output$comunidade_intro <- renderUI( { includeMarkdown( switch(input$comunidade, Kokama = "www/kokama_intro.Rmd", Ipixuna = "www/ipixuna_intro.Rmd") ) })
+    output$comunidade_intro <- renderUI( { 
+        
+        includeMarkdown( 
+            switch( input$comunidade, Kokama = "www/kokama_intro.Rmd", 
+                                    Ipixuna = "www/ipixuna_intro.Rmd") ) })
     
-    # RESET not working anymore... :-(
     output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
                              
                               options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,

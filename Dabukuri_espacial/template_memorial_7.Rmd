@@ -39,11 +39,14 @@ i <- which(tab$id == casa)
 V <- params$V
 
 # SETUP fixed variables
-resp_tecnico <- "Fulana Ciclana – Geógrafa (CREAM-AM 123456789-0)"
-tipo_de_imovel <- "Rural"
-comarca <- 'Tabelião Zé Carioca'
-end <- ", Estrada Campos Elíseos, Ramal Brasileirinho, km8"
 uso <- V$uso
+
+resp_tecnico <- "Ivani Ferreira de Faria – Geógrafa (CREAM-AM 123456789-0)"
+tipo_de_imovel <- "Rural"
+comarca <- 'Tabelião ?'
+
+end <- switch( V$comunidade, Kokama = ", Estrada Campos Elíseos, Ramal Brasileirinho, km8",
+                            Ipixuna = ", Avenida Palmeira do Miriti, Distrito Industrial II - 69075")
 
 # pontos coordenadas
 M1 = paste0(V$dms_y_M01,' / ', V$dms_x_M01) 
@@ -147,7 +150,7 @@ __Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinh
 
 <table style="font-size:16px; border-collapse: separate; border-spacing: 20px; ">
 <tr>
-<td width= 40% style = "border-top:1px solid black;"> <p style= "text-align:center;"> Responsável técnico: `r resp_tecnico` </p></td>
+<td width= 40% style = "border-top:1px solid black;"> <p style= "text-align:center;"> Responsável técnica: `r resp_tecnico` </p></td>
 <td width = 9% style = "border-top: 0px"> </td>
 <td width=40% style = "border-top:1px solid black;"> <p style="font-size:16px; text-align:center;"> Proprietário(a): `r V$nome`</p></td>
 </tr>
