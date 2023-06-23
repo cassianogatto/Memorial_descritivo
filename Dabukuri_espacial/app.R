@@ -387,7 +387,7 @@ server <- function(input, output, session) {
         
             rmarkdown::render(input$"memorial_template",
                       output_format = "html_document",
-                      output_file = paste0("memorial_casa_", react_list$selec), 
+                      output_file = paste0(input$comunidade, "_memorial_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
                       
                       # params passed to the template !!
@@ -400,7 +400,7 @@ server <- function(input, output, session) {
             
             rmarkdown::render(input$"topografico_template",
                       output_format = "html_document",
-                      output_file = paste0("topografico_casa_", react_list$selec), 
+                      output_file = paste0(input$comunidade, "_topografico_casa_", react_list$selec), 
                       output_dir = paste0(getwd(),'/www'),
                       params = list(tab = tab_react(), casa = react_list$selec, V = V_react() )  )
     } )
@@ -414,13 +414,13 @@ server <- function(input, output, session) {
         
         if(input$another_memo){
             
-            path = paste0("tmpuser/www/memorial_casa_", input$another_memo_number, ".html")
+            path = paste0("tmpuser/www/", input$comunidade, "_memorial_casa_", input$another_memo_number, ".html")
         
             tags$iframe(seamless="seamless",  src= path,  width='1000', height='1300')
             
         } else {
             
-            path = paste0("tmpuser/www/memorial_casa_", react_list$selec, ".html")
+            path = paste0("tmpuser/www/", input$comunidade, "_memorial_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1000', height='1300')
         }
@@ -430,13 +430,13 @@ server <- function(input, output, session) {
         
         if(input$another_topo){
             
-            path = paste0("tmpuser/www/topografico_casa_", input$another_topo_number, ".html")
+            path = paste0("tmpuser/www/", input$comunidade, "_topografico_casa_", input$another_topo_number, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1000', height='1300')
             
         } else {
             
-            path = paste0("tmpuser/www/topografico_casa_", react_list$selec, ".html")
+            path = paste0("tmpuser/www/", input$comunidade, "_topografico_casa_", react_list$selec, ".html")
             
             tags$iframe(seamless="seamless",  src= path,  width='1300', height='1000')
         }
