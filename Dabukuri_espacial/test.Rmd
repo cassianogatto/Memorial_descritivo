@@ -1,0 +1,93 @@
+---
+title: "Memorial Descritivo e Levantamento Topográfico no Dabukuri App"
+author: "Cassiano"
+output: 
+  html_document:
+    code_folding: show
+    fig_width: 6
+    fig_height: 4
+    theme:
+      bootswatch: "flatly"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+---
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+
+# former yaml theme config
+# bg: "#202123"
+#       fg: "#B8BCC2"
+#       primary: "#EA80FC"
+#       secondary: "#00DAC6"
+
+```
+<div align: 'right'> <img width = 140px src = "www/DABUKURI.png" /></div>
+
+### Introdução
+
+Neste tutorial vou ilustrar o protocolo que desenvolvi para gerar dois documentos de geo-referenciamento para o projeto __Direito ao Território - Humanitas FAPEAM__, que usa os programas de código aberto 1) [QGIS](https://qgis.org/en/site/) para fazer a representação espacial geo-referenciada dos lotes, que inclui o desenho de polígonos e extração de pontos extremos, distâncias e áreas ([Figura 1](www/Figura_qgis)), e 2) o app baseado em [R-Shiny](https://shiny.posit.co) para gerar os documentos baseados em _templates_ [RMarkdow](https://rmarkdown.rstudio.com) em formato _HTML_ (que podem ser posteriormente impressos para _PDF_ [Figura 2(www/Figura_app)]).
+
+
+### QGIS
+
+#### Polígonos e pontos limites dos terrenos
+1. Baixe seus pontos de referência de campo coletados na comunidade, exporte como *.shp* e dê um zoom para a camada carregada.
+2. Abra uma imagem georeferenciada de sobrevôo de avião ou drone, ou uma base de imagens atual e que mostre os lotes em estudo (e.g. Navegador/ XYZ Tiles/ Google, OpenStreetMap, etc)
+3. Crie uma nova camada vetorial shapefile de polígono (Camada/ Criar nova camada/ Nova camada shapefile -> tutorial_lotes.shp). Use as configurações UTF-8, polígono, epsg 4326 WGS84 (graus) ou epsg 3857 WGS84 PseudoMercator (metros) e inclua os campos na tabela de acordo com a ![Figura_NEW_SHP]("fig_new_shp.png").
+
+
+Para facilitar a confecção da tabela-base é melhor usar um shapefile (e sua respectiva tabela) com todas as referências necessárias (nomes de coluna) estabelecidas (e.g. [aqui](https://github.com/cassianogatto/Memorial_descritivo/blob/main/Dabukuri_espacial/TABELA%20GERAL.csv)). Todas as informações necessárias para que os _templates_ dos documentos possam ser preenchidos são obtidos de uma tabela padronizada, que é a fonte de dados dos proprietários, de endereço, dos pontos demarcadores dos terrenos, do comprimento dos lados, área, etc. (Figura tabela).
+
+1. Abra a camada no GQGIS (versão > 3.28) (Camada/Adicionar camada/Adicionar camada vetorial -> fonte -> escolha a camada '.shp'). Clique com o botão direito em "Abrir tabela de atributos"; verifique as colunas
+2. Baixe seus pontos de referência de campo coletados na comunidade.
+3. Abra na 
+4. 
+
+
+
+
+
+
+Para gerar o 'Memorial Descritivo' e o 'Levantamento Topográfico', abaixo, é utilizada 
+
+
+
+
+
+
+
+
+
+
+This is an R Markdown document themed with [`{bslib}` package](https://rstudio.github.io/bslib/). `{bslib}` makes it easy to customize the main colors and fonts of a `html_document`, [`flexdashboard::flex_dashboard`](https://flexdashboard-pkg.netlify.app/articles/articles/theme.html), [shiny::fluidPage()](https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html), or more generally any website that uses [Bootstrap](https://getbootstrap.com/) for styling. The `theme` parameter in the yaml front-matter of this Rmd document describes a [`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html) object, which provides access to 100s of [theming options](https://rstudio.github.io/bslib/articles/bs5-variables.html) (via its `...` argument) in addition to the main options demonstrated here (e.g., `bg`, `fg`, `primary`, etc).
+
+This particular example uses `{bslib}`'s default [Bootstrap version (which, at the time of writing, is Bootstrap 5)](https://rstudio.github.io/bslib/articles/bslib.html#versions). However, if reproducibility is important, it's recommended that you "lock-in" the version by adding `version: 5` to the `theme` definition.
+
+## Themed Plots {.tabset .tabset-pills}
+
+When running this document with [`{thematic}`](https://rstudio.github.io/thematic/) installed, the `thematic::thematic_rmd(font = "auto")` effectively translates `theme` (CSS) settings to new global theming defaults for `{ggplot2}`, `{lattice}`, and `{base}` R graphics:
+
+### ggplot2
+
+```{r}
+library(ggplot2)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() + geom_smooth()
+```
+
+### lattice
+
+```{r}
+lattice::show.settings()
+```
+
+### base
+
+```{r}
+plot(pressure, col = thematic::thematic_get_option("accent"))
+```

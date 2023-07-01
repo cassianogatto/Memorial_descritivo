@@ -77,17 +77,21 @@ padding-left, padding-right:5px; text-align: justified; font-size: 16px;">
     
 <h4 style="text-align: left;">  Dados do Imóvel  </h4>
 Tipo de Imóvel: __`r toupper(tipo_de_imovel)`__; Uso: __`r toupper(uso)`__;
+
 Proprietário:  __`r V$nome`__ ;  CPF: __`r V$cpf`__;
+
 Endereço: __`r paste0(V$rua, ", casa nº", V$id, end, ", Manaus, Brasil")`__;
+
 Comarca: __`r comarca`__;
 Área: __`r V$area`m^2^__; Perímetro: __`r V$perim`m__;
+
 Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
 </div>
 
 <!-- Limites e confrontações do terreno -->
 <div class="container" width = '190mm' style=" margin:0px; padding:10px; border-bottom:0px solid black; text-align: center; font-size: 14px;">
 <table> <tr> <td width = 40% >
-<h4 style="text-align: left;"> Limites e confrontações do terreno </h4>
+<!-- <h4 style="text-align: left;"> Limites e confrontações do terreno </h4> -->
 
 ```{r, echo =FALSE}
 library(knitr)
@@ -123,7 +127,8 @@ knitr::include_graphics(figure_path)
 <!-- Descrição das faces do terreno -->
 <div class = "container" width = "190mm" style = " font-size:14px; text-align:justify; border: 0px">
 
-<h4 style="text-align: left;"> Descrição das faces do terreno </h4>
+<h4 style="text-align: left;"> Limites e confrontações do terreno </h4>
+<!-- <h4 style="text-align: left;"> Descrição das faces do terreno </h4> -->
 
 __Frente (`r toupper(V$orientacao)`)__:  `r ifelse ( ! is.na(tab[i,"obs_frente"]), tab[i,"obs_frente"], ".")`, Corresponde ao segmento que une os marcos M-01 (`r M1`) e M-02 (`r M2`), com comprimento de `r V$dist_frente` metros.
 

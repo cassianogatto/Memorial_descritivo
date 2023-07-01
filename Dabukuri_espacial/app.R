@@ -123,6 +123,7 @@ ui <-
         
         
         # dados individuais ----
+        
         tabPanel("Dados individuais",
                  
                 tags$h3("Dados individuais de cada terreno"),
@@ -133,22 +134,26 @@ ui <-
                 
                 textOutput("casa_selecionada") ,
                 
-                div(#style = "font-size: 90%; height: 10px; white-space: nowrap;", 
+                div(style = "font-size: 70%; ", # height: 10px; white-space: nowrap;
                     
                     DTOutput("V_tab"),
                 ),
                 
                 HTML("<br>"),
                 
-                checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
+                fluidRow(
+                    
+                    column(2,
                 
-                conditionalPanel(condition = 'input.select_por_id == true',
+                        checkboxInput('select_por_id',"Mas, se preferir, pode escolher pela ID...", value = FALSE),
+                        
+                        conditionalPanel(condition = 'input.select_por_id == true',
                                  
                             numericInput(inputId = "lista_de_id", label = "Escolha a ID", value = NULL), # selectInput('coluna_select', 'Selecione o critério de escolha', choices = c("ID", "nome", "cpf", "endereço")),
                 ),
                 
+                    ),
                 
-                fluidRow(
                     
                     column(8,
                            
@@ -261,7 +266,7 @@ ui <-
             
             fluidRow(
                 column(3,   
-                       fileInput("upload", "Choose CSV File", multiple = FALSE,
+                       fileInput("upload", "Escolha um arquivo '.csv'", multiple = FALSE,
                               accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv")),
                 ),
                 column(4,   
