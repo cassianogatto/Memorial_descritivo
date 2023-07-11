@@ -43,9 +43,9 @@ Neste tutorial proponho um protocolo e algumas ideias gerais para gerar dois doc
 
 1) [QGIS](https://qgis.org/en/site/) para fazer a representação espacial geo-referenciada dos lotes, que inclui o desenho de polígonos e extração de pontos extremos, distâncias, áreas e figuras; 
 
-2) o app baseado em [R](www.cran.org) e [Shiny](https://shiny.posit.co) que desenvolvi para usar _templates_ [RMarkdow](https://rmarkdown.rstudio.com) para gerar os documentos em formato _HTML_ (que podem ser impressos em _PDF_ no seu browser).
+2) o app baseado em [R](www.cran.org) e [Shiny](https://shiny.posit.co) que desenvolvi para usar _templates_ [RMarkdow](https://rmarkdown.rstudio.com) para gerar os documentos em formato _HTML_ (que podem ser impressos em _PDF_ através do seu browser).
 
-De acordo com o tipo de terreno e processo de legalização, pode haver variações na documentação exigida. No entanto, lotes individuais devem ser mapeados e ter seus dados documentais disponíveis. Aqui faremos a representação espacial destes terrenos em formato vetorial, extrairemos os dados destas representações e, com esses dados, produziremos o __Memorial Descritivo__ e o __Levantamento Topográfico__ (Figura 1).
+Mesmo que haja variação no tipo de terreno e processo de legalização, em todos os casos lotes individuais devem ser mapeados e ter suas características espaciais documentadas. Aqui faremos a representação espacial destes terrenos em formato vetorial, extrairemos os dados destas representações e com esses dados produziremos tanto o __Memorial Descritivo__ quanto o __Levantamento Topográfico__ (Figura 1).
 
 <div class = "container" style = "align-itens: center;">
 <img width = 100% src = "memorial_topografico.png"><br>
@@ -85,14 +85,14 @@ Começaremos com o programa de geo-referenciamento, cruzando os pontos obtidos e
 
 Se você for completar e expandir um shapefile já existente (e sua respectiva tabela, por exemplo [aqui](https://github.com/cassianogatto/Memorial_descritivo/blob/main/Dabukuri_espacial/TABELA%20GERAL.csv)), basta habilitar a edição da mesma forma e continuar desenhando os polígonos e preenchendo a tabela nesta nova comunidade.
 
-É sempre bom lembrar que todas as informações necessárias para que os _templates_ dos documentos possam ser preenchidos são obtidos da tabela, que é a fonte de dados dos proprietários, de endereço, dos pontos demarcadores dos terrenos, do comprimento dos lados, área, inclusive o identificador referencial para nomear e chamar as figuras (Figura 5). No modo edição a tabela pode ser editada - lembre-se sempre de salvar as alterações e sair do modo de edição para evitar acidentes.
+É sempre bom lembrar que todas as informações necessárias para que os _templates_ dos documentos possam ser preenchidos são obtidos da tabela, que é a fonte de dados dos proprietários, de endereço, dos pontos demarcadores dos terrenos, do comprimento dos lados, área (Figura 5), e também o identificador referencial para nomear e chamar as figuras que criaremos a seguir. No modo edição a tabela pode ser editada - lembre-se sempre de salvar as alterações e sair do modo de edição para evitar acidentes.
 
 <div class = "container" style = "align-itens: center;">
 <img width = 90% src = "tabela.png"> <br>
 <p>Figura 5. Tabela de atributos</p>
 </div>
 
-Ainda com o modo de edição ativado, pode-se calcular o perímetro e área total dos lotes. Para isso utilizaremos a calculadora (ícone do ábaco Ctrl-I) no painel e na tabela (Figura 6). Nela criamos uma nova coluna ( _Integer_ ou _Float_ ), damos o nome de _area_ e aplicamos a fórmula *\$area*; repetir o procedimento para perímetro com o nome _perim_ e a fórmula *\$perimeter*.
+Ainda com o modo de edição ativado, pode-se calcular o perímetro e área total dos lotes. Para isso utilizaremos a calculadora (ícone do ábaco Ctrl-I) no painel e na tabela (Figura 6). Nela criamos uma nova coluna (_Integer_ ou _Float_), damos o nome de _area_ e aplicamos a fórmula *\$area*; repetir o procedimento para perímetro com o nome _perim_ e a fórmula *\$perimeter*.
 
 <div class = "container" style = "align-itens: center;">
 <img width = 90% src = "area_perimeter.png"> <br>
