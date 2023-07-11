@@ -1,6 +1,7 @@
 ---
-title: "Memorial Descritivo e Levantamento Topográfico no Dabukuri App"
-author: "Cassiano"
+title: '&#32;'
+pagetitle: "levantamento topografico"
+author: '&#32;'
 output: 
   html_document:
     code_folding: show
@@ -13,6 +14,10 @@ output:
       heading_font:
         google: Proza Libre
 ---
+<header>
+<style>
+</style>
+</header>
 
 ```{r setup, include=FALSE}
 if (requireNamespace("thematic")) 
@@ -25,70 +30,126 @@ if (requireNamespace("thematic"))
 #       secondary: "#00DAC6"
 
 ```
-<div align: 'right'> <img width = 140px src = "DABUKURI.png" /></div>
+
+<h2 style="text-align: center;"> Memorial Descritivo e Levantamento Topográfico no Dabukuri App </h2>
+
+<h5 style = "text-align: right;"> Cassiano Gatto </h5>
+
+<div style = "float: right";> <img width = 140px src = "DABUKURI.png" /></div>
 
 ### Introdução
 
-Neste tutorial vou ilustrar o protocolo que desenvolvi para gerar dois documentos de geo-referenciamento para o projeto __Direito ao Território - Humanitas FAPEAM__, que usa os programas de código aberto 1) [QGIS](https://qgis.org/en/site/) para fazer a representação espacial geo-referenciada dos lotes, que inclui o desenho de polígonos e extração de pontos extremos, distâncias e áreas, e 2) o app baseado em [R-Shiny](https://shiny.posit.co) para gerar os documentos baseados em _templates_ [RMarkdow](https://rmarkdown.rstudio.com) em formato _HTML_ (que podem ser impressos em _PDF_ no seu browser).
+Neste tutorial proponho um protocolo e algumas ideias gerais para gerar dois documentos de geo-referenciamento necessários para atividades de regularização territorial no âmbito do projeto __Direito ao Território__ (Humanitas FAPEAM). O protocolo prevê o uso de dois programas de código aberto:
 
+1) [QGIS](https://qgis.org/en/site/) para fazer a representação espacial geo-referenciada dos lotes, que inclui o desenho de polígonos e extração de pontos extremos, distâncias, áreas e figuras; 
 
+2) o app baseado em [R](www.cran.org) e [Shiny](https://shiny.posit.co) que desenvolvi para usar _templates_ [RMarkdow](https://rmarkdown.rstudio.com) para gerar os documentos em formato _HTML_ (que podem ser impressos em _PDF_ no seu browser).
+
+De acordo com o tipo de terreno e processo de legalização, pode haver variações na documentação exigida. No entanto, lotes individuais devem ser mapeados e ter seus dados documentais disponíveis. Aqui faremos a representação espacial destes terrenos em formato vetorial, extrairemos os dados destas representações e, com esses dados, produziremos o __Memorial Descritivo__ e o __Levantamento Topográfico__ (Figura 1).
+
+<div class = "container" style = "align-itens: center;">
+<img width = 100% src = "memorial_topografico.png"><br>
+<p>Figura 1. Documentos: Memorial descritivo e Levantamento topográfico</p>
+</div>
+ 
 ### QGIS
 
-#### Polígonos e pontos limites dos terrenos
-1. Exporte seus pontos de referência de campo coletados na comunidade (como *.shp*) e dê um zoom para a camada carregada no QGIS.
-2. Se você não tiver todos os pontos de interesse coletados, abra uma imagem georeferenciada de sobrevôo de avião ou drone, ou uma base de imagens atual que mostre os lotes em estudo (e.g. Navegador/ XYZ Tiles/ Google, OpenStreetMap, etc). A imagem de *background* ajuda muito de qualquer forma.
+##### Criando polígonos dos lotes
 
-3. Crie uma nova camada vetorial de polígono (Camada/ Criar nova camada/ Nova camada shapefile -> escolha o nome, e.g. tutorial_lotes.shp). Use as configurações UTF-8, polígono, epsg 4326 WGS84 (graus) ou epsg 3857 WGS84 PseudoMercator (metros) e inclua os campos na tabela de acordo com a Figura 1.
+Começaremos com o programa de geo-referenciamento, cruzando os pontos obtidos em campo com imagens de satélite ou drone para desenhar, um a um, os lotes, os caminhos, as áreas verdes, áreas de perigo, e as áreas comuns da comunidade.
 
-<div class = "container"> 
-<img width = 70% src = "fig_new_shp.png">
+1. Exporte seus pontos de referência de campo coletados na comunidade e salve como um objeto *.shp*; dê um zoom para a camada carregada no QGIS.
 
-Figura 1. Criando polígono vetorial no QGIS
+2. Se você não tiver todos os exatos pontos de interesse coletados, abra uma imagem georeferenciada de sobrevôo de avião ou drone, ou uma base de imagens georreferenciadas atual que mostre os lotes em estudo (e.g. Navegador/ XYZ Tiles/ Google, OpenStreetMap, etc). Assim é possível 'desenhar' todos os lotes e áreas de interesse (mesmo sem ter todos os pontos) com base na imagem de *background*. Esta imagem também é importante para verificar a validade dos pontos coletados.
+
+3. Para fazer o esquema espacial dos lotes crie uma nova camada vetorial de polígono (Camada/ Criar nova camada/ Nova camada shapefile -> escolha o nome, e.g. tutorial_lotes.shp). Use as configurações UTF-8, polígono, CRS epsg 4326 WGS84 (graus) ou epsg 3857 WGS84 PseudoMercator (metros, ou qualquer CRS de sua preferência) e inclua os campos (colunas na tabela) nesta ordem (veja a Figura 2): id (*Integer*), comunidade, rua, casa, nome, cpf (todas *String*).
+
+<div class = "container" style = "align-itens: center;"> 
+<img width = 100% src = "fig_new_shp.png"> <br>
+<p>Figura 2. Criando polígono vetorial no QGIS </p> 
 </div>
 
-4. Habilite a edição clicando com o botão direito sobre a camada (Alternar edição - veja que o lápis aparece junto ao ícone na barra de camadas - Figura 2) e utilize o botão de _Adicionar polígono_ (Figura 2, em azul). O outros botões da barra de vetorização são também usados para habilitar e desabilitar edição (vermelho) e salvar (verde).
+4. Habilite a edição (botão direito sobre a camada -> _Alternar edição_ - veja que o lápis aparece junto ao ícone na barra de camadas - Figura 3) e utilize o botão de _Adicionar polígono_ (Figura 3, em azul). Outros botões da barra de vetorização são também usados para habilitar e desabilitar edição (vermelho) e salvar (verde).
 
-<div class = "container"> 
-<img width = 90% src = "botoes.png">
-
-Figura 2. Habilite a edição vetorial no QGIS
+<div class = "container" style = "align-itens: center;"> 
+<img width = 90% src = "botoes.png"><br>
+<p>Figura 3. Habilite a edição vetorial no QGIS</p>
 </div>
 
-5. Crie os polígonos, um a um: com o mouse no exato local clique no primeiro ponto extremo do lote (ponto 1), desloque até o segundo e clique (ponto 2), e assim sucessivamente - quando tiver concluído clique botão direito. Preencha o formulário com os dados disponíveis a respeito deste lote com o cuidado de gerar um único número de identificação (Figura 3). Este formulário preenche a tabela que será utilizada como base para todas as etapas futuras. Crie outros polígonos de outros lotes da mesma forma.
+5. Crie os polígonos, um a um: com o mouse no exato local clique no primeiro ponto extremo do lote (ponto 1), desloque até o segundo e clique (ponto 2), e assim sucessivamente - quando tiver concluído todos os pontos clique botão direito. Preencha o formulário que vai aparecer com os dados disponíveis a respeito deste lote com o cuidado de gerar um único número de identificação ( _id_ Figura 4). Este formulário mostra as colunas criadas anteriormente - esta tabela será utilizada como base em todas as etapas futuras. Crie outros polígonos de outros lotes da mesma forma.
 
-<div class = "container"> 
-<img width = 90% src = "cria_poligono.png">
-
-Figura 3. Desenho do primeiro polígono e formulário de atributos
+<div class = "container" style = "align-itens: center;"> 
+<img width = 90% src = "cria_poligono.png"><br>
+<p>Figura 4. Desenho do primeiro polígono e formulário de atributos</p>
 </div>
 
-Se você for utilizar um shapefile já existente (e sua respectiva tabela, por exemplo [aqui](https://github.com/cassianogatto/Memorial_descritivo/blob/main/Dabukuri_espacial/TABELA%20GERAL.csv)), basta habilitar a edição e continuar preenchendo a tabela nesta nova comunidade.
+Se você for completar e expandir um shapefile já existente (e sua respectiva tabela, por exemplo [aqui](https://github.com/cassianogatto/Memorial_descritivo/blob/main/Dabukuri_espacial/TABELA%20GERAL.csv)), basta habilitar a edição da mesma forma e continuar desenhando os polígonos e preenchendo a tabela nesta nova comunidade.
 
-É sempre bom lembrar que todas as informações necessárias para que os _templates_ dos documentos possam ser preenchidos são obtidos desta tabela, que é a fonte de dados dos proprietários, de endereço, dos pontos demarcadores dos terrenos, do comprimento dos lados, área, etc. (Figura 4). No modo edição a tabela pode ser editada - lembre-se sempre de salvar as alterações.
+É sempre bom lembrar que todas as informações necessárias para que os _templates_ dos documentos possam ser preenchidos são obtidos da tabela, que é a fonte de dados dos proprietários, de endereço, dos pontos demarcadores dos terrenos, do comprimento dos lados, área, inclusive o identificador referencial para nomear e chamar as figuras (Figura 5). No modo edição a tabela pode ser editada - lembre-se sempre de salvar as alterações e sair do modo de edição para evitar acidentes.
 
-<div class = "container"> 
-<img width = 90% src = "tabela.png">
+<div class = "container" style = "align-itens: center;">
+<img width = 90% src = "tabela.png"> <br>
+<p>Figura 5. Tabela de atributos</p>
+</div>
 
-Figura 3. Tabela de atributos
+Ainda com o modo de edição ativado, pode-se calcular o perímetro e área total dos lotes. Para isso utilizaremos a calculadora (ícone do ábaco Ctrl-I) no painel e na tabela (Figura 6). Nela criamos uma nova coluna ( _Integer_ ou _Float_ ), damos o nome de _area_ e aplicamos a fórmula *\$area*; repetir o procedimento para perímetro com o nome _perim_ e a fórmula *\$perimeter*.
+
+<div class = "container" style = "align-itens: center;">
+<img width = 90% src = "area_perimeter.png"> <br>
+<p>Figura 6. Calculadora (ícone em azul) para criar novo campo com valor calculado de *area*; a função está sublinhada.</p>
+<br>
+<img width = 90% src = "tabela_area_perim.png"><br>
+<p>Figura 7. Tabela atualizada com campos _area_ e _perim_.
 </div>
 
 
+##### Extração dos pontos-limite dos terrenos
 
-1. Abra a camada no GQGIS (versão > 3.28) (Camada/Adicionar camada/Adicionar camada vetorial -> fonte -> escolha a camada '.shp'). Clique com o botão direito em "Abrir tabela de atributos"; verifique as colunas
-2. Baixe seus pontos de referência de campo coletados na comunidade.
-3. Abra na 
-4. 
+Cada polígono é baseado em pontos ligados por segmentos. Neste ponto utilizaremos a ferramenta de extração de vértices de polígonos e que cria uma nova tabela na qual cada ponto é representado por uma linha (Figura )
+
+<div class = "container" style = "align-itens: center;">  
+<img width = 70% src = "extrair_vertice.png"> <br>
+<p>Figura . Extrair vértices dos polígonos</p>
+</div>
+
+É importante ressaltar que a ordem de construção dos pontos (marcos) do polígono é recuperada pela ferramenta de extração: o primeiro ponto é identificado pela coluna *vertex_ind* como 0, o segundo como 1, o terceiro como 2, etc. Assim, para seguir o padrão de numeração dos extremos, que é o ponto 1 na frente à esquerda, o ponto 2 na frente à direita, o ponto 3 nos fundos à direita e o ponto 4 nos fundos à esquerda (Figura ), com a tabela vertices com seu modo de edição habilitado, criamos uma coluna chamada ponto e nomeamos os 4 extremos de 1 a 4. Para isso deve-se usar o calculador e aplicar a fórmula  "vertex_ind" + 1 para uma nova coluna chamada "ponto" (Figura ).
+
+<div class = "container" style = "align-itens: center;">
+<img width = 70% src = "esquema_pontos.png"><br>
+<p>Figura . Esquema de orientação dos pontos (marcos) no terreno</p>
+<br>
+<img width = 100% src = "ponto.png">
+<p>Figura . Renomear os pontos por calculador</p>
+</div>
+
+<br>
+
+Para melhor visualizar os pontos pode-se habilitar rótulos e cores por classes (em propriedades da tabela -> Rótulos e Simbologia - Figura 9).
+
+<table><tr><td width = '80%'> 
+<img width = 100% src = "rotulos_pontos.png">
+</td><td width = '20%'>
+<code>Figura 9. Configurar rótulos dos pontos</code>
+</td><tr></table>
 
 
 
 
 
+
+<br>
 
 Para gerar o 'Memorial Descritivo' e o 'Levantamento Topográfico', abaixo, é utilizada 
 
 
 
+<br>
+<br>
+<br>
 
+<br>
+<br>
+<br>
 
 
 

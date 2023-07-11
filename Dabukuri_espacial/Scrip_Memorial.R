@@ -57,6 +57,19 @@ tg <- read.csv("TABELA GERAL.csv",check.names = F)
 kk < read.csv("TAB_Kokama9.csv", check.names = F)
 
 
+# # chat python version in pandas to pivot
+# import pandas as pd
+# 
+# # Assuming 'obj' is a DataFrame in Python
+# 
+# # Specify the columns to keep as ID columns
+# id_cols = ['id', 'nome', 'cpf', 'rua', 'SEMSA', 'frente', 'lateral']
+# 
+# # Specify the columns to pivot and the corresponding values
+# ponto_cols = ['dms_x', 'dms_y', 'x', 'y']
+# 
+# # Perform the pivot operation
+# obj = pd.pivot_table(obj, index=id_cols, columns='ponto', values=ponto_cols)
 
 
 
