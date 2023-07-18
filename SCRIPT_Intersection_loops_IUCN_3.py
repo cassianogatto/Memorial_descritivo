@@ -1,4 +1,35 @@
 
+#Na tora 1 a 1
+layer = iface.activeLayer()
+layer.startEditing()
+factor_field_name = "10x_factor"
+field_index = layer.fields().indexFromName(factor_field_name)
+if field_index ==-1:
+    layer.addAttribute(QgsField(factor_field_name, QVariant.Int))
+field_index = layer.fields().indexFromName(factor_field_name)
+layer.commitChanges()
+print(layer.fields()[factor_field_name])
+expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
+context = QgsExpressionContext()
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+layer.startEditing()
+# ate´aqui tá rolando mas o loop abaixo não...
+for feature in layer.getFeatures():
+    print(feature)
+    context.setFeature(feature)
+    feature['10x_factor'] = expression.evaluate(context)
+    layer.updateFeature(feature)
+layer.commitChanges()
+
+
+
+
+
+
+
+
+
+
 # https://opensourceoptions.com/blog/pyqgis-calculate-geometry-and-field-values-with-the-qgis-python-api/
 #2. Create a New Field
 #We’re going to need a new field (i.e. column) in the attribute table to store the result of our calculation. To do this, get the layer’s data provider, which will give you access to the attributes, then add a new attribute.
@@ -72,7 +103,10 @@ for layer_name in input_layer_names:
         factor_field = QgsField(factor_field_name, QVariant.Int)
         layer.addAttribute(factor_field)
         field_index = layer.fields().indexFromName(factor_field_name)
+    layer.commitChanges()
+    print(layer.fields()[factor_field_name])
 
+    # não estou conseguindo criar direito ou referenciar a nova coluna 10x_factor
 
     # Create a new field for Cs
     cs_field_name = "Cs"
