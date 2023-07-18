@@ -1,30 +1,56 @@
 
-#Na tora 1 a 1
-layer = iface.activeLayer()
-layer.startEditing()
-factor_field_name = "10x_factor"
-field_index = layer.fields().indexFromName(factor_field_name)
-if field_index ==-1:
-    layer.addAttribute(QgsField(factor_field_name, QVariant.Int))
-field_index = layer.fields().indexFromName(factor_field_name)
-layer.commitChanges()
-print(layer.fields()[factor_field_name])
-expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
-context = QgsExpressionContext()
-context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
-layer.startEditing()
-# ate´aqui tá rolando mas o loop abaixo não...
-for feature in layer.getFeatures():
-    print(feature)
-    context.setFeature(feature)
-    feature['10x_factor'] = expression.evaluate(context)
-    layer.updateFeature(feature)
-layer.commitChanges()
+#prepare loop across layers
+geopackage_path = "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'amazone/les_animaux_intersect.gpkg"
+layers = QgsProject.instance().mapLayers().values()
+#loop
+for layer in layers:
+    layerType = layer.type()
+    if layerType == QgsMapLayer.VectorLayer:
+        layer = iface.activeLayer()
+        layer.startEditing()
+        factor_field_name = "10x_factor"
+        field_index = layer.fields().indexFromName(factor_field_name)
+        if field_index == -1:
+            layer.addAttribute(QgsField(factor_field_name, QVariant.Int))
+        field_index = layer.fields().indexFromName(factor_field_name)
+        layer.commitChanges()
+        print(layer.fields()[factor_field_name])
+        expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
+        context = QgsExpressionContext()
+        context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+        layer.startEditing()
+        for feature in layer.getFeatures():
+            print(feature)
+            context.setFeature(feature)
+            feature[factor_field_name] = expression.evaluate(context)
+            layer.updateFeature(feature)
+        layer.commitChanges()
+        layer.selectByExpression("\"10x_factor\"!=1")
+        if layer.selectedFeatureCount() > 0:
+            layer.startEditing()
+            layer.deleteSelectedFeatures()
+            layer.commitChanges()
 
 
 
 
+#  Alternative to delete rows but sppeding avoiding geometry etc
 
+# https://gis.stackexchange.com/questions/112172/deleting-selected-features-using-pyqgis
+# You can loop over the iterator and get the id() for every feature in it:
+
+# with edit(layer):
+#     # build a request to filter the features based on an attribute
+#     request = QgsFeatureRequest().setFilterExpression('"DN" != 3')
+#
+#     # we don't need attributes or geometry, skip them to minimize overhead.
+#     # these lines are not strictly required but improve performance
+#     request.setSubsetOfAttributes([])
+#     request.setFlags(QgsFeatureRequest.NoGeometry)
+#
+#     # loop over the features and delete
+#     for f in layer.getFeatures(request):
+#         layer.deleteFeature(f.id())
 
 
 
