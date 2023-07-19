@@ -1,4 +1,5 @@
-
+import time
+start_time = time.time()
 #prepare loop across layers
 geopackage_path = "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'amazone/les_animaux_intersect.gpkg"
 layers = QgsProject.instance().mapLayers().values()
@@ -32,6 +33,8 @@ for layer in layers:
             layer.commitChanges()
 
 
+timex = (time.time() - start_time)/60
+print(f"--- %s minutes  start = {start} ---" % (timex))
 
 
 #  Alternative to delete rows but sppeding avoiding geometry etc
@@ -53,7 +56,12 @@ for layer in layers:
 #         layer.deleteFeature(f.id())
 
 
-
+# extract by location
+processing.run("native:extractbylocation",
+{'INPUT':'C:/Users/Cliente/AppData/Local/Temp/Rar$DRa12480.19296/BOTW.gdb|layername=All_Species',
+'INTERSECT':'C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/South_America_contour.shp',
+'PREDICATE':[0],
+ 'OUTPUT':'ogr:dbname=\'C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d\\\'amazone/les_animaux.gpkg\' table="output" (geom)'})
 
 
 # https://opensourceoptions.com/blog/pyqgis-calculate-geometry-and-field-values-with-the-qgis-python-api/

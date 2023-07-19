@@ -1,0 +1,75 @@
+---
+title: "Preparing data to SCAN"
+author: "Cassiano Gatto"
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+## raw vectorial data
+
+This tutorial is intended to clarifty and facilitate some aspects of the path between a raw vectorial distributional data (the most commonly available data types are vectors of points or polygons) and a complete table of spatial similarity between all *taxa* in a community to be analyzed with SCAN. For a small number of *taxa*, i.e. \<500 spp, the analysis is usually simple and easy. However, ordinary computers may not handle the memory requirements of a single-shot analysis of a large community.
+
+The IUCN raw data of birds' distributions (v10, [here](http://datazone.birdlife.org/species/requestdis)), for example, has 17414 unique rows, each one with its own attributes and an unique 'geometry' column, occupying 3GB of disk space. A total of 303247396 (17414\^2) runs of spatial comparisons are required to build a matrix of spatial similarity between these units. This is a little bit too much in terms of spatial analysis. Fortunately, there are procedures to optimize these data and save a lot of time and computational effort.
+
+Here, we are going to use both [QGIS](https://qgis.org/en/site/) and [R](https://cran.r-project.org) (via [RStudio](https://posit.co)) to execute spatial analyses and data-management lines of code. Both languages can support all steps of the whole analysis and in the future I will update versions in both code languages. QGIS is more spatially intuitive, has a complete set of spatial tools, and allows a direct visualization of maps. R is optimal for data analysis allowing a clear and fast handling of large data sets; even spatial objects are handled as table structures by the *sf* and *dplyr* [@sf; @dplyr] packages. Note that dplyr uses pipes (**%\>%** or **\|\>**) to concatenate commands (see [www.tidyverse.org](www.tidyverse.org)).
+
+## data summarizing
+
+In R, load packages and distribution maps (here as a *geopackage*) and check the structure of the data. Before any spatial query the data-frame has to be cleaned and summarized. The only required fields to get a table of spatial similarities are "ID" and "geometry". The ID identifies the unique units of analysis (e.g. taxa) for which only one 'geometry' (row) is allowed.
+
+```{r}
+
+#| echo: true
+#| eval: false
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(sf)
+
+geopackage_path <- "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'amazone/les_animaux.gpkg"
+layer_name <- "teste"
+
+spdf <- st_read(dsn = geopackage_path, layer = layer_name)
+spdf %>% glimpse()
+```
+
+With one line of code we can discard all unused fields, rename the remaining, and merge split geometries from the same taxa to one unique row and ID: `group_by (sp = ID) |> summarise()`. BTW, you can maintain any field carrying information for future analysis as long as it remains constant for each unit: `group_by (ID, useful, fields, here) |> summarise()` but is always possible to recover this information later (e.g. *join tables*).
+
+```{r}
+#| echo: true
+#| eval: false
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+
+spdf <- spdf |> group_by(sp = ID) |> summarise()
+
+spdf |> glimpse()
+
+```
+
+It may take a while to run. Note that we kept only one ID field, which had its name changed to **sp**., and a geometry. The number of rows decreased? If so, some IDs were duplicated.
+
+## spatial filtering
+
+At this point
+
+You can add options to executable code like this
+
+```{r}
+#| echo: true
+#| output: false
+#| message: false
+#| warning: false
+#| include: false
+#| eval: false
+
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
