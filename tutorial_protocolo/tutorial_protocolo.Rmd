@@ -2,6 +2,7 @@
 title: '&#32;'
 pagetitle: "levantamento topografico"
 author: '&#32;'
+lang: pt
 output: 
   html_document:
     code_folding: show

@@ -1,3 +1,5 @@
+# SCRIPT 1
+# create 10x field, select and delete rows out of the 10x range size
 import time
 start_time = time.time()
 #prepare loop across layers
@@ -5,9 +7,7 @@ geopackage_path = "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'
 layers = QgsProject.instance().mapLayers().values()
 #loop
 for layer in layers:
-    layerType = layer.type()
-    if layerType == QgsMapLayer.VectorLayer:
-        layer = iface.activeLayer()
+    if layer.type() == QgsMapLayer.VectorLayer:
         layer.startEditing()
         factor_field_name = "10x_factor"
         field_index = layer.fields().indexFromName(factor_field_name)
@@ -15,29 +15,211 @@ for layer in layers:
             layer.addAttribute(QgsField(factor_field_name, QVariant.Int))
         field_index = layer.fields().indexFromName(factor_field_name)
         layer.commitChanges()
-        print(layer.fields()[factor_field_name])
         expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
         context = QgsExpressionContext()
         context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
         layer.startEditing()
+        # feature loop
         for feature in layer.getFeatures():
-            print(feature)
             context.setFeature(feature)
             feature[factor_field_name] = expression.evaluate(context)
             layer.updateFeature(feature)
-        layer.commitChanges()
         layer.selectByExpression("\"10x_factor\"!=1")
-        if layer.selectedFeatureCount() > 0:
-            layer.startEditing()
-            layer.deleteSelectedFeatures()
-            layer.commitChanges()
+        layer.deleteSelectedFeatures()
+        layer.commitChanges()
+
+timex = (time.time() - start_time)/3600
+print(f"--- %s hours ---" % (timex))
 
 
-timex = (time.time() - start_time)/60
-print(f"--- %s minutes  start = {start} ---" % (timex))
+# SCRIPT 2 - Cs calculus, selection and deletion of rows
+# CHAT GPT wrote the base
+#from qgis.core import QgsExpression, QgsFeatureRequest
+#layer = iface.activeLayer()
+# geopackage_path = "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'amazone/les_animaux_intersect.gpkg"
+
+import time
+start_time = time.time()
+# all active layers
+layers = QgsProject.instance().mapLayers().values()
+
+#loop
+for layer in layers:
+    # Calculate the area of each feature and add it to a new field "area"
+    area_idx = layer.fields().indexFromName('area_overlap')
+    if area_idx == -1:
+        layer.startEditing()
+        layer.dataProvider().addAttributes([QgsField('area_overlap', QVariant.Double)])
+        layer.updateFields()
+
+    expression = QgsExpression("$area")
+    context = QgsExpressionContext()
+    # context.setFeature(QgsFeature())
+    context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+    layer.startEditing()
+    for feature in layer.getFeatures():
+        context.setFeature(feature)
+        feature['area_overlap'] = expression.evaluate(context)
+        layer.updateFeature(feature)
+
+    # Apply the equation and save the result to the new field "Cs"
+    # area_overlap_idx = layer.fields().indexFromName('area_overlap')
+    # sp2area_idx = layer.fields().indexFromName('sp2area')
+    Cs_idx = layer.fields().indexFromName('Cs')
+    expression_str = "round((area_overlap/area)*(area_overlap/sp2area),3)"
+    if Cs_idx == -1:
+        layer.dataProvider().addAttributes([QgsField('Cs', QVariant.Double)])
+        layer.updateFields()
+
+    expression = QgsExpression(expression_str)
+    context = QgsExpressionContext()
+    # context.appendScope(QgsExpressionContextUtils.globalScope())
+    # context.appendScope(QgsExpressionContextUtils.projectScope())
+    # context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+    context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+    for feature in layer.getFeatures():
+        context.setFeature(feature)
+        feature['Cs'] = expression.evaluate(context)
+        layer.updateFeature(feature)
+
+    # Commit changes after calculating Cs
+    # layer.commitChanges()
+    # Select features with "Cs" < 0.1 and delete them permanently
+    request = QgsFeatureRequest().setFilterExpression('Cs < 0.1')
+    selected_features_to_delete = [f.id() for f in layer.getFeatures(request)]
+    layer.deleteFeatures(selected_features_to_delete)
+    # Commit changes after deleting features
+    layer.commitChanges()
 
 
-#  Alternative to delete rows but sppeding avoiding geometry etc
+# Timing
+timex = (time.time() - start_time)/3600
+print(f"--- %s hours ---" % (timex))
+
+
+
+
+
+
+# --------------
+# one by one layer...to test the script1
+
+import time
+start_time = time.time()
+layer = iface.activeLayer()
+# loop layer
+layer.startEditing()
+factor_field_name = "10x_factor"
+field_index = layer.fields().indexFromName(factor_field_name)
+if field_index == -1:
+    layer.addAttribute(QgsField(factor_field_name, QVariant.Int))
+
+field_index = layer.fields().indexFromName(factor_field_name)
+layer.commitChanges()
+
+expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
+context = QgsExpressionContext()
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+
+layer.startEditing()
+# feature loop
+for feature in layer.getFeatures():
+    context.setFeature(feature)
+    feature[factor_field_name] = expression.evaluate(context)
+    layer.updateFeature(feature)
+
+layer.selectByExpression("\"10x_factor\"!=1")
+layer.deleteSelectedFeatures()
+layer.commitChanges()
+timex = (time.time() - start_time)/3600
+print(f"--- %s hours ---" % (round(timex,1)))
+
+# one by one to test script 2
+import time
+start_time = time.time()
+# select layer
+layer = iface.activeLayer()
+# loop layer
+# Calculate the area of each feature and add it to a new field "area"
+area_idx = layer.fields().indexFromName('area_overlap')
+if area_idx == -1:
+    layer.startEditing()
+    layer.dataProvider().addAttributes([QgsField('area_overlap', QVariant.Double)])
+    layer.updateFields()
+
+# set the expression
+expression = QgsExpression("$area")
+context = QgsExpressionContext()
+# context.setFeature(QgsFeature())
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+# layer.startEditing()
+for feature in layer.getFeatures():
+    context.setFeature(feature)
+    feature['area_overlap'] = expression.evaluate(context)
+    layer.updateFeature(feature)
+
+# Commit changes after calculating area
+# layer.commitChanges()
+# Apply the equation and save the result to the new field "Cs"
+# area_overlap_idx = layer.fields().indexFromName('area_overlap')
+# sp2area_idx = layer.fields().indexFromName('sp2area')
+Cs_idx = layer.fields().indexFromName('Cs')
+expression_str = "round((area_overlap/area)*(area_overlap/sp2area),3)"
+#layer.startEditing()
+if Cs_idx == -1:
+    layer.dataProvider().addAttributes([QgsField('Cs', QVariant.Double)])
+    layer.updateFields()
+
+expression = QgsExpression(expression_str)
+context = QgsExpressionContext()
+# context.appendScope(QgsExpressionContextUtils.globalScope())
+# context.appendScope(QgsExpressionContextUtils.projectScope())
+# context.appendScope(QgsExpressionContextUtils.layerScope(layer))
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+for feature in layer.getFeatures():
+    context.setFeature(feature)
+    feature['Cs'] = expression.evaluate(context)
+    layer.updateFeature(feature)
+
+# Commit changes after calculating Cs
+# layer.commitChanges()
+# Select features with "Cs" < 0.1 and delete them permanently
+request = QgsFeatureRequest().setFilterExpression('Cs < 0.1')
+selected_features_to_delete = [f.id() for f in layer.getFeatures(request)]
+layer.deleteFeatures(selected_features_to_delete)
+# Commit changes after deleting features
+layer.commitChanges()
+
+
+
+
+
+
+Cs_field_name = "Cs"
+field_index = layer.fields().indexFromName(Cs_field_name)
+if field_index == -1:
+    layer.addAttribute(QgsField("Cs", QVariant.Int))
+
+field_index = layer.fields().indexFromName(factor_field_name)
+layer.commitChanges()
+
+# Create a new field for Cs
+cs_field_name = "Cs"
+cs_field = QgsField(cs_field_name, QVariant.Double, "double", 10, 3)
+layer.addAttribute(cs_field)
+
+expression = QgsExpression("if(area/sp2area > 10, 10, if (area/sp2area < 0.1, 0, 1))")
+context = QgsExpressionContext()
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+with edit(layer):
+    for feature in layer.getFeatures():
+        context.setFeature(feature)
+        feature[field_name] = expression.evaluate(context)
+        layer.updateFeature(feature)
+
+layer.commitChanges()
+
+#  Alternative to delete rows etc
 
 # https://gis.stackexchange.com/questions/112172/deleting-selected-features-using-pyqgis
 # You can loop over the iterator and get the id() for every feature in it:
@@ -238,18 +420,6 @@ for layer_name in input_layer_names:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #
 ##Tous_les_animaux_d'Amazone_ensemble
 ##C:\Users\Cliente\Documents\Cassiano\IUCN\Q_GIS\Les_animaux_d'amazone\les_animaux.gpkg
@@ -275,15 +445,11 @@ start_time = time.time()
 
 #print("--- %s seconds ---" % (time.time() - start_time))
 
-
-
 layer = iface.activeLayer()
 # CANT SELECT THE RIGHT LAYER TO RUN THE LOOP WITH THIS
 #layer_path = "C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d'amazone/les_animaux.gpkg"
 #layer = QgsVectorLayer("C:/Users/Cliente/Documents/Cassiano/IUCN/Q_GIS/Les_animaux_d\'amazone/les_animaux.gpkg|layername=Tous_animaux", "Tous_animaux", "ogr")
 #
-
-layer = iface.activeLayer()
 
 start_time = time.time()
 id_start = 1000
@@ -317,8 +483,6 @@ for i in range(id_start, id_end, chunk_size):
 
 timex = (time.time() - start_time)/60
 print(f"--- %s minutes  start = {start} ---" % (timex))
-
-
 
 # MERGING
 
