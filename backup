@@ -1,0 +1,117 @@
+---
+title: "Preparing data to SCAN"
+author: "Cassiano Gatto"
+format: html
+editor: visual
+bibliography: references.bib
+execution:
+  eval: false
+  echo: true
+  include: false
+  output: false
+  message: false
+  warning: false
+---
+
+## raw vectorial data
+
+This tutorial is intended to clarify and facilitate the path from raw vectorial distributional data (the most commonly available data types are vectors of points or polygons) and a complete table of spatial similarity between all taxa in a community, ready to be analyzed by SCAN. For a small number of taxa, i.e. \<500 spp, the analysis is usually straightforward. But ordinary computers may not handle the memory requirements of a single-shot analysis of a large community.
+
+The IUCN raw data of birds' distributions (v10, [here](http://datazone.birdlife.org/species/requestdis)), for example, has 17414 unique rows, each one with its own attributes and unique 'geometry' fields, occupying \~ 3GB of disk space. A total of 303247396 (17414\^2) runs of spatial comparisons would be required to build a matrix of spatial similarity between these units. This is a little bit too much in terms of spatial analysis. Fortunately, there are procedures to optimize these data and save a lot of time and computational effort.
+
+Here, we are going to use both [QGIS](https://qgis.org/en/site/) (Python) and [R](https://cran.r-project.org) (via [RStudio](https://posit.co)) to execute spatial analyses and data-management lines of code. Both languages can support all steps of the whole analysis and in the future I will update versions in both code languages. QGIS is more spatially intuitive, has a complete set of spatial tools, and allows a direct visualization of maps. R is optimal for data analysis allowing a clear and fast handling of large data sets; even spatial objects are handled as table structures by the *sf* and *dplyr* [@sf; @dplyr] packages. Note that dplyr uses pipes (**%\>%** or **\|\>**) to concatenate commands (see [www.tidyverse.org](www.tidyverse.org)).
+
+## data summarizing
+
+```{r}
+#| echo: false
+#| eval: true
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(sf)
+
+# geopackage_path <- "C:/Users/Cliente/Documents/Cassiano/IUCN/MAMMALS" #Q_GIS/Les_animaux_d'amazone/les_animaux.gpkg"; # layer_name <- "MAMMALS.shp"; # spdf <- st_read(dsn = geopackage_path, layer = layer_name)
+```
+
+In R, load packages and distribution maps and check the structure of the data. Before any spatial query the data-frame has to be checked for spatial integrity, cleaned, and summarized. Usually, most of the fields carry information that is useless at this stage. The only required fields to get a table of spatial similarities are a unique "ID" and "geometry". The ID identifies the units of analysis (e.g. taxa) for which only one spatial 'geometry' (row) is allowed. With one line of code we can discard all unused fields and rename the remaining ones. The original "sci_name" unit ID was renamed as "sp" using dplyr::select.
+
+`group_by (ID_field, other, useful, fields, here) |> summarise()`.
+
+```{r}
+#| echo: true
+#| eval: false
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+
+spdf <- st_read("C:/Users/Cliente/Documents/Cassiano/IUCN/MAMMALS/MAMMALS.shp")
+spdf %>% glimpse()
+spdf <- spdf |> select(sp = sci_name, geometry)
+spdf |> glimpse()
+```
+
+It is important to check for the integrity of the data. Shapefiles (or any other vectorial representation) may have issues within their geometry. After checking which species, if any, have invalid geometries you may try some procedures to 'fix' it. The first alternative is to use *sf::st_make_valid*. If the issue persist, one may try to apply a buffer with some arbitrarily small value *sf::st_buffer( -1)*; a transformation to another (meaningful) projection (e.g. CRS 4326 to 3857) also may do it: *sf::st_transform(crs = 3857*); a re-transform back to the original projection later is possible. If nothing works one may use a graphic interface such as QGIS to manually delete the edges leading to problems (I may describe this procedure in the future but it requires Validity check), or even discard a whole species whose distribution is not important for your analysis.
+
+```{r}
+#| echo: true
+#| eval: false
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+invalid <- (!st_is_valid(spdf))
+if (length(which(invalid)) ){
+    st_geometry(spdf[invalid,]) <- st_geometry(spdf[invalid,]) %>% st_make_valid()
+    spdf |> filter(invalid) |> st_drop_geometry()
+    invalid <- (!st_is_valid(spdf))
+}
+
+if (length(which(invalid)) ){
+    spdf[invalid,] <- spdf |> filter(invalid) |> st_transform(crs = 3857) |> st_buffer(-1) |> st_transform(4326)
+}
+invalid <- (!st_is_valid(spdf))
+length(invalid)
+```
+
+I did not succeed to fix all the features using only the sf::st_make_valid tool and the buffer tool was not able to run because of the errors. I then used the 'invalid' subset to filter and convert to an homologous projection (Pseudo-Mercator 3857), applied an internal buffer (-1), and reconverted back to the original projection.
+
+Now I can summarize the whole data to unique IDs and associated geometries.
+
+```{r}
+#| echo: true
+#| eval: false
+#| include: false
+#| output: false
+#| message: false
+#| warning: false
+
+spdf <- spdf |> group_by(sp = sci_name) |> summarise()
+spdf |> glimpse()
+print(paste("NRow:", nrow(spdf), "NCol:", ncol(spdf) ) )
+```
+
+
+
+
+
+
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+#| output: false
+#| message: false
+#| warning: false
+#| include: false
+#| eval: false
+
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
