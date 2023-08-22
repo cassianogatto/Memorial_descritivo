@@ -325,7 +325,7 @@ server <- function(input, output, session) {
             
             # ipixuna5.csv is NOT WORKING figure out what is going on!!!!!!!!!
             
-            tab <-  read.csv("TABELA GERAL.csv", check.names = F)
+            tab <-  read.csv("TABELA GERAL1.csv", check.names = F)
             
             if('comunidade' %in% names(tab)) tab <- tab %>% filter(comunidade == input$comunidade)
             
@@ -353,10 +353,13 @@ server <- function(input, output, session) {
     
     output$tab <- renderDT(  tab_react(), editable = 'cell', server = TRUE,
                              
-                              options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
+                                options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
+                                              
+                                            #order = list(list(1, 'asc'), list(6, 'desc')),
                                          
-                                        pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
-                 ) )
+                                            pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) 
+                                )
+    )
     
     # manipulating  DT tab
     proxy = dataTableProxy('tab')
@@ -369,7 +372,7 @@ server <- function(input, output, session) {
     output$V_tab <- renderDT(   V_react(), 
                                 options = list( selection = 'single', autoWidth = TRUE, # scrollX = TRUE,
                                     pageLength = 50, columnDefs = list(list( targets = 2, width = '400px' ) ) )
-     )
+    )
     
     output$inset <- renderImage( {
         

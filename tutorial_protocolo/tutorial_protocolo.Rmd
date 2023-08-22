@@ -73,9 +73,9 @@ aberto:
     em formato *HTML* (que podem ser impressos em *PDF* através do seu
     browser).
 
-Mesmo que haja variação no tipo de terreno e processo de legalização, em
-todos os casos lotes individuais devem ser mapeados e ter suas
-características espaciais documentadas. Aqui faremos a representação
+Mesmo que haja variação no tipo de terreno e processo de legalização, os
+lotes individuais devem ser sempre mapeados e ter suas características
+espaciais documentadas apropriadamente. Aqui faremos a representação
 espacial destes terrenos em formato vetorial, extrairemos os dados
 destas representações e com esses dados produziremos tanto o **Memorial
 Descritivo** quanto o **Levantamento Topográfico** (Figura 1).

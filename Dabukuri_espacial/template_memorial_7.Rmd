@@ -43,7 +43,7 @@ uso <- V$uso
 
 resp_tecnico <- "Ivani Ferreira de Faria – Geógrafa (CREAM-AM 123456789-0)"
 tipo_de_imovel <- "Rural"
-comarca <- 'Tabelião ?'
+comarca <- '4º Registro de Imóveis de Manaus'
 
 end <- switch( V$comunidade, Kokama = ", Estrada Campos Elíseos, Ramal Brasileirinho, km8",
                             Ipixuna = ", Avenida Palmeira do Miriti, Distrito Industrial II - 69075")
@@ -148,7 +148,7 @@ __Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinh
 
 <!-- TAIL -->
 <div font-size = '14px' width = '100%' border = '1px solid yellow'>
-<p style="text-align: right;  font-size = 12px;"> Manaus 03, de março de 2023. </p>
+<p style="text-align: right;  font-size = 12px;"> Manaus, `r Sys.Date() %>% format("%d %b %Y")`. </p>
 <!--div class = "container" style = "border:0px; display:flex" -->
 
 <br>

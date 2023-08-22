@@ -55,7 +55,7 @@ V <- params$V
 end <- switch( V$comunidade, Kokama = ", Estrada Campos Elíseos, Ramal Brasileirinho, km8",
                             Ipixuna = ", Avenida Palmeira do Miriti, Distrito Industrial II - 69075")
 
-endereco <- paste0('Rua ', V$rua, ', ', V$casa, end)
+endereco <- paste0(V$rua, ', ', V$casa, end)
 
 responsavel <- "Ivani Ferreira de Faria – Geógrafa (CREAM-AM 123456789-0)"
 
@@ -133,7 +133,7 @@ knitr::include_graphics(figure_path)
 <tr height = 30px>
   <td width = 20% > Área total: `r V$area` </td>
   <td width = 60% colspan="2"> Proprietário(a): __`r V$nome`__ </td>
-  <td width = 20%> Data: `r Sys.Date() %>% format("%d %m %Y")`</td>
+  <td width = 20%> Data: `r Sys.Date() %>% format("%d %b %Y")`</td>
 </tr>
 
 <tr height = 30px>
