@@ -16,6 +16,8 @@ A comunidade __Ipixuna - Iawareté__ congrega representantes de mais de duas dez
 
 </td>
 
+<td><p>     </p></td>
+
 <td>
 <div class = 'container'>
 <img width = 600px src = "ipixuna_satelite.png"/>

@@ -16,6 +16,8 @@ date: ""
 
 </td>
 
+<td><p>     </p></td>
+
 <td>
 <div class = 'container'>
 <img width = "600" src = "kokama_satelite.png"/>

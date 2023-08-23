@@ -14,7 +14,7 @@ params:
 
 <style>
 body{
-  text-size:14px;
+  text-size:12px;
   size: A4 landscape;
   margin: 0;
   width: 297mm; 

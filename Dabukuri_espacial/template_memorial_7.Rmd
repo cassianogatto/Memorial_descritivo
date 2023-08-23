@@ -14,6 +14,7 @@ params:
 @media print {
   @page {
     size: A4;
+    text-size:12px;
   }
 }
 

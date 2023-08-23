@@ -232,15 +232,147 @@ habilitado, criamos uma coluna chamada ponto e nomeamos os 4 extremos de
 
 <br>
 
-Para melhor visualizar os pontos pode-se habilitar rótulos e cores por
-classes (em propriedades da tabela -\> Rótulos e Simbologia - Figura 9).
+Para melhor visualizar os pontos pode-se habilitar rótulos com
+identificação de cada ponto (em propriedades da tabela -\> Rótulos -
+Figura 9) e também por cores (Simbologia - Figura 10)
 
-|                         |                                           |
-|-------------------------|-------------------------------------------|
-| ![](rotulos_pontos.png) | `Figura 9. Configurar rótulos dos pontos` |
-|                         |                                           |
+::: {.container style="align-itens: center;"}
+<img src="rotulos_pontos.png" width="70%"/> <br>
+
+<p>Figura 9. Configurar rótulos dos pontos</p>
+:::
 
 <br>
+
+::: {.container style="align-itens: center;"}
+<img src="classificar_pontos.png" width="70%"/> <br>
+
+<p>Figura 10 . Classificar os pontos por cores na aba "Simbologia"</p>
+:::
+
+Nesta altura devemos checar a tabela de pontos (Figura 11). Para isso
+basta clicar com o botão direito sobre a camada (neste caso tutorial
+vértices e clicar "Abrir tabela de atributos").
+
+::: {.container style="align-itens: center;"}
+<img src="tabela_pontos.png" width="70%"/> <br>
+
+<p>Figura 11. Tabela de atributos dos pontos criados</p>
+:::
+
+Agora vamos usar a calculadora do QGIS para escrever as coordenadas
+geográficas de cada ponto (Figura 12). A calculadora é uma ferramenta
+que permite diversos tipos de manipulação da tabela de atributos. Uma
+das funções é a extração de valores espaciais de cada linha da tabela.
+Para calcular a longitude 'x' de cada ponto, por exemplo, deve-se:
+
+1.  Abrir o modo de edição (lápis; em amarelo na figura)
+
+2.  Clicar no ícone do calculador (ábaco; em vermelho)
+
+3.  Na calculadora escolher a opção "criar um novo campo" (em verde),
+    escolher um nome auto-explicativo para o novo campo ('x_long', por
+    exemplo), e escolher a opção 'Texto(string)', já que utilizaremos um
+    formato de coordenada não numérico (não faremos análises).
+
+4.  No campo de 'expressão' (em roxo) digitaremos a fórmula responsável
+    por gerar a informação que necessitamos. Neste caso queremos '\$x',
+    ou seja, a coordenada x para cada linha, que transformaremos para o
+    formato desejado com o comando 'to_dms' (para grau, minuto,
+    segundo), escolhendo o número de casas decimais e o formato final
+    com W/E ou N/S ('suffix').
+
+5.  Pode-se verificar o resultado final para cada linha embaixo do campo
+    de expressão (azul) e se estiver tudo certo -\> OK. Repetir o
+    processo para latitude (y) e outras variáveis de interesse (e.g.
+    coordenadas em outros formatos, etc).
+
+6.  Salve a tabela e desative o modo de edição.
+
+::: {.container style="align-itens: center;"}
+<img src="calculador_coordenadas.png" width="70%"/> <br>
+
+<p>Figura 12. Extração de coordenadas com calculador de atributos</p>
+:::
+
+O próximo passo é transformar a tabela para que cada terreno seja
+representado em apenas uma linha e na qual cada ponto ocupe uma coluna
+diferente. A informação em mais colunas e menos linhas deixa a tabela
+mais curta e mais larga. Após pesquisar um tanto, não consegui fazer
+esta operação no QGIS diretamente. Então vou apresentar a solução usando
+R.
+
+Para isso precisamos salvar a tabela de atributos no formato '.csv'
+(Figura 13).
+
+::: {.container style="align-itens: center;"}
+<img src="csv.png" width="70%"/> <br>
+
+<p>Figura 13. Exportar tabela como .csv</p>
+:::
+
+O próximo passo é abrir o programa RStudio e abrir um novo script
+(ctrl-N). Nele carregamos o pacote 'dplyr' e carregamos a tabela como um
+objeto 'tab' e verificamos seu conteúdo, inclusive os nomes das colunas.
+
+``` R
+library (dplyr)
+
+tab <- read.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/tutorial_protocolo/tabela.csv") |>     as_tibble() |> select(id, comunidade, rua, casa, nome, cpf, dist = distance, ponto, x, y)
+
+tab |> glimpse()
+
+tab |> names()
+
+ [1] "id"         "comunidade" "rua"        "casa"       "nome"       "cpf"       
+ [7] "dist"       "ponto"      "x"          "y"
+```
+
+A seguir aplicamos a função 'pivot_wider' escolhendo quais colunas serão
+mantidas como estão, quais serão separadas em novas colunas e quais
+fornecerão os valores destas novas colunas.
+
+``` R
+tab1 <- tab |> pivot_wider( id_cols = c(id, comunidade, rua, casa, nome, cpf), names_from = ponto, values_from = c(x,y))
+
+tab1
+# A tibble: 2 × 14
+     id comunidade rua            casa     nome             cpf   x_1   x_2   x_3   x_4   y_1   y_2   y_3   y_4  
+  <int> <chr>      <chr>          <chr>    <chr>            <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
+1     1 ufam       Wes Montgomery Dabukuri Ivani de Faria   2345… 84°1… 88°5… 89°2… 84°4… 33°2… 33°2… 19°1… 19°3…
+2     2 ufam       Wes Montgomery Nepecab  Fernando Comuni… 6666… 80°1… 83°5… 84°1… 79°4… 33°4… 33°4… 19°2… 19°3…
+```
+
+Veja que agora existem apenas 2 linhas, uma para cada terreno, com
+valores de coordenadas geográficas de long (x) e lat(y) para cada ponto
+(1 a 4).
+
+Esta é a tabela base que pode ser expandida e manipulada para guardar os
+dados das comunidades necessários para gerar os documentos. Nela, a unidade (linha) é o terreno e a coluna id faz o link com a tabela original que ficou no QGIS. Eventualmente, pode-se fazer
+o update da tabela de atributos no QGIS manualmente, no modo de edição,
+como criar uma coluna de verificação das informações, etc.
+
+Vamos exportá-la novamente para o formato '.csv' e podemos abrir com um
+editor de dados como excel ou libreoffice Calc.
+
+``` R
+tab1 |> write.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/tutorial_protocolo/tabela_base.csv")
+```
+
+
+
+::: {.container style="align-itens: center;"}
+<img src="tabela_base.png" width="70%"/> <br>
+
+<p>Figura 14. Tabela base para gerar documentos</p>
+:::
+
+
+::: {.container style="align-itens: center;"}
+<img src="eita.png" width="70%"/> <br>
+
+<p>Figura . Eita</p>
+:::
 
 Para gerar o 'Memorial Descritivo' e o 'Levantamento Topográfico',
 abaixo, é utilizada
