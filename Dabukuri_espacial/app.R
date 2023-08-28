@@ -286,7 +286,23 @@ ui <-
             
             div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", DTOutput('tab2') )
         ),
-    )
+        
+        navbarMenu("tutoriais",
+                       
+                   tabPanel("tutorial",
+                            
+                            fluidRow(  column(2),  column(8, includeMarkdown("tutorial_protocolo.Rmd")  ), column(2),  )
+                            
+                            ),
+                   
+                   tabPanel("Atlas",
+                            
+                            fluidRow(  column(2),  column(8, includeMarkdown("tutorial_ATLAS.Rmd")  ), column(2),  )
+                            
+                            ),
+                                
+        ),
+    ),
 )
 
 # ADD PATH to Viewer

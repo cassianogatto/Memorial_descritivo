@@ -14,7 +14,7 @@ params:
 @media print {
   @page {
     size: A4;
-    text-size:12px;
+    text-size:10px;
   }
 }
 
@@ -24,8 +24,8 @@ params:
  display: flex;
  column-gap: 5px;
  <!--width: 209mm;--><!-- height: 297mm; --><!-- border: 0.2px solid blue; -->
- margin: 2px;
- padding: 2px;
+ margin: 1px;
+ padding: 1px;
 }
 </style>
 </header>
@@ -65,26 +65,21 @@ M6 = paste0(V$dms_y_M06,' / ', V$dms_x_M06)
 <div class="container" width = "190mm">
 <table>   <!-- style = "border:0px"> --> 
 <tr>
-<td width = 70%> <h1>  Memorial Descritivo  </h1> </td>
+<td width = 70%> <h3>  Memorial Descritivo  </h2> </td>
 <td width = auto > <h3 > DABUKURI </h3> </td>
-<td> <img width = 120px src = "figures/DABUKURI.png"> </td>
+<td> <img width = 100px src = "figures/DABUKURI.png"> </td>
 </tr>
 </table> 
 </div>
 
 <!-- Dados do Imóvel -->
 <div class="container" width = '190mm'  style = "margin:0px; border:0px solid black; 
-padding-left, padding-right:5px; text-align: justified; font-size: 16px;">
+padding-left, padding-right:5px; text-align: justified; font-size: 14px;">
     
 <h4 style="text-align: left;">  Dados do Imóvel  </h4>
 Tipo de Imóvel: __`r toupper(tipo_de_imovel)`__; Uso: __`r toupper(uso)`__;
 
-Proprietário:  __`r V$nome`__ ;  CPF: __`r V$cpf`__;
-
-Endereço: __`r paste0(V$rua, ", casa nº", V$id, end, ", Manaus, Brasil")`__;
-
-Comarca: __`r comarca`__;
-Área: __`r V$area`m^2^__; Perímetro: __`r V$perim`m__;
+Proprietário:  __`r V$nome`__ ;  CPF: __`r V$cpf`__; Endereço: __`r paste0(V$rua, ", casa nº", V$id, end, ", Manaus, Brasil")`__; Comarca: __`r comarca`__; Área: __`r V$area`m^2^__; Perímetro: __`r V$perim`m__;
 
 Descrição: Projeto, Levantamento Topográfico, Planta e Memorial descritivo
 </div>
@@ -112,7 +107,7 @@ kable(pontos_tab, format = 'simple', padding = 0)
 
 <!-- map -->
 <td width = 45% >
-```{r, out.width=='350px', fig.align='right'}
+```{r, out.width=='300px', fig.align='right'}
 
 if ("comunidade" %in% names(tab)) { figure_path <- paste0('figures/', V$comunidade[1], '/', V$comunidade[1], '_P&B_casa_', V$id, '.png') } else { figure_path <- paste0('figures/casa__', V$id, '.png')}
 
@@ -122,8 +117,6 @@ knitr::include_graphics(figure_path)
 </tr>
 </table>
 </div>
-
-<br>
 
 <!-- Descrição das faces do terreno -->
 <div class = "container" width = "190mm" style = " font-size:14px; text-align:justify; border: 0px">
@@ -145,10 +138,9 @@ __Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinh
 </div>
 
 <br>
-<br>
 
 <!-- TAIL -->
-<div font-size = '14px' width = '100%' border = '1px solid yellow'>
+<div font-size = '12px' width = '100%'>
 <p style="text-align: right;  font-size = 12px;"> Manaus, `r Sys.Date() %>% format("%d %b %Y")`. </p>
 <!--div class = "container" style = "border:0px; display:flex" -->
 
@@ -156,9 +148,9 @@ __Lateral esquerda (`r toupper(V$orient_lat_esq)`)__:  `r ifelse(!is.na(V$vizinh
 
 <table style="font-size:16px; border-collapse: separate; border-spacing: 20px; ">
 <tr>
-<td width= 40% style = "border-top:1px solid black;"> <p style= "text-align:center;"> Responsável técnica: `r resp_tecnico` </p></td>
+<td width= 40% style = "font-size = 12px; border-top:1px solid black;"> <p style= "text-align:center;"> Responsável técnica: `r resp_tecnico` </p></td>
 <td width = 9% style = "border-top: 0px"> </td>
-<td width=40% style = "border-top:1px solid black;"> <p style="font-size:16px; text-align:center;"> Proprietário(a): `r V$nome`</p></td>
+<td width=40% style = "font-size = 12px; border-top:1px solid black;"> <p style="font-size:16px; text-align:center;"> Proprietário(a): `r V$nome`</p></td>
 </tr>
 </table>
 </div>

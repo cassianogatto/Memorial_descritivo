@@ -1,0 +1,431 @@
+---
+title: '&#32;'
+pagetitle: "levantamento topografico"
+author: '&#32;'
+lang: pt
+output: 
+  html_document:
+    code_folding: none
+    fig_width: 6
+    fig_height: 4
+    theme:
+      bootswatch: "flatly"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<header>
+
+```{=html}
+<style>
+</style>
+```
+</header>
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+
+# former yaml theme config
+# bg: "#202123"
+#       fg: "#B8BCC2"
+#       primary: "#EA80FC"
+#       secondary: "#00DAC6"
+
+```
+
+<h2 style="text-align: center;">
+
+Memorial Descritivo e Levantamento Topográfico no Dabukuri App
+
+</h2>
+
+<h5 style="text-align: right;">
+
+Cassiano Gatto
+
+</h5>
+
+```{=html}
+<div style = "float: right";> <img width = 140px src = "DABUKURI.png" /></div>
+```
+### Introdução
+
+Neste tutorial proponho um protocolo e algumas ideias gerais para gerar
+dois documentos de geo-referenciamento necessários para atividades de
+regularização territorial no âmbito do projeto **Direito ao Território**
+(Humanitas FAPEAM). O protocolo prevê o uso de dois programas de código
+aberto:
+
+1)  [QGIS](https://qgis.org/en/site/) para fazer a representação
+    espacial geo-referenciada dos lotes, que inclui o desenho de
+    polígonos e extração de pontos extremos, distâncias, áreas e
+    figuras;
+
+2)  o app baseado em [R](https://cran.r-project.org) e
+    [Shiny](https://shiny.posit.co) que desenvolvi para usar *templates*
+    [RMarkdow](https://rmarkdown.rstudio.com) para gerar os documentos
+    em formato *HTML* (que podem ser impressos em *PDF* através do seu
+    browser).
+
+Mesmo que haja variação no tipo de terreno e processo de legalização, os
+lotes individuais devem ser sempre mapeados e ter suas características
+espaciais documentadas apropriadamente. Aqui faremos a representação
+espacial destes terrenos em formato vetorial, extrairemos os dados
+destas representações e com esses dados produziremos tanto o **Memorial
+Descritivo** quanto o **Levantamento Topográfico** (Figura 1).
+
+::: {.container style="align-itens: center;"}
+<img src="memorial_topografico.png" width="100%"/><br>
+
+<p>Figura 1. Documentos: Memorial descritivo e Levantamento
+topográfico</p>
+:::
+
+### QGIS
+
+##### Criando polígonos dos lotes
+
+Começaremos com o programa de geo-referenciamento, cruzando os pontos
+obtidos em campo com imagens de satélite ou drone para desenhar, um a
+um, os lotes, os caminhos, as áreas verdes, áreas de perigo, e as áreas
+comuns da comunidade.
+
+1.  Exporte seus pontos de referência de campo coletados na comunidade e
+    salve como um objeto *.shp*; dê um zoom para a camada carregada no
+    QGIS.
+
+2.  Se você não tiver todos os exatos pontos de interesse coletados,
+    abra uma imagem georeferenciada de sobrevôo de avião ou drone, ou
+    uma base de imagens georreferenciadas atual que mostre os lotes em
+    estudo (e.g. Navegador/ XYZ Tiles/ Google, OpenStreetMap, etc).
+    Assim é possível 'desenhar' todos os lotes e áreas de interesse
+    (mesmo sem ter todos os pontos) com base na imagem de *background*.
+    Esta imagem também é importante para verificar a validade dos pontos
+    coletados.
+
+3.  Para fazer o esquema espacial dos lotes crie uma nova camada
+    vetorial de polígono (Camada/ Criar nova camada/ Nova camada
+    shapefile -\> escolha o nome, e.g. tutorial_lotes.shp). Use as
+    configurações UTF-8, polígono, CRS epsg 4326 WGS84 (graus) ou epsg
+    3857 WGS84 PseudoMercator (metros, ou qualquer CRS de sua
+    preferência) e inclua os campos (colunas na tabela) nesta ordem
+    (veja a Figura 2): id (*Integer*), comunidade, rua, casa, nome, cpf
+    (todas *String*).
+
+::: {.container style="align-itens: center;"}
+<img src="fig_new_shp.png" width="100%"/> <br>
+
+<p>Figura 2. Criando polígono vetorial no QGIS</p>
+:::
+
+4.  Habilite a edição (botão direito sobre a camada -\> *Alternar
+    edição* - veja que o lápis aparece junto ao ícone na barra de
+    camadas - Figura 3) e utilize o botão de *Adicionar polígono*
+    (Figura 3, em azul). Outros botões da barra de vetorização são
+    também usados para habilitar e desabilitar edição (vermelho) e
+    salvar (verde).
+
+::: {.container style="align-itens: center;"}
+<img src="botoes.png" width="90%"/><br>
+
+<p>Figura 3. Habilite a edição vetorial no QGIS</p>
+:::
+
+5.  Crie os polígonos, um a um: com o mouse no exato local clique no
+    primeiro ponto extremo do lote (ponto 1), desloque até o segundo e
+    clique (ponto 2), e assim sucessivamente - quando tiver concluído
+    todos os pontos clique botão direito. Preencha o formulário que vai
+    aparecer com os dados disponíveis a respeito deste lote com o
+    cuidado de gerar um único número de identificação ( *id* Figura 4).
+    Este formulário mostra as colunas criadas anteriormente - esta
+    tabela será utilizada como base em todas as etapas futuras. Crie
+    outros polígonos de outros lotes da mesma forma.
+
+::: {.container style="align-itens: center;"}
+<img src="cria_poligono.png" width="90%"/><br>
+
+<p>Figura 4. Desenho do primeiro polígono e formulário de atributos</p>
+:::
+
+Se você for completar e expandir um shapefile já existente (e sua
+respectiva tabela, por exemplo
+[aqui](https://github.com/cassianogatto/Memorial_descritivo/blob/main/Dabukuri_espacial/TABELA%20GERAL.csv)),
+basta habilitar a edição da mesma forma e continuar desenhando os
+polígonos e preenchendo a tabela nesta nova comunidade.
+
+É sempre bom lembrar que todas as informações necessárias para que os
+*templates* dos documentos possam ser preenchidos são obtidos da tabela,
+que é a fonte de dados dos proprietários, de endereço, dos pontos
+demarcadores dos terrenos, do comprimento dos lados, área (Figura 5), e
+também o identificador referencial para nomear e chamar as figuras que
+criaremos a seguir. No modo edição a tabela pode ser editada - lembre-se
+sempre de salvar as alterações e sair do modo de edição para evitar
+acidentes.
+
+::: {.container style="align-itens: center;"}
+<img src="tabela.png" width="90%"/> <br>
+
+<p>Figura 5. Tabela de atributos</p>
+:::
+
+Ainda com o modo de edição ativado, pode-se calcular o perímetro e área
+total dos lotes. Para isso utilizaremos a calculadora (ícone do ábaco
+Ctrl-I) no painel e na tabela (Figura 6). Nela criamos uma nova coluna
+(*Integer* ou *Float*), damos o nome de *area* e aplicamos a fórmula
+*\$area*; repetir o procedimento para perímetro com o nome *perim* e a
+fórmula *\$perimeter*.
+
+<div class = "container" style = "align-itens: center;">
+
+<img src="area_perimeter.png" width="90%"/> <br>
+
+<p>Figura 6. Calculadora (ícone em azul) para criar novo campo com valor
+calculado de *area*; a função está sublinhada.</p>
+
+<br> <img src="tabela_area_perim.png" width="90%"/><br>
+
+<p>
+
+Figura 7. Tabela atualizada com campos *area* e *perim*.
+
+</div>
+
+##### Extração dos pontos-limite dos terrenos
+
+Cada polígono é baseado em pontos ligados por segmentos. Neste ponto
+utilizaremos a ferramenta de extração de vértices de polígonos e que
+cria uma nova tabela na qual cada ponto é representado por uma linha
+(Figura )
+
+::: {.container style="align-itens: center;"}
+<img src="extrair_vertice.png" width="70%"/> <br>
+
+<p>Figura . Extrair vértices dos polígonos</p>
+:::
+
+É importante ressaltar que a ordem de construção dos pontos (marcos) do
+polígono é recuperada pela ferramenta de extração: o primeiro ponto é
+identificado pela coluna *vertex_ind* como 0, o segundo como 1, o
+terceiro como 2, etc. Assim, para seguir o padrão de numeração dos
+extremos, que é o ponto 1 na frente à esquerda, o ponto 2 na frente à
+direita, o ponto 3 nos fundos à direita e o ponto 4 nos fundos à
+esquerda (Figura ), com a tabela vertices com seu modo de edição
+habilitado, criamos uma coluna chamada ponto e nomeamos os 4 extremos de
+1 a 4. Para isso deve-se usar o calculador e aplicar a fórmula
+"vertex_ind" + 1 para uma nova coluna chamada "ponto" (Figura ).
+
+::: {.container style="align-itens: center;"}
+<img src="esquema_pontos.png" width="70%"/><br>
+
+<p>Figura . Esquema de orientação dos pontos (marcos) no terreno</p>
+
+<br> <img src="ponto.png" width="100%"/>
+
+<p>Figura . Renomear os pontos por calculador</p>
+:::
+
+<br>
+
+Para melhor visualizar os pontos pode-se habilitar rótulos com
+identificação de cada ponto (em propriedades da tabela -\> Rótulos -
+Figura 9) e também por cores (Simbologia - Figura 10)
+
+::: {.container style="align-itens: center;"}
+<img src="rotulos_pontos.png" width="70%"/> <br>
+
+<p>Figura 9. Configurar rótulos dos pontos</p>
+:::
+
+<br>
+
+::: {.container style="align-itens: center;"}
+<img src="classificar_pontos.png" width="70%"/> <br>
+
+<p>Figura 10 . Classificar os pontos por cores na aba "Simbologia"</p>
+:::
+
+Nesta altura devemos checar a tabela de pontos (Figura 11). Para isso
+basta clicar com o botão direito sobre a camada (neste caso tutorial
+vértices e clicar "Abrir tabela de atributos").
+
+::: {.container style="align-itens: center;"}
+<img src="tabela_pontos.png" width="70%"/> <br>
+
+<p>Figura 11. Tabela de atributos dos pontos criados</p>
+:::
+
+Agora vamos usar a calculadora do QGIS para escrever as coordenadas
+geográficas de cada ponto (Figura 12). A calculadora é uma ferramenta
+que permite diversos tipos de manipulação da tabela de atributos. Uma
+das funções é a extração de valores espaciais de cada linha da tabela.
+Para calcular a longitude 'x' de cada ponto, por exemplo, deve-se:
+
+1.  Abrir o modo de edição (lápis; em amarelo na figura)
+
+2.  Clicar no ícone do calculador (ábaco; em vermelho)
+
+3.  Na calculadora escolher a opção "criar um novo campo" (em verde),
+    escolher um nome auto-explicativo para o novo campo ('x_long', por
+    exemplo), e escolher a opção 'Texto(string)', já que utilizaremos um
+    formato de coordenada não numérico (não faremos análises).
+
+4.  No campo de 'expressão' (em roxo) digitaremos a fórmula responsável
+    por gerar a informação que necessitamos. Neste caso queremos '\$x',
+    ou seja, a coordenada x para cada linha, que transformaremos para o
+    formato desejado com o comando 'to_dms' (para grau, minuto,
+    segundo), escolhendo o número de casas decimais e o formato final
+    com W/E ou N/S ('suffix').
+
+5.  Pode-se verificar o resultado final para cada linha embaixo do campo
+    de expressão (azul) e se estiver tudo certo -\> OK. Repetir o
+    processo para latitude (y) e outras variáveis de interesse (e.g.
+    coordenadas em outros formatos, etc).
+
+6.  Salve a tabela e desative o modo de edição.
+
+::: {.container style="align-itens: center;"}
+<img src="calculador_coordenadas.png" width="70%"/> <br>
+
+<p>Figura 12. Extração de coordenadas com calculador de atributos</p>
+:::
+
+O próximo passo é transformar a tabela para que cada terreno seja
+representado em apenas uma linha e na qual cada ponto ocupe uma coluna
+diferente. A informação em mais colunas e menos linhas deixa a tabela
+mais curta e mais larga. Após pesquisar um tanto, não consegui fazer
+esta operação no QGIS diretamente. Então vou apresentar a solução usando
+R.
+
+Para isso precisamos salvar a tabela de atributos no formato '.csv'
+(Figura 13).
+
+::: {.container style="align-itens: center;"}
+<img src="csv.png" width="70%"/> <br>
+
+<p>Figura 13. Exportar tabela como .csv</p>
+:::
+
+O próximo passo é abrir o programa RStudio e abrir um novo script
+(ctrl-N). Nele carregamos o pacote 'dplyr' e carregamos a tabela como um
+objeto 'tab' e verificamos seu conteúdo, inclusive os nomes das colunas.
+
+``` R
+library (dplyr)
+
+tab <- read.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/tutorial_protocolo/tabela.csv") |>     as_tibble() |> select(id, comunidade, rua, casa, nome, cpf, dist = distance, ponto, x, y)
+
+tab |> glimpse()
+
+tab |> names()
+
+ [1] "id"         "comunidade" "rua"        "casa"       "nome"       "cpf"       
+ [7] "dist"       "ponto"      "x"          "y"
+```
+
+A seguir aplicamos a função 'pivot_wider' escolhendo quais colunas serão
+mantidas como estão, quais serão separadas em novas colunas e quais
+fornecerão os valores destas novas colunas.
+
+``` R
+tab1 <- tab |> pivot_wider( id_cols = c(id, comunidade, rua, casa, nome, cpf), names_from = ponto, values_from = c(x,y))
+
+tab1
+# A tibble: 2 × 14
+     id comunidade rua            casa     nome             cpf   x_1   x_2   x_3   x_4   y_1   y_2   y_3   y_4  
+  <int> <chr>      <chr>          <chr>    <chr>            <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
+1     1 ufam       Wes Montgomery Dabukuri Ivani de Faria   2345… 84°1… 88°5… 89°2… 84°4… 33°2… 33°2… 19°1… 19°3…
+2     2 ufam       Wes Montgomery Nepecab  Fernando Comuni… 6666… 80°1… 83°5… 84°1… 79°4… 33°4… 33°4… 19°2… 19°3…
+```
+
+Veja que agora existem apenas 2 linhas, uma para cada terreno, com
+valores de coordenadas geográficas de long (x) e lat(y) para cada ponto
+(1 a 4).
+
+Esta é a tabela base que pode ser expandida e manipulada para guardar os
+dados das comunidades necessários para gerar os documentos. Nela, a unidade (linha) é o terreno e a coluna id faz o link com a tabela original que ficou no QGIS. Eventualmente, pode-se fazer
+o update da tabela de atributos no QGIS manualmente, no modo de edição,
+como criar uma coluna de verificação das informações, etc.
+
+Vamos exportá-la novamente para o formato '.csv' e podemos abrir com um
+editor de dados como excel ou libreoffice Calc.
+
+``` R
+tab1 |> write.csv("C:/Users/Cliente/Documents/Cassiano/Shiny/Memorial_markdown-shiny/Memorial_descritivo/tutorial_protocolo/tabela_base.csv")
+```
+
+
+
+::: {.container style="align-itens: center;"}
+<img src="tabela_base.png" width="70%"/> <br>
+
+<p>Figura 14. Tabela base para gerar documentos</p>
+:::
+
+
+::: {.container style="align-itens: center;"}
+<img src="eita.png" width="70%"/> <br>
+
+<p>Figura . Eita</p>
+:::
+
+Para gerar o 'Memorial Descritivo' e o 'Levantamento Topográfico',
+abaixo, é utilizada
+
+<br> <br> <br>
+
+<br> <br> <br>
+
+This is an R Markdown document themed with [`{bslib}`
+package](https://rstudio.github.io/bslib/). `{bslib}` makes it easy to
+customize the main colors and fonts of a `html_document`,
+[`flexdashboard::flex_dashboard`](https://flexdashboard-pkg.netlify.app/articles/articles/theme.html),
+[shiny::fluidPage()](https://shiny.rstudio.com/reference/shiny/latest/fluidPage.html),
+or more generally any website that uses
+[Bootstrap](https://getbootstrap.com/) for styling. The `theme`
+parameter in the yaml front-matter of this Rmd document describes a
+[`bslib::bs_theme()`](https://rstudio.github.io/bslib/reference/bs_theme.html)
+object, which provides access to 100s of [theming
+options](https://rstudio.github.io/bslib/articles/bs5-variables.html)
+(via its `...` argument) in addition to the main options demonstrated
+here (e.g., `bg`, `fg`, `primary`, etc).
+
+This particular example uses `{bslib}`'s default [Bootstrap version
+(which, at the time of writing, is Bootstrap
+5)](https://rstudio.github.io/bslib/articles/bslib.html#versions).
+However, if reproducibility is important, it's recommended that you
+"lock-in" the version by adding `version: 5` to the `theme` definition.
+
+## Themed Plots {.tabset .tabset-pills}
+
+When running this document with
+[`{thematic}`](https://rstudio.github.io/thematic/) installed, the
+`thematic::thematic_rmd(font = "auto")` effectively translates `theme`
+(CSS) settings to new global theming defaults for `{ggplot2}`,
+`{lattice}`, and `{base}` R graphics:
+
+### ggplot2
+
+```{r}
+library(ggplot2)
+
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() + geom_smooth()
+```
+
+### lattice
+
+```{r}
+lattice::show.settings()
+```
+
+### base
+
+```{r}
+plot(pressure, col = thematic::thematic_get_option("accent"))
+```

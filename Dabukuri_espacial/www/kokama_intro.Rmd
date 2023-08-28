@@ -10,15 +10,15 @@ date: ""
 
 <table>
 <tr>
-<td> <img align = "center" width = 50px src = "DABUKURI.png"/> 
+<td align = 'left'> <!--img align = "center" width = 50px src = "DABUKURI.png"/--> 
 
 <p> A comunidade <strong>Kokama - Nova Esperança</strong> fica no km 8 do ramal Brasileirinho, na Zona Leste de Manaus. O lab Dabukuri está fazendo o levantamento, o geo-referenciamento e a confecção de documentação complementar aos pedidos de regularização fundiária das famílias da comunidade junto à Suframa.</p>
 
 </td>
 
-<td><p>     </p></td>
+<td></td>
 
-<td>
+<td align = 'right'>
 <div class = 'container'>
 <img width = "600" src = "kokama_satelite.png"/>
 </div>

@@ -1,0 +1,129 @@
+---
+title: '&#32;'
+pagetitle: "levantamento topografico"
+author: '&#32;'
+lang: pt
+output: 
+  html_document:
+    code_folding: none
+    fig_width: 6
+    fig_height: 4
+    theme:
+      bootswatch: "flatly"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<header>
+
+```{=html}
+<style>
+</style>
+```
+</header>
+
+```{r setup, include=FALSE}
+if (requireNamespace("thematic")) 
+  thematic::thematic_rmd(font = "auto")
+
+```
+
+<h2 style="text-align: center;">
+
+QGIS Atlas - figuras individuais dos lotes
+
+</h2>
+
+<h5 style="text-align: right;">
+
+Cassiano Gatto
+
+</h5>
+
+```{=html}
+<div style = "float: right";> <img width = 140px src = "DABUKURI.png" /></div>
+```
+### Atlas no QGIS
+
+Aqui um rápido tutorial sobre o uso do Atlas no QGIS pra gerar figuras individuais dos lotes. O Atlas funciona no modo layout do QGIS - então é bom já saber um pouco sobre o layout... Aqui apresentaremos o básico.
+
+No projeto que já conhecemos vamos:
+
+1) criar cópias das camadas que temos dos polígonos e dos pontos extremos (dê nomes sugestivos e.g. Atlas ao invés de cópia... Figura 1) que serão classificadas para mostrar apenas as feições desejadas (para tirar a foto!)
+
+2) classificá-las para controlar sua exibição por um índice gerado pelo Atlas a partir de uma variável qualquer em uma camada (e.g. ID_geral - vamos configurar o Atlas mais adiante).
+
+::: {.container style="align-itens: center;"}
+<img src="Atlas_vertices.png" width="100%"/><br>
+
+<p>Figura 1. Exemplo de cópias das camadas e classificação pelo índice Atlas no projeto Ipixuna</p>
+:::
+
+Pode-se ainda identificar feiçõe individualmente, como no exemplo apresentado para os pontos no projeto Ipixuna (Figura 1), ou apenas uma regra simples (Figura 2): nas propriedades da camada -> simbologia, escolher a opção 'baseado em regra', adicionar ('+') e editar ('Epsilon') a regra, escolhendo a variável (campo) = @Atlas_pagename. Fazer o mesmo para os polígonos ;-)
+
+Lembre-se que é nesta classificação que o layout destas feições na figura deve ser programado. Eu gosto de deixar o polígono sem preenchimento, apenas com o contorno em azul bem forte. Os pontos eu deixo bem grandes, com uma simbologia composta de um círculo transparente envolvendo um ponto vermelho no centro.
+
+::: {.container style="align-itens: center;"}
+<img src="Atlas_vertices_tutorial.png" width="100%"/><br>
+
+<p>Figura 2. Regra de classificação baseada no Atlas </p>
+:::
+
+##### Layout time!
+
+Vá para Projeto -> Novo layout de impressão (ctrl-P); escolha um nome; adicione uma camada de mapa Adicionar item -> Adicionar mapa -> defina a extensão do mapa no layout.
+
+Se desejar inclua outros items no seu mapa final, como escala, norte, ou mesmo um grid com coordenadas geográficas. O grid pode ser configurado nas propriedades do Mapa1 (o que vc acabou de adicionar).
+
+Na aba Atlas clique no item 'gerar um Atlas' e escolha uma camada com a variável que guiará todo o processo. Em nosso caso o que nos interessa é a variável 'nome' que pode ser encontrada na camada tutorial lotes, por exemplo; esta variável é a que diferencia os poligonos individuais Dabukuri e Nepecab.
+
+Veja que no campo de expressão do nome de saída pode-se escolher um padrão de nome para o output. Eu escolhi  "'Atlas_tutorial_'||@atlas_pagename", onde o nome de cada feição será o identificador único do arquivo (poderia ser o número usando featurenumber).
+
+::: {.container style="align-itens: center;"}
+<img src="Atlas_layout.png" width="100%"/><br>
+
+<p>Figura 3. Layout com aba do Atlas e botão preview </p>
+:::
+
+Agora configure o mapa no layout para obedecer aos comandos do Atlas. Clique botão direito no Mapa1 e escolha propriedades do Item. Ative o item 'controlado por Atlas' e decida se a escala será definda pelo Atlas ou definida como a mesma em todas os polígonos (a escolha da escala é lá em cima mas precisa estar definida no Atlas como fixa).
+
+Ative o Atlas preview! (Figura 3 em verde!).
+
+Não esqueça de selecionar apenas as camadas desejadas (controladas por Atlas) no projeto original e configurar com mais detalhe os formatos dos símbolos - eu gosto de exagerar na largura do traço e no tamanho dos pontos nessas imagens individuais de cada polígono.
+
+::: {.container style="align-itens: center;"}
+<img src="Atlas_running.png" width="100%"/><br>
+
+<p>Figura 4. Atlas em funcionamento! </p>
+:::
+
+
+Agora podemos tirar as fotos. Você pode fazer uma à uma, selecionando uma opção no navegador do Atlas (em vermelho na Figura 4), ou pedir pro Atlas rodar sozinho (em azul) para todos os polígonos descritos pela variável escolhida (nome). Ele salva na pasta que você determinar, com o nome automaticamente adaptado para cada feição individual.
+
+
+Assim você pode configurar várias formas de apresentação de layout para cada feição de acordo com o tipo de documento e salvar cada uma delas com um padrão diferente. Eu vou mostrar os exemplos que eu criei para a comunidade Ipixuna para o Memorial Descritivo e para o Levantamento Topográfico, que possuem formatos específicos de nome para que sejam lidos apropriadamente pelos templates em R-Markdown. Ah, para o levantamento eu criei uma terceira cópia dos lotes e preenchi com cor para apresentar qual o lote em relação à comunidade toda. Para isso eu fixei o layout e não deixei o Atlas controlar a posição, apenas qual feição seria exibida.
+
+
+::: {.container style="align-itens: center;"}
+<img src="Ipixuna_P&B_casa_68.png" width="100%"/><br>
+
+<p>Figura 6. Casa 68 da comunidade Ipixuna - layout do Memorial descritivo, em preto e branco. Formato "Ipixuna_P&B_casa_XX.png" </p>
+:::
+
+::: {.container style="align-itens: center;"}
+<img src="Ipixuna_casa_68.png" width="100%"/><br>
+
+<p>Figura 7. Casa 68 da comunidade Ipixuna - layout do Levantamento Topográfico. Formato "Ipixuna_casa_XX.png" </p>
+:::
+
+::: {.container style="align-itens: center;"}
+<img src="Ipixuna_inset_casa_68.png" width="100%"/><br>
+
+<p>Figura 8. Casa 68 da comunidade Ipixuna - layout do Levantamento Topográfico. Formato "Ipixuna_inset_casa_XX.png" </p>
+:::
+

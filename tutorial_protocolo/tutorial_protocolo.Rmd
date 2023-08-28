@@ -5,7 +5,7 @@ author: '&#32;'
 lang: pt
 output: 
   html_document:
-    code_folding: show
+    code_folding: none
     fig_width: 6
     fig_height: 4
     theme:
