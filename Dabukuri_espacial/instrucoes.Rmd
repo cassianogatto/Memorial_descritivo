@@ -54,7 +54,9 @@ O App está organizado por abas (acima).
 
 4. Na aba *Documentos* pode-se acessar quaisquer documentos html gerados na página, tanto memoriais descritivos quanto levantamentos topográficos.
 
-5. A ferramenta *Editor* possibilita a edição dos dados dos lotes. Para isso deve-se carregar a tabela, clicar nas células a serem editadas e, após edição, salvar a tabela como a mesma tabela ou com outro nome.  
+5. A ferramenta *Editor* possibilita a edição dos dados dos lotes. Para isso deve-se carregar a tabela, clicar nas células a serem editadas e, após edição, salvar a tabela como a mesma tabela ou com outro nome.
+
+6. Adicionalmente, *Tutoriais* traz um tutorial geral sobre o protocolo de gestão destas informações e criação de documentos e também tutoriais específicos sobre o uso de ferramentas específicas, como o GIT (github) ou o QGIS Atlas. 
 
 
 __Estruturação de *templates* e da tabela__

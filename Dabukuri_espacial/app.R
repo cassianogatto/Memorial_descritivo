@@ -287,7 +287,7 @@ ui <-
         
         # tutorials ----
         
-        navbarMenu("Tututorials",
+        navbarMenu("Tutoriais",
                        
                    tabPanel("Tutorial QGIS",
                             
