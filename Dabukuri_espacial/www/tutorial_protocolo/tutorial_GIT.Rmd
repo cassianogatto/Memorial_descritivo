@@ -1,0 +1,63 @@
+---
+title: '&#32;'
+pagetitle: "levantamento topografico"
+author: '&#32;'
+lang: pt
+output: 
+  html_document:
+    code_folding: none
+    fig_width: 6
+    fig_height: 4
+    theme:
+      bootswatch: "flatly"
+      base_font:
+        google: Prompt
+      heading_font:
+        google: Proza Libre
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<header>
+
+```{=html}
+<style>
+</style>
+```
+</header>
+
+### GIT GIT GIT
+
+Git é um sistema de backup baseado em comparação de versões. Seu pleno potencial é alcançado quando utilizado em combinação com o <http://github.com>.
+
+Este projeto inteiro tem uma imagem espelhada no endereço <http://github.com/cassianogatto/memorial_descritivo> e esta versão *online* oferece a possibilidade de rodar o **app Dabukuri** de qualquer computador com o programa R instalado. Melhor ainda se [RStudio](https://posit.co/download/rstudio-desktop) estiver instalado porque ele cuida automaticamente das dependências, libraries, etc.
+
+No console do RStudio, basta digitar:
+
+    library(shiny)
+    runGitHub( "cassianogatto/memorial_descritivo/Dabukuri_espacial", "cassianogatto")
+
+### ** Et voilá! **
+
+<br>
+
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

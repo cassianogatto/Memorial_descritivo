@@ -120,8 +120,6 @@ ui <-
                 
         ),
         
-        
-        
         # dados individuais ----
         
         tabPanel("Dados individuais",
@@ -287,18 +285,32 @@ ui <-
             div(style = "font-size: 70%;  height: 10px; white-space: nowrap;", DTOutput('tab2') )
         ),
         
-        navbarMenu("tutoriais",
+        # tutorials ----
+        
+        navbarMenu("Tututorials",
                        
-                   tabPanel("tutorial",
+                   tabPanel("Tutorial QGIS",
                             
-                            fluidRow(  column(2),  column(8, includeMarkdown("tutorial_protocolo.Rmd")  ), column(2),  )
-                            
+                            fluidRow(  column(2),  column(8, includeMarkdown(
+                                "www/tutorial_protocolo/tutorial_protocolo.Rmd"
+    
+                                )  ), column(2),  )
                             ),
                    
                    tabPanel("Atlas",
                             
-                            fluidRow(  column(2),  column(8, includeMarkdown("tutorial_ATLAS.Rmd")  ), column(2),  )
+                            fluidRow(  column(2),  column(8, includeMarkdown(
+                                "www/tutorial_protocolo/tutorial_ATLAS.Rmd"
+    
+                                )  ), column(2),  )
+                            ),
+                    
+                    tabPanel("Tutorial GIT",
                             
+                            fluidRow(  column(2),  column(8, includeMarkdown(
+                                "www/tutorial_protocolo/tutorial_GIT.Rmd"
+    
+                                )  ), column(2),  )
                             ),
                                 
         ),
@@ -392,10 +404,12 @@ server <- function(input, output, session) {
     
     output$inset <- renderImage( {
         
-            file1 <- normalizePath(file.path( './figures/', input$comunidade, '/', paste0(input$comunidade, "_inset_casa_", react_list$selec, ".png", sep = '')))
-        
-            list(src = file1, width = '500px')
+            file1 <- normalizePath(
+                file.path( './figures/', input$comunidade, '/', paste0(input$comunidade, "_inset_casa_", react_list$selec, ".png", sep = ''))
+            )
             
+            list(src = file1, width = '500px')
+                
     },   deleteFile = FALSE )
             
     output$image <- renderImage( {
